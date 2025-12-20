@@ -19,7 +19,7 @@ let package = Package(
     dependencies: [
         // used only for Dev tests, not part of regular unit tests
         // .package(url: "https://github.com/orchetect/xctest-extensions", from: "2.0.0")
-    ] + doccPluginDependency(),
+    ],
     targets: [
         .target(
             name: "SwiftTimecode",
@@ -70,8 +70,8 @@ let package = Package(
 )
 
 /// Conditionally opt-in to Swift DocC Plugin when an environment flag is present.
-func doccPluginDependency() -> [Package.Dependency] {
-    ProcessInfo.processInfo.environment["ENABLE_DOCC_PLUGIN"] != nil
-        ? [.package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.4.5")]
-        : []
+if ProcessInfo.processInfo.environment["ENABLE_DOCC_PLUGIN"] != nil {
+    package.dependencies += [
+        .package(url: "https://github.com/apple/swift-docc-plugin.git", from: "1.4.5")
+    ]
 }
