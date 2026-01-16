@@ -8,7 +8,7 @@
 
 import SwiftUI
 import SwiftTimecodeUI
-import XCTest
+import Testing
 
 /// The goal in this test suite is to just ensure that our custom SwiftUI view modifiers
 /// behave the same and accept the same syntax as standard native SwiftUI view modifiers.
@@ -17,11 +17,8 @@ import XCTest
 ///
 /// If intentional changes occur to view modifiers during a refactor, this can help indicate
 /// the need to add API evolution deprecations or renames.
-@available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
-@MainActor final class TimecodeField_View_Modifiers_Syntax_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
+
+@MainActor @Suite struct TimecodeField_View_Modifiers_Syntax_Tests {
     // MARK: - Test Constants
     
     private let timecodeField = TimecodeField(components: .constant(.zero))
@@ -34,7 +31,9 @@ import XCTest
     // MARK: - Tests
     
     /// Establish baseline SwiftUI standard library behavior.
-    func testShapeStyleViewModifier_Baseline() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testShapeStyleViewModifier_Baseline() async {
         // `any ShapeStyle` works
         _ = timecodeField
             .foregroundStyle(anyShapeStyle)
@@ -56,7 +55,9 @@ import XCTest
     
     // MARK: - .timecodeField
     
-    func testViewModifier_timecodeField() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeField() async {
         _ = timecodeField
             .timecodeFormat(.default())
         
@@ -74,7 +75,9 @@ import XCTest
     
     /// We'll use this view modifier as an exploratory deep-test candidate, so the other view modifiers
     /// only need perfunctory syntax checks.
-    func testViewModifier_timecodeFieldHighlightStyle() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeFieldHighlightStyle() async {
         // MARK: Basic
         
         _ = timecodeField
@@ -148,7 +151,9 @@ import XCTest
     
     // MARK: - .timecodeSeparatorStyle
     
-    func testViewModifier_timecodeSeparatorStyle() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeSeparatorStyle() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeSeparatorStyle(.black)
@@ -178,7 +183,9 @@ import XCTest
     
     // MARK: - .timecodeSubFramesStyle
     
-    func testViewModifier_timecodeSubFramesStyle_StyleOnly() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeSubFramesStyle_StyleOnly() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeSubFramesStyle(.black)
@@ -206,12 +213,16 @@ import XCTest
             .timecodeSubFramesStyle(isFoo ? optionalConcreteStyle : nil)
     }
     
-    func testViewModifier_timecodeSubFramesStyle_ScaleOnly() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeSubFramesStyle_ScaleOnly() async {
         _ = timecodeField
             .timecodeSubFramesStyle(scale: .default)
     }
     
-    func testViewModifier_timecodeSubFramesStyle_StyleAndScale() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeSubFramesStyle_StyleAndScale() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeSubFramesStyle(.black, scale: .default)
@@ -241,7 +252,9 @@ import XCTest
     
     // MARK: - .timecodeValidationStyle
     
-    func testViewModifier_timecodeValidationStyle() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeValidationStyle() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeValidationStyle(.black)
@@ -271,7 +284,9 @@ import XCTest
     
     // MARK: - .timecodeFieldInputRejectionFeedback
     
-    func testViewModifier_timecodeFieldInputRejectionFeedback() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testViewModifier_timecodeFieldInputRejectionFeedback() async {
         _ = timecodeField
             .timecodeFieldInputRejectionFeedback(.validationBased(animation: .shake))
         

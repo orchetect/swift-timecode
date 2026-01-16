@@ -8,13 +8,9 @@
 
 import SwiftUI
 @testable import SwiftTimecodeUI
-import XCTest
+import Testing
 
-@available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
-final class TimecodeField_ComponentView_ViewModel_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
+@Suite struct TimecodeField_ComponentView_ViewModel_Tests {
     // MARK: - Test Facilities
     
     private let testFrameRate: TimecodeFrameRate = .fps24
@@ -39,253 +35,303 @@ final class TimecodeField_ComponentView_ViewModel_Tests: XCTestCase {
     
     // MARK: - Tests
     
-    func testBaselineState() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testBaselineState() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
-        XCTAssertEqual(model.component, .days)
-        XCTAssertEqual(model.frameRate, testFrameRate)
-        XCTAssertEqual(model.subFramesBase, testSubFramesBase)
-        XCTAssertEqual(model.upperLimit, .max24Hours)
+        #expect(model.component == .days)
+        #expect(model.frameRate == testFrameRate)
+        #expect(model.subFramesBase == testSubFramesBase)
+        #expect(model.upperLimit == .max24Hours)
     }
     
-    func testBaselineStateB() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testBaselineStateB() async {
         let model = viewModelFactory(component: .hours, rate: .fps30, base: .max80SubFrames, limit: .max100Days)
         
-        XCTAssertEqual(model.component, .hours)
-        XCTAssertEqual(model.frameRate, .fps30)
-        XCTAssertEqual(model.subFramesBase, .max80SubFrames)
-        XCTAssertEqual(model.upperLimit, .max100Days)
+        #expect(model.component == .hours)
+        #expect(model.frameRate == .fps30)
+        #expect(model.subFramesBase == .max80SubFrames)
+        #expect(model.upperLimit == .max100Days)
     }
     
-    func testInvisibleComponents_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testInvisibleComponents_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: []), [.days, .subFrames])
+        #expect(model.invisibleComponents(timecodeFormat: []) == [.days, .subFrames])
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: [.showSubFrames]), [.days])
+        #expect(model.invisibleComponents(timecodeFormat: [.showSubFrames]) == [.days])
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: [.alwaysShowDays, .showSubFrames]), [])
+        #expect(model.invisibleComponents(timecodeFormat: [.alwaysShowDays, .showSubFrames]) == [])
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: [.alwaysShowDays]), [.subFrames])
+        #expect(model.invisibleComponents(timecodeFormat: [.alwaysShowDays]) == [.subFrames])
     }
     
-    func testInvisibleComponents_Max100Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testInvisibleComponents_Max100Hours() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: []), [.subFrames])
+        #expect(model.invisibleComponents(timecodeFormat: []) == [.subFrames])
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: [.showSubFrames]), [])
+        #expect(model.invisibleComponents(timecodeFormat: [.showSubFrames]) == [])
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: [.alwaysShowDays, .showSubFrames]), [])
+        #expect(model.invisibleComponents(timecodeFormat: [.alwaysShowDays, .showSubFrames]) == [])
         
-        XCTAssertEqual(model.invisibleComponents(timecodeFormat: [.alwaysShowDays]), [.subFrames])
+        #expect(model.invisibleComponents(timecodeFormat: [.alwaysShowDays]) == [.subFrames])
     }
     
-    func testFirstVisibleComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testFirstVisibleComponent_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: []), .hours)
+        #expect(model.firstVisibleComponent(timecodeFormat: []) == .hours)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: [.showSubFrames]), .hours)
+        #expect(model.firstVisibleComponent(timecodeFormat: [.showSubFrames]) == .hours)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames]), .days)
+        #expect(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames]) == .days)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays]), .days)
+        #expect(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays]) == .days)
     }
     
-    func testFirstVisibleComponent_Max100Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testFirstVisibleComponent_Max100Hours() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: []), .days)
+        #expect(model.firstVisibleComponent(timecodeFormat: []) == .days)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: [.showSubFrames]), .days)
+        #expect(model.firstVisibleComponent(timecodeFormat: [.showSubFrames]) == .days)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames]), .days)
+        #expect(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames]) == .days)
         
-        XCTAssertEqual(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays]), .days)
+        #expect(model.firstVisibleComponent(timecodeFormat: [.alwaysShowDays]) == .days)
     }
     
     // MARK: - .previousComponent (24 Hours)
     
-    func testDays_PreviousComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testDays_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .frames)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .frames)
     }
     
-    func testHours_PreviousComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testHours_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .hours, limit: .max24Hours)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .days)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .days)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .days)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .days)
     }
     
-    func testSubframes_PreviousComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testSubframes_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .subFrames, limit: .max24Hours)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .frames)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .frames)
     }
     
-    func testFrames_PreviousComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testFrames_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .frames, limit: .max24Hours)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .seconds)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .seconds)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .seconds)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .seconds)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .seconds)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .seconds)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .seconds)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .seconds)
     }
     
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
     // MARK: - .previousComponent (100 Days)
     
-    func testDays_PreviousComponent_Max100Days() {
+    func testDays_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .frames)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .frames)
     }
     
-    func testHours_PreviousComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testHours_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .hours, limit: .max100Days)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .days)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .days)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .days)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .days)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .days)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .days)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .days)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .days)
     }
     
-    func testSubframes_PreviousComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testSubframes_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .subFrames, limit: .max100Days)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .frames)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .frames)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .frames)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .frames)
     }
     
-    func testFrames_PreviousComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testFrames_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .frames, limit: .max100Days)
         
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [], wrap: .wrap), .seconds)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .seconds)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .seconds)
-        XCTAssertEqual(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .seconds)
+        #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .seconds)
+        #expect(model.previousComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .seconds)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .seconds)
+        #expect(model.previousComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .seconds)
     }
     
     // MARK: - .nextComponent (24 Hours)
     
-    func testDays_NextComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testDays_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .hours)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .hours)
     }
     
-    func testHours_NextComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testHours_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .hours, limit: .max24Hours)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .minutes)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .minutes)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .minutes)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .minutes)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .minutes)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .minutes)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .minutes)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .minutes)
     }
     
-    func testFrames_NextComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testFrames_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .frames, limit: .max24Hours)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .days)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .days)
     }
     
-    func testSubframes_NextComponent_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testSubframes_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .subFrames, limit: .max24Hours)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .days)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .days)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .days)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .days)
     }
     
     // MARK: - .nextComponent (100 Days)
     
-    func testDays_NextComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testDays_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .hours)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .hours)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .hours)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .hours)
     }
     
-    func testHours_NextComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testHours_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .hours, limit: .max100Days)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .minutes)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .minutes)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .minutes)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .minutes)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .minutes)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .minutes)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .minutes)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .minutes)
     }
     
-    func testFrames_NextComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testFrames_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .frames, limit: .max100Days)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .days)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .subFrames)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .days)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .days)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .subFrames)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .days)
     }
     
-    func testSubframes_NextComponent_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testSubframes_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .subFrames, limit: .max100Days)
         
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [], wrap: .wrap), .days)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap), .days)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap), .days)
-        XCTAssertEqual(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap), .days)
+        #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .days)
+        #expect(model.nextComponent(timecodeFormat: [.showSubFrames], wrap: .wrap) == .days)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays, .showSubFrames], wrap: .wrap) == .days)
+        #expect(model.nextComponent(timecodeFormat: [.alwaysShowDays], wrap: .wrap) == .days)
     }
     
     // MARK: - ViewModel.isDaysVisible()
     
-    func testIsDaysVisible_Max24Hours() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testIsDaysVisible_Max24Hours() async {
         typealias VM = TimecodeField.ComponentView.ViewModel
         
-        XCTAssertFalse(VM.isDaysVisible(format: [], limit: .max24Hours))
-        XCTAssertFalse(VM.isDaysVisible(format: [.showSubFrames], limit: .max24Hours))
-        XCTAssertTrue(VM.isDaysVisible(format: [.alwaysShowDays, .showSubFrames], limit: .max24Hours))
-        XCTAssertTrue(VM.isDaysVisible(format: [.alwaysShowDays], limit: .max24Hours))
+        #expect(!VM.isDaysVisible(format: [], limit: .max24Hours))
+        #expect(!VM.isDaysVisible(format: [.showSubFrames], limit: .max24Hours))
+        #expect(VM.isDaysVisible(format: [.alwaysShowDays, .showSubFrames], limit: .max24Hours))
+        #expect(VM.isDaysVisible(format: [.alwaysShowDays], limit: .max24Hours))
     }
     
-    func testIsDaysVisible_Max100Days() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testIsDaysVisible_Max100Days() async {
         typealias VM = TimecodeField.ComponentView.ViewModel
         
-        XCTAssertTrue(VM.isDaysVisible(format: [], limit: .max100Days))
-        XCTAssertTrue(VM.isDaysVisible(format: [.showSubFrames], limit: .max100Days))
-        XCTAssertTrue(VM.isDaysVisible(format: [.alwaysShowDays, .showSubFrames], limit: .max100Days))
-        XCTAssertTrue(VM.isDaysVisible(format: [.alwaysShowDays], limit: .max100Days))
+        #expect(VM.isDaysVisible(format: [], limit: .max100Days))
+        #expect(VM.isDaysVisible(format: [.showSubFrames], limit: .max100Days))
+        #expect(VM.isDaysVisible(format: [.alwaysShowDays, .showSubFrames], limit: .max100Days))
+        #expect(VM.isDaysVisible(format: [.alwaysShowDays], limit: .max100Days))
     }
     
     // MARK: - ViewModel.isSubFramesVisible()
     
-    func testIsSubFramesVisible() {
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    @Test
+    func testIsSubFramesVisible() async {
         typealias VM = TimecodeField.ComponentView.ViewModel
         
-        XCTAssertFalse(VM.isSubFramesVisible(format: []))
-        XCTAssertTrue(VM.isSubFramesVisible(format: [.showSubFrames]))
-        XCTAssertTrue(VM.isSubFramesVisible(format: [.alwaysShowDays, .showSubFrames]))
-        XCTAssertFalse(VM.isSubFramesVisible(format: [.alwaysShowDays]))
+        #expect(!VM.isSubFramesVisible(format: []))
+        #expect(VM.isSubFramesVisible(format: [.showSubFrames]))
+        #expect(VM.isSubFramesVisible(format: [.alwaysShowDays, .showSubFrames]))
+        #expect(!VM.isSubFramesVisible(format: [.alwaysShowDays]))
     }
 }
 
