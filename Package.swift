@@ -18,7 +18,8 @@ let package = Package(
     ],
     dependencies: [
         // used only for Dev tests, not part of regular unit tests
-        // .package(url: "https://github.com/orchetect/xctest-extensions", from: "2.0.0")
+        .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.2.4"),
+        .package(url: "https://github.com/orchetect/xctest-extensions", from: "2.0.0")
     ],
     targets: [
         .target(
@@ -62,8 +63,10 @@ let package = Package(
         .testTarget(
             name: "SwiftTimecodeDevTests",
             dependencies: [
-                "SwiftTimecodeCore"
-                // .product(name: "XCTestExtensions", package: "xctest-extensions")
+                "SwiftTimecodeCore",
+                "SwiftTimecodeAV",
+                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+                .product(name: "XCTestExtensions", package: "xctest-extensions")
             ]
         )
     ]

@@ -6,46 +6,49 @@
 
 import AVFoundation
 @testable import SwiftTimecodeCore
-import XCTest
+@testable import SwiftTimecodeAV
+import Testing
 
-// final class TimecodeTrackWriteTests: XCTestCase {
+// @Suite struct TimecodeTrackWriteTests {
+//     /// This is not a unit test. It is a development test harness.
+//     @available(macOS 13.0, iOS 9999, tvOS 9999, watchOS 9999, visionOS 9999, *)
+//     @Test
 //     func testReplaceTimecodeTrack() async throws {
 //         // parameters
-//         let inputURL = FileManager.default.homeDirectoryForCurrentUser
-//             .appendingPathComponent("Desktop")
-//             .appendingPathComponent("Movie.mov")
-//         let outputURL = FileManager.default.homeDirectoryForCurrentUser
-//             .appendingPathComponent("Desktop")
+//         let inputURL = URL.desktopDirectory
+//             .appendingPathComponent("Movie.mp4")
+//         let outputURL = URL.desktopDirectory
 //             .appendingPathComponent("Movie-Processed.mov")
-//
+// 
 //         // load movie off disk
-//
+// 
 //         print("Loading movie from disk...")
-//
 //         let movie = AVMovie(url: inputURL)
-//
-//         guard let mutableMovie = movie.mutableCopy() as? AVMutableMovie
-//         else { XCTFail(); return }
-//
-//         print("Adding timecode track to movie...")
-//
+// 
+//         print("Creating mutable copy of movie in memory...")
+//         let mutableMovie = try #require(movie.mutableCopy() as? AVMutableMovie)
+// 
+//         print("Adding timecode track to mutable movie...")
+// 
 //         // replace existing timecode track if it exists, otherwise add a new timecode track
-//         try mutableMovie.replaceTimecodeTrack(
-//             startTimecode: Timecode(.components(h: 0, m: 59, s: 59, f: 00), at: .fps24),
+//         try await mutableMovie.replaceTimecodeTrack(
+//             startTimecode: Timecode(.components(h: 0, m: 59, s: 50, f: 00), at: .fps24),
 //             fileType: .mov
 //         )
-//
-//         print("Exporting movie to disk...")
-//
+// 
+//         print("Exporting mutated movie to disk...")
+// 
 //         // export
-//         guard let export = AVAssetExportSession(
-//             asset: mutableMovie,
-//             presetName: AVAssetExportPresetPassthrough
-//         ) else { XCTFail(); return }
-//
+//         let export = try #require(
+//             AVAssetExportSession(
+//                 asset: mutableMovie,
+//                 presetName: AVAssetExportPresetPassthrough
+//             )
+//         )
+// 
 //         export.outputFileType = .mov
 //         export.outputURL = outputURL
-//
+// 
 //         // wait for export synchronously
 //         let exporter = ObservableExporter(
 //             session: export,
@@ -63,18 +66,18 @@ import XCTest
 //         print("Done, status:", status.rawValue)
 //     }
 // }
-//
+// 
 // import SwiftUI
-//
+// 
 // /// Wrapper for `AVAssetExportSession` to update Combine/SwiftUI binding with progress
 // /// at a specified interval.
-// class ObservableExporter {
+// actor ObservableExporter {
 //     var progressTimer: Timer?
 //     let session: AVAssetExportSession
 //     public let pollingInterval: TimeInterval
 //     public let progress: Binding<Double>
 //     public private(set) var duration: TimeInterval?
-//
+// 
 //     init(session: AVAssetExportSession,
 //          pollingInterval: TimeInterval = 0.1,
 //          progress: Binding<Double>) {
@@ -82,10 +85,10 @@ import XCTest
 //         self.pollingInterval = pollingInterval
 //         self.progress = progress
 //     }
-//
+// 
 //     func export() async throws -> AVAssetExportSession.Status {
-//         progressTimer = Timer(timeInterval: pollingInterval, repeats: true) { timer in
-//             self.progress.wrappedValue = Double(self.session.progress)
+//         progressTimer = Timer(timeInterval: pollingInterval, repeats: true) { [weak self] timer in
+//             Task { await self?.timerFired() }
 //         }
 //         RunLoop.main.add(progressTimer!, forMode: .common)
 //         let startDate = Date()
@@ -98,5 +101,9 @@ import XCTest
 //         } else {
 //             return session.status
 //         }
+//     }
+// 
+//     private func timerFired() {
+//         self.progress.wrappedValue = Double(self.session.progress)
 //     }
 // }
