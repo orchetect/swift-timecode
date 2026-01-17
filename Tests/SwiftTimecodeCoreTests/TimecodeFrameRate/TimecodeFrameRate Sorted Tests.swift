@@ -5,10 +5,11 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeFrameRate_Sorted_Tests: XCTestCase {
-    func testSortOrder() {
+@Suite struct TimecodeFrameRate_Sorted_Tests {
+    @Test
+    func sortOrder() async {
         let unsorted: [TimecodeFrameRate] = [
             .fps29_97,
             .fps30,
@@ -25,8 +26,8 @@ final class TimecodeFrameRate_Sorted_Tests: XCTestCase {
         
         let sorted = unsorted.sorted()
         
-        XCTAssertNotEqual(unsorted, sorted)
+        #expect(unsorted != sorted)
         
-        XCTAssertEqual(sorted, correctOrder)
+        #expect(sorted == correctOrder)
     }
 }

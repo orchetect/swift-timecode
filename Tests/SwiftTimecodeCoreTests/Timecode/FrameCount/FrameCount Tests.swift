@@ -5,10 +5,11 @@
 //
 
 @testable import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class FrameCount_Tests: XCTestCase {
-    func testInit_frameCount() {
+@Suite struct FrameCount_Tests {
+    @Test
+    func init_frameCount() async {
         let subFramesBase: Timecode.SubFramesBase = .max80SubFrames
         
         let fc = Timecode.FrameCount(
@@ -16,175 +17,169 @@ final class FrameCount_Tests: XCTestCase {
             base: subFramesBase
         )
         
-        XCTAssertEqual(fc.wholeFrames, 500)
-        XCTAssertEqual(fc.subFrames, 2)
-        XCTAssertEqual(fc.doubleValue, 500.025)
-        XCTAssertEqual(fc.subFrameCount, 40002)
+        #expect(fc.wholeFrames == 500)
+        #expect(fc.subFrames == 2)
+        #expect(fc.doubleValue == 500.025)
+        #expect(fc.subFrameCount == 40002)
     }
     
-    func testEquatable() {
+    @Test
+    func equatable() async {
         // .frames
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(.frames(500), base: .max100SubFrames)
-                ==
-                Timecode.FrameCount(.frames(500), base: .max100SubFrames)
+                == Timecode.FrameCount(.frames(500), base: .max100SubFrames)
         )
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(.frames(500), base: .max100SubFrames)
-                !=
-                Timecode.FrameCount(.frames(501), base: .max100SubFrames)
+                != Timecode.FrameCount(.frames(501), base: .max100SubFrames)
         )
         
         // .split
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(.split(frames: 500, subFrames: 2), base: .max100SubFrames)
-                ==
-                Timecode.FrameCount(.split(frames: 500, subFrames: 2), base: .max100SubFrames)
+                == Timecode.FrameCount(.split(frames: 500, subFrames: 2), base: .max100SubFrames)
         )
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(.split(frames: 500, subFrames: 2), base: .max100SubFrames)
-                !=
-                Timecode.FrameCount(.split(frames: 500, subFrames: 3), base: .max100SubFrames)
+                != Timecode.FrameCount(.split(frames: 500, subFrames: 3), base: .max100SubFrames)
         )
         
         // .combined
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(.combined(frames: 500.025), base: .max100SubFrames)
-                ==
-                Timecode.FrameCount(.combined(frames: 500.025), base: .max100SubFrames)
+                == Timecode.FrameCount(.combined(frames: 500.025), base: .max100SubFrames)
         )
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(.combined(frames: 500.025), base: .max100SubFrames)
-                !=
-                Timecode.FrameCount(.combined(frames: 500.5), base: .max100SubFrames)
+                != Timecode.FrameCount(.combined(frames: 500.5), base: .max100SubFrames)
         )
         
         // .splitUnitInterval
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(
                 .splitUnitInterval(frames: 500, subFramesUnitInterval: 0.025),
                 base: .max100SubFrames
             )
-                ==
-                Timecode.FrameCount(
+                == Timecode.FrameCount(
                     .splitUnitInterval(frames: 500, subFramesUnitInterval: 0.025),
                     base: .max100SubFrames
                 )
         )
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(
                 .splitUnitInterval(frames: 500, subFramesUnitInterval: 0.025),
                 base: .max100SubFrames
             )
-                ==
-                Timecode.FrameCount(.combined(frames: 500.025), base: .max100SubFrames)
+                == Timecode.FrameCount(.combined(frames: 500.025), base: .max100SubFrames)
         )
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(
                 .splitUnitInterval(frames: 500, subFramesUnitInterval: 0.025),
                 base: .max100SubFrames
             )
-                !=
-                Timecode.FrameCount(
+                != Timecode.FrameCount(
                     .splitUnitInterval(frames: 500, subFramesUnitInterval: 0.5),
                     base: .max100SubFrames
                 )
         )
         
-        XCTAssert(
+        #expect(
             Timecode.FrameCount(
                 .splitUnitInterval(frames: 500, subFramesUnitInterval: 0.025),
                 base: .max100SubFrames
             )
-                !=
-                Timecode.FrameCount(.combined(frames: 500.5), base: .max100SubFrames)
+                != Timecode.FrameCount(.combined(frames: 500.5), base: .max100SubFrames)
         )
     }
     
-    func testOperators() {
-        XCTAssertEqual(
+    @Test
+    func operators() async {
+        #expect(
             Timecode.FrameCount(.frames(200), base: .max100SubFrames)
-                +
-                Timecode.FrameCount(.frames(200), base: .max100SubFrames),
+                + Timecode.FrameCount(.frames(200), base: .max100SubFrames)
+                == Timecode.FrameCount(.frames(400), base: .max100SubFrames)
+        )
+
+        #expect(
             Timecode.FrameCount(.frames(400), base: .max100SubFrames)
+                - Timecode.FrameCount(.frames(200), base: .max100SubFrames)
+                == Timecode.FrameCount(.frames(200), base: .max100SubFrames)
         )
         
-        XCTAssertEqual(
-            Timecode.FrameCount(.frames(400), base: .max100SubFrames)
-                -
-                Timecode.FrameCount(.frames(200), base: .max100SubFrames),
+        #expect(
             Timecode.FrameCount(.frames(200), base: .max100SubFrames)
+                * 2
+                == Timecode.FrameCount(.frames(400), base: .max100SubFrames)
         )
         
-        XCTAssertEqual(
-            Timecode.FrameCount(.frames(200), base: .max100SubFrames)
-                * 2,
+        #expect(
             Timecode.FrameCount(.frames(400), base: .max100SubFrames)
-        )
-        
-        XCTAssertEqual(
-            Timecode.FrameCount(.frames(400), base: .max100SubFrames)
-                / 2,
-            Timecode.FrameCount(.frames(200), base: .max100SubFrames)
+                / 2
+                == Timecode.FrameCount(.frames(200), base: .max100SubFrames)
         )
     }
     
-    func testIsNegative() {
-        XCTAssertFalse(Timecode.FrameCount(.frames(0), base: .max100SubFrames).isNegative)
-        XCTAssertFalse(Timecode.FrameCount(.frames(-0), base: .max100SubFrames).isNegative)
+    @Test
+    func isNegative() async {
+        #expect(!Timecode.FrameCount(.frames(0), base: .max100SubFrames).isNegative)
+        #expect(!Timecode.FrameCount(.frames(-0), base: .max100SubFrames).isNegative)
         
-        XCTAssertFalse(Timecode.FrameCount(.frames(1), base: .max100SubFrames).isNegative)
-        XCTAssertTrue(Timecode.FrameCount(.frames(-1), base: .max100SubFrames).isNegative)
+        #expect(!Timecode.FrameCount(.frames(1), base: .max100SubFrames).isNegative)
+        #expect(Timecode.FrameCount(.frames(-1), base: .max100SubFrames).isNegative)
     }
     
-    func testTimecode_framesToSubFrames() {
-        XCTAssertEqual(
-            Timecode.framesToSubFrames(frames: 500, subFrames: 2, base: .max80SubFrames),
-            40002
+    @Test
+    func timecode_framesToSubFrames() async {
+        #expect(
+            Timecode.framesToSubFrames(frames: 500, subFrames: 2, base: .max80SubFrames)
+                == 40002
         )
     }
     
-    func testTimecode_subFramesToFrames() {
+    @Test
+    func timecode_subFramesToFrames() async {
         let converted = Timecode.subFramesToFrames(40002, base: .max80SubFrames)
         
-        XCTAssertEqual(converted.frames, 500)
-        XCTAssertEqual(converted.subFrames, 2)
+        #expect(converted.frames == 500)
+        #expect(converted.subFrames == 2)
     }
     
-    func testEdgeCases_2997d() throws {
+    @Test
+    func edgeCases_2997d() async throws {
         let totalFramesin24Hr = 2_589_408
         let totalSubFramesin24Hr = 207_152_640
         
-        XCTAssertEqual(
+        #expect(
             try Timecode(
                 .frames(totalFramesin24Hr - 1),
                 at: .fps29_97d,
                 base: .max80SubFrames,
                 limit: .max24Hours
-            ).components,
-            Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 0)
+            ).components
+                == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 0)
         )
         
-        XCTAssertEqual(
+        #expect(
             try Timecode(
                 .frames(totalFramesin24Hr - 1, subFrames: 79),
                 at: .fps29_97d,
                 base: .max80SubFrames,
                 limit: .max24Hours
-            ).components,
-            Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 79)
+            ).components
+                == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 79)
         )
         
-        XCTAssertEqual(
+        #expect(
             try Timecode(
                 .frames(totalFramesin24Hr - 1, subFrames: 79),
                 at: .fps29_97d,
@@ -192,21 +187,22 @@ final class FrameCount_Tests: XCTestCase {
                 limit: .max24Hours
             )
             .frameCount
-            .subFrameCount,
-            totalSubFramesin24Hr - 1
+            .subFrameCount
+                == totalSubFramesin24Hr - 1
         )
     }
     
-    func testEdgeCases_30d() throws {
+    @Test
+    func edgeCases_30d() async throws {
         let totalFramesin24Hr = 2_589_408
         
-        XCTAssertEqual(
+        #expect(
             try Timecode(
                 .frames(totalFramesin24Hr),
                 at: .fps30d,
                 limit: .max100Days
-            ).components,
-            Timecode.Components(d: 1)
+            ).components
+                == Timecode.Components(d: 1)
         )
     }
 }

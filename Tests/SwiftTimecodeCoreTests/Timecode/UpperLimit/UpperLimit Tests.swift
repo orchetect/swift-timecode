@@ -5,28 +5,30 @@
 //
 
 @testable import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class Timecode_UpperLimit: XCTestCase {
-    func test24Hours() {
+@Suite struct Timecode_UpperLimit {
+    @Test
+    func limit24Hours() async {
         let upperLimit: Timecode.UpperLimit = .max24Hours
         
-        XCTAssertEqual(upperLimit.maxDays, 1)
-        XCTAssertEqual(upperLimit.maxDaysExpressible, 0)
+        #expect(upperLimit.maxDays == 1)
+        #expect(upperLimit.maxDaysExpressible == 0)
         
-        XCTAssertEqual(upperLimit.maxHours, 24)
-        XCTAssertEqual(upperLimit.maxHoursExpressible, 23)
-        XCTAssertEqual(upperLimit.maxHoursTotal, 23)
+        #expect(upperLimit.maxHours == 24)
+        #expect(upperLimit.maxHoursExpressible == 23)
+        #expect(upperLimit.maxHoursTotal == 23)
     }
     
-    func test100Days() {
+    @Test
+    func limit100Days() async {
         let upperLimit: Timecode.UpperLimit = .max100Days
         
-        XCTAssertEqual(upperLimit.maxDays, 100)
-        XCTAssertEqual(upperLimit.maxDaysExpressible, 99)
+        #expect(upperLimit.maxDays == 100)
+        #expect(upperLimit.maxDaysExpressible == 99)
         
-        XCTAssertEqual(upperLimit.maxHours, 24)
-        XCTAssertEqual(upperLimit.maxHoursExpressible, 23)
-        XCTAssertEqual(upperLimit.maxHoursTotal, (24 * 100) - 1)
+        #expect(upperLimit.maxHours == 24)
+        #expect(upperLimit.maxHoursExpressible == 23)
+        #expect(upperLimit.maxHoursTotal == (24 * 100) - 1)
     }
 }

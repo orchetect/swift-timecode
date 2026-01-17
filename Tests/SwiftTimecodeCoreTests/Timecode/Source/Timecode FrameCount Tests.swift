@@ -5,22 +5,21 @@
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
-import XCTest
+import Testing
 
-final class Timecode_Source_FrameCount_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testTimecode_init_FrameCount_Exactly() throws {
+@Suite struct Timecode_Source_FrameCount_Tests {
+    @Test
+    func timecode_init_FrameCount_Exactly() async throws {
         let tc = try Timecode(
             .frames(Timecode.FrameCount(.frames(670_907), base: .max80SubFrames)),
             at: .fps30
         )
         
-        XCTAssertEqual(tc.components, Timecode.Components(d: 00, h: 06, m: 12, s: 43, f: 17, sf: 00))
+        #expect(tc.components == Timecode.Components(d: 00, h: 06, m: 12, s: 43, f: 17, sf: 00))
     }
     
-    func testTimecode_init_FrameCount_Clamping() {
+    @Test
+    func timecode_init_FrameCount_Clamping() async {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
                 .frames(2_073_600 + 86400), // 25 hours @ 24fps
@@ -30,13 +29,14 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             by: .clamping
         )
         
-        XCTAssertEqual(
-            tc.components,
-            Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
+        #expect(
+            tc.components
+            == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
     
-    func testTimecode_init_FrameCount_Wrapping() {
+    @Test
+    func timecode_init_FrameCount_Wrapping() async {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
                 .frames(2073600 + 86400), // 25 hours @ 24fps
@@ -46,10 +46,11 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             by: .wrapping
         )
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01))
+        #expect(tc.components == Timecode.Components(h: 01))
     }
     
-    func testTimecode_init_FrameCount_RawValues() {
+    @Test
+    func timecode_init_FrameCount_RawValues() {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
                 .frames((2073600 * 2) + 86400), // 2 days + 1 hour @ 24fps
@@ -59,90 +60,81 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             by: .allowingInvalid
         )
         
-        XCTAssertEqual(tc.components, Timecode.Components(d: 2, h: 01))
+        #expect(tc.components == Timecode.Components(d: 2, h: 01))
     }
     
-    func testAllFrameRates_ElapsedFrames() {
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func allFrameRates_maxTotalFrames(frameRate: TimecodeFrameRate) async {
         // duration of 24 hours elapsed, rolling over to 1 day
         
-        // also helps ensure Strideable .distance(to:) returns the correct values
+        // also helps ensure Strideable `.distance(to:)` returns the correct values
         
-        for item in TimecodeFrameRate.allCases {
-            // max frames in 24 hours
-            
-            let maxFramesIn24hours = switch item {
-            case .fps23_976: 2_073_600
-            case .fps24: 2_073_600
-            case .fps24_98: 2_160_000
-            case .fps25: 2_160_000
-            case .fps29_97: 2_592_000
-            case .fps29_97d: 2_589_408
-            case .fps30: 2_592_000
-            case .fps30d: 2_589_408
-            case .fps47_952: 4_147_200
-            case .fps48: 4_147_200
-            case .fps50: 4_320_000
-            case .fps59_94: 5_184_000
-            case .fps59_94d: 5_178_816
-            case .fps60: 5_184_000
-            case .fps60d: 5_178_816
-            case .fps90: 7_776_000
-            case .fps95_904: 8_294_400
-            case .fps96: 8_294_400
-            case .fps100: 8_640_000
-            case .fps119_88: 10_368_000
-            case .fps119_88d: 10_357_632
-            case .fps120: 10_368_000
-            case .fps120d: 10_357_632
-            }
-            
-            XCTAssertEqual(
-                item.maxTotalFrames(in: .max24Hours),
-                maxFramesIn24hours,
-                "for \(item)"
-            )
+        // max frames in 24 hours
+        let maxFramesIn24hours = switch frameRate {
+        case .fps23_976: 2_073_600
+        case .fps24: 2_073_600
+        case .fps24_98: 2_160_000
+        case .fps25: 2_160_000
+        case .fps29_97: 2_592_000
+        case .fps29_97d: 2_589_408
+        case .fps30: 2_592_000
+        case .fps30d: 2_589_408
+        case .fps47_952: 4_147_200
+        case .fps48: 4_147_200
+        case .fps50: 4_320_000
+        case .fps59_94: 5_184_000
+        case .fps59_94d: 5_178_816
+        case .fps60: 5_184_000
+        case .fps60d: 5_178_816
+        case .fps90: 7_776_000
+        case .fps95_904: 8_294_400
+        case .fps96: 8_294_400
+        case .fps100: 8_640_000
+        case .fps119_88: 10_368_000
+        case .fps119_88d: 10_357_632
+        case .fps120: 10_368_000
+        case .fps120d: 10_357_632
         }
         
-        // number of total elapsed frames in (24 hours - 1 frame), or essentially the maximum timecode expressible for each frame rate
-        
-        for item in TimecodeFrameRate.allCases {
-            // max frames in 24 hours - 1
-            
-            let maxFramesExpressibleIn24hours = switch item {
-            case .fps23_976: 2_073_600 - 1
-            case .fps24: 2_073_600 - 1
-            case .fps24_98: 2_160_000 - 1
-            case .fps25: 2_160_000 - 1
-            case .fps29_97: 2_592_000 - 1
-            case .fps29_97d: 2_589_408 - 1
-            case .fps30: 2_592_000 - 1
-            case .fps30d: 2_589_408 - 1
-            case .fps47_952: 4_147_200 - 1
-            case .fps48: 4_147_200 - 1
-            case .fps50: 4_320_000 - 1
-            case .fps59_94: 5_184_000 - 1
-            case .fps59_94d: 5_178_816 - 1
-            case .fps60: 5_184_000 - 1
-            case .fps60d: 5_178_816 - 1
-            case .fps90: 7_776_000 - 1
-            case .fps95_904: 8_294_400 - 1
-            case .fps96: 8_294_400 - 1
-            case .fps100: 8_640_000 - 1
-            case .fps119_88: 10_368_000 - 1
-            case .fps119_88d: 10_357_632 - 1
-            case .fps120: 10_368_000 - 1
-            case .fps120d: 10_357_632 - 1
-            }
-            
-            XCTAssertEqual(
-                item.maxTotalFramesExpressible(in: .max24Hours),
-                maxFramesExpressibleIn24hours,
-                "for \(item)"
-            )
-        }
+        #expect(frameRate.maxTotalFrames(in: .max24Hours) == maxFramesIn24hours)
     }
     
-    func testSetTimecodeExactly() throws {
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func allFrameRates_maxTotalFramesExpressible(frameRate: TimecodeFrameRate) async {
+        // number of total elapsed frames in (24 hours - 1 frame), or essentially the maximum timecode expressible for each frame rate
+        
+        // max frames in 24 hours - 1
+        let maxFramesExpressibleIn24hours = switch frameRate {
+        case .fps23_976: 2_073_600 - 1
+        case .fps24: 2_073_600 - 1
+        case .fps24_98: 2_160_000 - 1
+        case .fps25: 2_160_000 - 1
+        case .fps29_97: 2_592_000 - 1
+        case .fps29_97d: 2_589_408 - 1
+        case .fps30: 2_592_000 - 1
+        case .fps30d: 2_589_408 - 1
+        case .fps47_952: 4_147_200 - 1
+        case .fps48: 4_147_200 - 1
+        case .fps50: 4_320_000 - 1
+        case .fps59_94: 5_184_000 - 1
+        case .fps59_94d: 5_178_816 - 1
+        case .fps60: 5_184_000 - 1
+        case .fps60d: 5_178_816 - 1
+        case .fps90: 7_776_000 - 1
+        case .fps95_904: 8_294_400 - 1
+        case .fps96: 8_294_400 - 1
+        case .fps100: 8_640_000 - 1
+        case .fps119_88: 10_368_000 - 1
+        case .fps119_88d: 10_357_632 - 1
+        case .fps120: 10_368_000 - 1
+        case .fps120d: 10_357_632 - 1
+        }
+        
+        #expect(frameRate.maxTotalFramesExpressible(in: .max24Hours) == maxFramesExpressibleIn24hours)
+    }
+    
+    @Test
+    func setTimecodeExactly() async throws {
         // this is not meant to test the underlying logic, simply that `.set()` produces the intended outcome
         
         var tc = Timecode(.zero, at: .fps30, base: .max80SubFrames)
@@ -152,10 +144,11 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             base: .max80SubFrames
         )))
         
-        XCTAssertEqual(tc.components, Timecode.Components(d: 00, h: 06, m: 12, s: 43, f: 17, sf: 00))
+        #expect(tc.components == Timecode.Components(d: 00, h: 06, m: 12, s: 43, f: 17, sf: 00))
     }
     
-    func testSetTimecodeFrameCount_Clamping() {
+    @Test
+    func setTimecodeFrameCount_Clamping() async {
         var tc = Timecode(.zero, at: .fps24, base: .max80SubFrames)
         
         tc.set(
@@ -166,13 +159,14 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             by: .clamping
         )
 
-        XCTAssertEqual(
-            tc.components,
-            Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
+        #expect(
+            tc.components
+            == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
-
-    func testSetTimecodeFrameCount_Wrapping() {
+    
+    @Test
+    func setTimecodeFrameCount_Wrapping() async {
         var tc = Timecode(.zero, at: .fps24, base: .max80SubFrames)
         
         tc.set(
@@ -183,10 +177,11 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             by: .wrapping
         )
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01))
+        #expect(tc.components == Timecode.Components(h: 01))
     }
 
-    func testSetTimecodeFrameCount_RawValues() {
+    @Test
+    func setTimecodeFrameCount_RawValues()async {
         var tc = Timecode(.zero, at: .fps24, base: .max80SubFrames)
         
         tc.set(
@@ -197,10 +192,11 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             by: .allowingInvalid
         )
 
-        XCTAssertEqual(tc.components, Timecode.Components(d: 2, h: 01))
+        #expect(tc.components == Timecode.Components(d: 2, h: 01))
     }
     
-    func testStatic_componentsOfFrameCount_2997d() {
+    @Test
+    func static_componentsOfFrameCount_2997d() async {
         // edge cases
         
         let totalFramesIn24Hr = 2_589_408
@@ -214,51 +210,53 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
             at: .fps29_97d
         )
         
-        XCTAssertEqual(tcc, Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 79))
+        #expect(tcc == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 79))
     }
     
-    func testIsZero() {
+    @Test
+    func isZero() async {
         // true
         
         // frames
-        XCTAssertTrue(Timecode.FrameCount(.frames(0), base: .max80SubFrames).isZero)
+        #expect(Timecode.FrameCount(.frames(0), base: .max80SubFrames).isZero)
         // split
-        XCTAssertTrue(Timecode.FrameCount(.split(frames: 0, subFrames: 0), base: .max80SubFrames).isZero)
+        #expect(Timecode.FrameCount(.split(frames: 0, subFrames: 0), base: .max80SubFrames).isZero)
         // combined
-        XCTAssertTrue(Timecode.FrameCount(.combined(frames: 0.0), base: .max80SubFrames).isZero)
+        #expect(Timecode.FrameCount(.combined(frames: 0.0), base: .max80SubFrames).isZero)
         // split unitinterval
-        XCTAssertTrue(Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
+        #expect(Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
         
         // false
         
         // frames
-        XCTAssertFalse(Timecode.FrameCount(.frames(1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.frames(-1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.frames(1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.frames(-1), base: .max80SubFrames).isZero)
         // split
-        XCTAssertFalse(Timecode.FrameCount(.split(frames: 0, subFrames: 1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.split(frames: 1, subFrames: 0), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.split(frames: 1, subFrames: 1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.split(frames: 0, subFrames: -1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.split(frames: -1, subFrames: 0), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.split(frames: -1, subFrames: -1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.split(frames: 0, subFrames: 1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.split(frames: 1, subFrames: 0), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.split(frames: 1, subFrames: 1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.split(frames: 0, subFrames: -1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.split(frames: -1, subFrames: 0), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.split(frames: -1, subFrames: -1), base: .max80SubFrames).isZero)
         // combined
-        XCTAssertFalse(Timecode.FrameCount(.combined(frames: 0.1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.combined(frames: 1.0), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.combined(frames: -0.1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.combined(frames: -1.0), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.combined(frames: 0.1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.combined(frames: 1.0), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.combined(frames: -0.1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.combined(frames: -1.0), base: .max80SubFrames).isZero)
         // split unitinterval
-        XCTAssertFalse(Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: 0.1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.splitUnitInterval(frames: 1, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.splitUnitInterval(frames: 1, subFramesUnitInterval: 0.1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: -0.1), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.splitUnitInterval(frames: -1, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
-        XCTAssertFalse(Timecode.FrameCount(.splitUnitInterval(frames: -1, subFramesUnitInterval: -0.1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: 0.1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.splitUnitInterval(frames: 1, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.splitUnitInterval(frames: 1, subFramesUnitInterval: 0.1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: -0.1), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.splitUnitInterval(frames: -1, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
+        #expect(!Timecode.FrameCount(.splitUnitInterval(frames: -1, subFramesUnitInterval: -0.1), base: .max80SubFrames).isZero)
     }
     
-    func testEdgeCases() throws {
+    @Test
+    func edgeCases() async throws {
         // test for really large values
         
-        XCTAssertEqual(
+        #expect(
             Timecode(
                 .components(
                     d: 1234567891234564567,
@@ -272,8 +270,8 @@ final class Timecode_Source_FrameCount_Tests: XCTestCase {
                 base: .max100SubFrames,
                 by: .allowingInvalid
             )
-            .frameCount.wholeFrames,
-            0 // failsafe value
+            .frameCount.wholeFrames
+            == 0 // failsafe value
         )
     }
 }

@@ -5,18 +5,19 @@
 //
 
 @testable import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class VideoFrameRate_StringExtensions_Tests: XCTestCase {
-    func testString_videoFrameRate() {
+@Suite struct VideoFrameRate_StringExtensions_Tests {
+    @Test
+    func string_videoFrameRate() async {
         // do a spot-check to ensure this functions as expected
         
-        XCTAssertEqual("24p".videoFrameRate, .fps24p)
-        XCTAssertEqual("23.98p".videoFrameRate, .fps23_98p)
-        XCTAssertEqual("29.97p".videoFrameRate, .fps29_97p)
+        #expect("24p".videoFrameRate == .fps24p)
+        #expect("23.98p".videoFrameRate == .fps23_98p)
+        #expect("29.97p".videoFrameRate == .fps29_97p)
         
-        XCTAssertNil("".videoFrameRate)
-        XCTAssertNil(" ".videoFrameRate)
-        XCTAssertNil("BogusString".videoFrameRate)
+        #expect("".videoFrameRate == nil)
+        #expect(" ".videoFrameRate == nil)
+        #expect("BogusString".videoFrameRate == nil)
     }
 }

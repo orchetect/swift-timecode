@@ -5,66 +5,57 @@
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
-import XCTest
+import Testing
 
-final class Timecode_Hashable_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testHashValue() throws {
+@Suite struct Timecode_Hashable_Tests {
+    @Test
+    func hashValue() throws {
         // hashValues should be equal
         
-        XCTAssertEqual(
-            try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue,
+        #expect(
             try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue
+                == Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue
         )
-        XCTAssertNotEqual(
-            try Timecode(.string("01:00:00:01"), at: .fps23_976).hashValue,
-            try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue
+        #expect(
+            try Timecode(.string("01:00:00:01"), at: .fps23_976).hashValue
+                != Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue
         )
         
-        XCTAssertNotEqual(
-            try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue,
-            try Timecode(.string("01:00:00:00"), at: .fps24).hashValue
+        #expect(
+            try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue
+                != Timecode(.string("01:00:00:00"), at: .fps24).hashValue
         )
-        XCTAssertNotEqual(
-            try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue,
-            try Timecode(.string("01:00:00:00"), at: .fps29_97).hashValue
+        #expect(
+            try Timecode(.string("01:00:00:00"), at: .fps23_976).hashValue
+                != Timecode(.string("01:00:00:00"), at: .fps29_97).hashValue
         )
     }
     
-    func testDictionary() throws {
+    @Test
+    func hashable_dictionary() throws {
         // Dictionary / Set
         
         var dict: [Timecode: String] = [:]
         try dict[Timecode(.string("01:00:00:00"), at: .fps23_976)] = "A Spot Note Here"
         try dict[Timecode(.string("01:00:00:06"), at: .fps23_976)] = "A Spot Note Also Here"
-        XCTAssertEqual(dict.count, 2)
+        #expect(dict.count == 2)
         try dict[Timecode(.string("01:00:00:00"), at: .fps24)] = "This should not replace"
-        XCTAssertEqual(dict.count, 3)
+        #expect(dict.count == 3)
         
-        XCTAssertEqual(try dict[Timecode(.string("01:00:00:00"), at: .fps23_976)], "A Spot Note Here")
-        XCTAssertEqual(try dict[Timecode(.string("01:00:00:00"), at: .fps24)], "This should not replace")
+        #expect(try dict[Timecode(.string("01:00:00:00"), at: .fps23_976)] == "A Spot Note Here")
+        #expect(try dict[Timecode(.string("01:00:00:00"), at: .fps24)] == "This should not replace")
     }
     
-    func testSet() throws {
-        // unique timecodes are based on frame counts, irrespective of frame rate
+    @Test
+    func hashable_set() throws {
+        // timecode is hashed on component values and properties
         
-        let tcSet: Set<Timecode> = try [
-            Timecode(.string("01:00:00:00"), at: .fps23_976),
-            Timecode(.string("01:00:00:00"), at: .fps24),
-            Timecode(.string("01:00:00:00"), at: .fps25),
-            Timecode(.string("01:00:00:00"), at: .fps29_97),
-            Timecode(.string("01:00:00:00"), at: .fps29_97d),
-            Timecode(.string("01:00:00:00"), at: .fps30),
-            Timecode(.string("01:00:00:00"), at: .fps59_94),
-            Timecode(.string("01:00:00:00"), at: .fps59_94d),
-            Timecode(.string("01:00:00:00"), at: .fps60)
-        ]
+        let timecodes = try TimecodeFrameRate.allCases.map { frameRate in
+            try Timecode(.string("01:00:00:00"), at: frameRate)
+        }
         
-        XCTAssertNotEqual(
-            tcSet.count,
-            1
-        ) // doesn't matter what frame rate it is, the same total elapsed frames matters
+        let timecodesSet = Set(timecodes)
+        
+        #expect(timecodesSet.count == timecodes.count)
     }
 }

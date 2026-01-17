@@ -5,284 +5,281 @@
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
-import XCTest
+import Testing
 
-final class Timecode_Source_String_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testTimecode_init_String() throws {
-        for item in TimecodeFrameRate.allCases {
+@Suite struct Timecode_Source_String_Tests {
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_init_String_zero(frameRate: TimecodeFrameRate) async throws {
             let tc = try Timecode(
                 .string("00:00:00:00"),
-                at: item
+                at: frameRate
             )
             
-            XCTAssertEqual(tc.components, .zero, "for \(item)")
+            #expect(tc.components == .zero)
         }
         
-        for item in TimecodeFrameRate.allCases {
-            let tc = try Timecode(
-                .string("01:02:03:04"),
-                at: item
-            )
-            
-            XCTAssertEqual(tc.components, .init(h: 01, m: 02, s: 03, f: 04), "for \(item)")
-        }
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_init_String_nonZero(frameRate: TimecodeFrameRate) async throws {
+        let tc = try Timecode(
+            .string("01:02:03:04"),
+            at: frameRate
+        )
+        
+        #expect(tc.components == .init(h: 01, m: 02, s: 03, f: 04))
     }
     
-    func testTimecode_init_String_Clamping() throws {
+    @Test
+    func timecode_init_String_Clamping() async throws {
         let tc = try Timecode(
             .string("25:00:00:00"),
             at: .fps24,
             by: .clamping
         )
         
-        XCTAssertEqual(
-            tc.components,
-            Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
+        #expect(
+            tc.components
+                == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
     
-    func testTimecode_init_String_ClampingEach() throws {
+    @Test
+    func timecode_init_String_ClampingEach() async throws {
         let tc = try Timecode(
             .string("25:00:00:00"),
             at: .fps24,
             by: .clampingComponents
         )
         
-        XCTAssertEqual(
-            tc.components,
-            Timecode.Components(h: 23, m: 00, s: 00, f: 00)
+        #expect(tc.components == Timecode.Components(h: 23, m: 00, s: 00, f: 00))
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_init_String_Wrapping(frameRate: TimecodeFrameRate) async throws {
+        let tc = try Timecode(
+            .string("25:00:00:00"),
+            at: frameRate,
+            by: .wrapping
         )
+        
+        #expect(tc.components == .init(h: 01))
     }
     
-    func testTimecode_init_String_Wrapping() throws {
-        for item in TimecodeFrameRate.allCases {
-            let tc = try Timecode(
-                .string("25:00:00:00"),
-                at: item,
-                by: .wrapping
-            )
-            
-            XCTAssertEqual(tc.components, .init(h: 01), "for \(item)")
-        }
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_init_String_RawValues(frameRate: TimecodeFrameRate) async throws {
+        let tc = try Timecode(
+            .string("99 99:99:99:99.99"),
+            at: frameRate,
+            by: .allowingInvalid
+        )
+        
+        #expect(tc.components == .init(d: 99, h: 99, m: 99, s: 99, f: 99, sf: 99))
     }
     
-    func testTimecode_init_String_RawValues() throws {
-        for item in TimecodeFrameRate.allCases {
-            let tc = try Timecode(
-                .string("99 99:99:99:99.99"),
-                at: item,
-                by: .allowingInvalid
-            )
-            
-            XCTAssertEqual(tc.components, .init(d: 99, h: 99, m: 99, s: 99, f: 99, sf: 99), "for \(item)")
-        }
-    }
-    
-    func testStringValue_GetSet_Basic() throws {
+    @Test
+    func stringValue_GetSet_Basic() async throws {
         // basic getter tests
         
         var tc = Timecode(.zero, at: .fps23_976)
         
         try tc.set(.string("01:05:20:14"))
-        XCTAssertEqual(tc.stringValue(), "01:05:20:14")
+        #expect(tc.stringValue() == "01:05:20:14")
         
-        XCTAssertThrowsError(try tc.set(.string("50:05:20:14")))
-        XCTAssertEqual(tc.stringValue(), "01:05:20:14") // no change
+        #expect(throws: (any Error).self) { try tc.set(.string("50:05:20:14")) }
+        #expect(tc.stringValue() == "01:05:20:14") // no change
         
         try tc.set(.string("50:05:20:14"), by: .clampingComponents)
-        XCTAssertEqual(tc.stringValue(), "23:05:20:14")
+        #expect(tc.stringValue() == "23:05:20:14")
     }
     
-    func testStringValue_Get_Formatting_Basic() throws {
+    @Test(arguments: TimecodeFrameRate.allNonDrop)
+    func stringValue_Get_Formatting_Basic_24HourLimit_NonDrop(frameRate: TimecodeFrameRate) async throws {
         // basic string formatting - ie: HH:MM:SS:FF
         // using known valid timecode components; not testing for invalid values here
         
-        // 24 hour limit
+        let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: frameRate)
+            .stringValue()
         
-        // non-drop
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
         
-        for item in TimecodeFrameRate.allNonDrop {
-            let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: item)
-                .stringValue()
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            XCTAssertEqual(sv, "01:02:03:\(t)04", "for \(item)")
-        }
-        
-        // drop
-        
-        for item in TimecodeFrameRate.allDrop {
-            let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: item)
-                .stringValue()
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            XCTAssertEqual(sv, "01:02:03;\(t)04", "for \(item)")
-        }
-        
-        // 100 days limit
-        
-        // non-drop
-        
-        for item in TimecodeFrameRate.allNonDrop {
-            let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: item, limit: .max100Days)
-                .stringValue()
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            XCTAssertEqual(sv, "01:02:03:\(t)04", "for \(item)")  // omits days since they are 0
-        }
-        
-        // drop
-        
-        for item in TimecodeFrameRate.allDrop {
-            let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: item, limit: .max100Days)
-                .stringValue()
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            XCTAssertEqual(sv, "01:02:03;\(t)04", "for \(item)")  // omits days since they are 0
-        }
+        #expect(sv == "01:02:03:\(t)04")
     }
     
-    func testStringValue_Get_Formatting_WithDays() throws {
+    @Test(arguments: TimecodeFrameRate.allDrop)
+    func stringValue_Get_Formatting_Basic_24HourLimit_Drop(frameRate: TimecodeFrameRate) async throws {
+        // basic string formatting - ie: HH:MM:SS:FF
+        // using known valid timecode components; not testing for invalid values here
+        
+        let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: frameRate)
+            .stringValue()
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        #expect(sv == "01:02:03;\(t)04")
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allNonDrop)
+    func stringValue_Get_Formatting_Basic_100DaysLimit_NonDrop(frameRate: TimecodeFrameRate) async throws {
+        // basic string formatting - ie: HH:MM:SS:FF
+        // using known valid timecode components; not testing for invalid values here
+        
+        let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: frameRate, limit: .max100Days)
+            .stringValue()
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        #expect(sv == "01:02:03:\(t)04")  // omits days since they are 0
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allDrop)
+    func stringValue_Get_Formatting_Basic_100DaysLimit_Drop(frameRate: TimecodeFrameRate) async throws {
+        // basic string formatting - ie: HH:MM:SS:FF
+        // using known valid timecode components; not testing for invalid values here
+        
+        let sv = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: frameRate, limit: .max100Days)
+            .stringValue()
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        #expect(sv == "01:02:03;\(t)04")  // omits days since they are 0
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allNonDrop)
+    func stringValue_Get_Formatting_WithDays_24HoursLimit_NonDrop(frameRate: TimecodeFrameRate) async throws {
         // string formatting with days - ie: "D HH:MM:SS:FF"
         // using known valid timecode components; not testing for invalid values here
         
-        // non-drop
+        var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: frameRate)
+        tc.days = 2 // set days after init since init fails if we pass days
         
-        for item in TimecodeFrameRate.allNonDrop {
-            var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: item)
-            tc.days = 2 // set days after init since init fails if we pass days
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            // still produces days since we have not clamped it yet
-            var sv = tc.stringValue()
-            XCTAssertEqual(sv, "2 01:02:03:\(t)04", "for \(item)")
-            
-            // now omits days since our limit is 24hr and clamped
-            tc.clampComponents()
-            sv = tc.stringValue()
-            XCTAssertEqual(sv, "01:02:03:\(t)04", "for \(item)")
-        }
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
         
-        // drop
+        // still produces days since we have not clamped it yet
+        var sv = tc.stringValue()
+        #expect(sv == "2 01:02:03:\(t)04")
         
-        for item in TimecodeFrameRate.allDrop {
-            var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: item)
-            tc.days = 2 // set days after init since init fails if we pass days
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            // still produces days since we have not clamped it yet
-            var sv = tc.stringValue()
-            XCTAssertEqual(sv, "2 01:02:03;\(t)04", "for \(item)")
-            
-            // now omits days since our limit is 24hr and clamped
-            tc.clampComponents()
-            sv = tc.stringValue()
-            XCTAssertEqual(sv, "01:02:03;\(t)04", "for \(item)")
-        }
-        
-        // 100 days limit
-        
-        // non-drop
-        
-        for item in TimecodeFrameRate.allNonDrop {
-            let sv = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04), at: item, limit: .max100Days)
-                .stringValue()
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            XCTAssertEqual(sv, "2 01:02:03:\(t)04", "for \(item)")
-        }
-        
-        // drop
-        
-        for item in TimecodeFrameRate.allDrop {
-            let sv = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04), at: item, limit: .max100Days)
-                .stringValue()
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            XCTAssertEqual(sv, "2 01:02:03;\(t)04", "for \(item)")
-        }
+        // now omits days since our limit is 24hr and clamped
+        tc.clampComponents()
+        sv = tc.stringValue()
+        #expect(sv == "01:02:03:\(t)04")
     }
     
-    func testStringValue_Get_Formatting_WithSubframes() throws {
+    @Test(arguments: TimecodeFrameRate.allDrop)
+    func stringValue_Get_Formatting_WithDays_24HoursLimit_Drop(frameRate: TimecodeFrameRate) async throws {
+        // string formatting with days - ie: "D HH:MM:SS:FF"
+        // using known valid timecode components; not testing for invalid values here
+        
+        var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04), at: frameRate)
+        tc.days = 2 // set days after init since init fails if we pass days
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        // still produces days since we have not clamped it yet
+        var sv = tc.stringValue()
+        #expect(sv == "2 01:02:03;\(t)04")
+        
+        // now omits days since our limit is 24hr and clamped
+        tc.clampComponents()
+        sv = tc.stringValue()
+        #expect(sv == "01:02:03;\(t)04")
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allNonDrop)
+    func stringValue_Get_Formatting_WithDays_100DaysLimit_NonDrop(frameRate: TimecodeFrameRate) async throws {
+        // string formatting with days - ie: "D HH:MM:SS:FF"
+        // using known valid timecode components; not testing for invalid values here
+        
+        let sv = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04), at: frameRate, limit: .max100Days)
+            .stringValue()
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        #expect(sv == "2 01:02:03:\(t)04")
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allDrop)
+    func stringValue_Get_Formatting_WithDays_100DaysLimit_Drop(frameRate: TimecodeFrameRate) async throws {
+        // string formatting with days - ie: "D HH:MM:SS:FF"
+        // using known valid timecode components; not testing for invalid values here
+        
+        let sv = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04), at: frameRate, limit: .max100Days)
+            .stringValue()
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        #expect(sv == "2 01:02:03;\(t)04")
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allNonDrop)
+    func stringValue_Get_Formatting_WithSubframes_24HoursLimit_NonDrop(frameRate: TimecodeFrameRate) async throws {
         // string formatting with subframes - ie: "HH:MM:SS:FF.sf" (or "D HH:MM:SS:FF.sf" in case of 100 days limit)
         // using known valid timecode components; not testing for invalid values here
         
-        // non-drop
+        var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04, sf: 12), at: frameRate)
+        tc.days = 2 // set days after init since init @ .max24Hours limit fails if we pass days
         
-        for item in TimecodeFrameRate.allNonDrop {
-            var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04, sf: 12), at: item)
-            tc.days = 2 // set days after init since init @ .max24Hours limit fails if we pass days
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            // still produces days since we have not clamped it yet
-            var sv = tc.stringValue(format: [.showSubFrames])
-            XCTAssertEqual(sv, "2 01:02:03:\(t)04.12", "for \(item)")
-            
-            // now omits days since our limit is 24hr and clamped
-            tc.clampComponents()
-            sv = tc.stringValue(format: [.showSubFrames])
-            XCTAssertEqual(sv, "01:02:03:\(t)04.12", "for \(item)")
-        }
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
         
-        // drop
+        // still produces days since we have not clamped it yet
+        var sv = tc.stringValue(format: [.showSubFrames])
+        #expect(sv == "2 01:02:03:\(t)04.12")
         
-        for item in TimecodeFrameRate.allDrop {
-            var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04, sf: 12), at: item)
-            tc.days = 2 // set days after init since init @ .max24Hours limit fails if we pass days
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            // still produces days since we have not clamped it yet
-            var sv = tc.stringValue(format: [.showSubFrames])
-            XCTAssertEqual(sv, "2 01:02:03;\(t)04.12", "for \(item)")
-            
-            // now omits days since our limit is 24hr and clamped
-            tc.clampComponents()
-            sv = tc.stringValue(format: [.showSubFrames])
-            XCTAssertEqual(sv, "01:02:03;\(t)04.12", "for \(item)")
-        }
-        
-        // 100 days limit
-        
-        // non-drop
-        
-        for item in TimecodeFrameRate.allNonDrop {
-            let tc = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 12), at: item, limit: .max100Days)
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            let sv = tc.stringValue(format: [.showSubFrames])
-            XCTAssertEqual(sv, "2 01:02:03:\(t)04.12", "for \(item)")
-        }
-        
-        // drop
-        
-        for item in TimecodeFrameRate.allDrop {
-            let tc = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 12), at: item, limit: .max100Days)
-            
-            let t = item.numberOfDigits == 2 ? "" : "0"
-            
-            let sv = tc.stringValue(format: [.showSubFrames])
-            XCTAssertEqual(sv, "2 01:02:03;\(t)04.12", "for \(item)")
-        }
+        // now omits days since our limit is 24hr and clamped
+        tc.clampComponents()
+        sv = tc.stringValue(format: [.showSubFrames])
+        #expect(sv == "01:02:03:\(t)04.12")
     }
     
-    func testEdgeCases() throws {
+    @Test(arguments: TimecodeFrameRate.allDrop)
+    func stringValue_Get_Formatting_WithSubframes_24HoursLimit_Drop(frameRate: TimecodeFrameRate) async throws {
+        // string formatting with subframes - ie: "HH:MM:SS:FF.sf" (or "D HH:MM:SS:FF.sf" in case of 100 days limit)
+        // using known valid timecode components; not testing for invalid values here
+        
+        var tc = try Timecode(.components(h: 1, m: 02, s: 03, f: 04, sf: 12), at: frameRate)
+        tc.days = 2 // set days after init since init @ .max24Hours limit fails if we pass days
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        // still produces days since we have not clamped it yet
+        var sv = tc.stringValue(format: [.showSubFrames])
+        #expect(sv == "2 01:02:03;\(t)04.12")
+        
+        // now omits days since our limit is 24hr and clamped
+        tc.clampComponents()
+        sv = tc.stringValue(format: [.showSubFrames])
+        #expect(sv == "01:02:03;\(t)04.12")
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allNonDrop)
+    func stringValue_Get_Formatting_WithSubframes_100DaysLimit_NonDrop(frameRate: TimecodeFrameRate) async throws {
+        // string formatting with subframes - ie: "HH:MM:SS:FF.sf" (or "D HH:MM:SS:FF.sf" in case of 100 days limit)
+        // using known valid timecode components; not testing for invalid values here
+        
+        let tc = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 12), at: frameRate, limit: .max100Days)
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        let sv = tc.stringValue(format: [.showSubFrames])
+        #expect(sv == "2 01:02:03:\(t)04.12")
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allDrop)
+    func stringValue_Get_Formatting_WithSubframes_100DaysLimit_Drop(frameRate: TimecodeFrameRate) async throws {
+        // string formatting with subframes - ie: "HH:MM:SS:FF.sf" (or "D HH:MM:SS:FF.sf" in case of 100 days limit)
+        // using known valid timecode components; not testing for invalid values here
+        
+        let tc = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 12), at: frameRate, limit: .max100Days)
+        
+        let t = frameRate.numberOfDigits == 2 ? "" : "0"
+        
+        let sv = tc.stringValue(format: [.showSubFrames])
+        #expect(sv == "2 01:02:03;\(t)04.12")
+    }
+    
+    @Test
+    func edgeCases() async throws {
         // test for really large values
         
-        XCTAssertEqual(
+        #expect(
             Timecode(
                 .components(
                     d: 1234567891234564567,
@@ -295,18 +292,19 @@ final class Timecode_Source_String_Tests: XCTestCase {
                 at: .fps24,
                 by: .allowingInvalid
             )
-            .stringValue(format: [.showSubFrames]),
-            "1234567891234564567 1234567891234564567:1234567891234564567:1234567891234564567:1234567891234564567.1234567891234564567"
+            .stringValue(format: [.showSubFrames])
+            == "1234567891234564567 1234567891234564567:1234567891234564567:1234567891234564567:1234567891234564567.1234567891234564567"
         )
     }
     
-    func testStringValueVerbose() throws {
+    @Test
+    func stringValueVerbose() async throws {
         var tc = Timecode(.zero, at: .fps23_976)
         
         try tc.set(.string("01:05:20:14"))
-        XCTAssertEqual(tc.stringValueVerbose, "01:05:20:14.00 @ 23.976 fps")
+        #expect(tc.stringValueVerbose == "01:05:20:14.00 @ 23.976 fps")
         
         try tc.set(.string("02:07:08:10.20"))
-        XCTAssertEqual(tc.stringValueVerbose, "02:07:08:10.20 @ 23.976 fps")
+        #expect(tc.stringValueVerbose == "02:07:08:10.20 @ 23.976 fps")
     }
 }

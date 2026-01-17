@@ -8,74 +8,76 @@
 
 import CoreMedia
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class Fraction_CMTime_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testFraction_init_CMTime() {
-        XCTAssertEqual(
-            Fraction(CMTime(value: 3600, timescale: 1)),
-            Fraction(3600, 1)
+@Suite struct Fraction_CMTime_Tests {
+    @Test
+    func fraction_init_CMTime() async {
+        #expect(
+            Fraction(CMTime(value: 3600, timescale: 1))
+                == Fraction(3600, 1)
         )
         
-        XCTAssertEqual(
-            Fraction(CMTime(value: -3600, timescale: 1)),
-            Fraction(-3600, 1)
+        #expect(
+            Fraction(CMTime(value: -3600, timescale: 1))
+                == Fraction(-3600, 1)
         )
     }
     
-    func testFraction_init_CMTime_EdgeCases() {
-        XCTAssertEqual(
-            Fraction(CMTime.indefinite),
-            Fraction(0, 1)
+    @Test
+    func fraction_init_CMTime_EdgeCases() async {
+        #expect(
+            Fraction(CMTime.indefinite)
+                == Fraction(0, 1)
         )
         
-        XCTAssertEqual(
-            Fraction(CMTime.negativeInfinity),
-            Fraction(0, 1)
+        #expect(
+            Fraction(CMTime.negativeInfinity)
+                == Fraction(0, 1)
         )
         
-        XCTAssertEqual(
-            Fraction(CMTime.positiveInfinity),
-            Fraction(0, 1)
+        #expect(
+            Fraction(CMTime.positiveInfinity)
+                == Fraction(0, 1)
         )
     }
     
-    func testFraction_cmTimeValue() {
-        XCTAssertEqual(
-            Fraction(3600, 1).cmTimeValue,
-            CMTime(value: 3600, timescale: 1)
+    @Test
+    func fraction_cmTimeValue() async {
+        #expect(
+            Fraction(3600, 1).cmTimeValue
+                == CMTime(value: 3600, timescale: 1)
         )
         
-        XCTAssertEqual(
-            Fraction(-3600, 1).cmTimeValue,
-            CMTime(value: -3600, timescale: 1)
+        #expect(
+            Fraction(-3600, 1).cmTimeValue
+                == CMTime(value: -3600, timescale: 1)
         )
     }
     
-    func testCMTime_init_Fraction() {
-        XCTAssertEqual(
-            CMTime(Fraction(3600, 1)),
-            CMTime(value: 3600, timescale: 1)
+    @Test
+    func cmTime_init_Fraction() async {
+        #expect(
+            CMTime(Fraction(3600, 1))
+                == CMTime(value: 3600, timescale: 1)
         )
         
-        XCTAssertEqual(
-            CMTime(Fraction(-3600, 1)),
-            CMTime(value: -3600, timescale: 1)
+        #expect(
+            CMTime(Fraction(-3600, 1))
+                == CMTime(value: -3600, timescale: 1)
         )
     }
     
-    func testCMTime_fractionValue() {
-        XCTAssertEqual(
-            CMTime(value: 3600, timescale: 1).fractionValue,
-            Fraction(3600, 1)
+    @Test
+    func cmTime_fractionValue() async {
+        #expect(
+            CMTime(value: 3600, timescale: 1).fractionValue
+                == Fraction(3600, 1)
         )
         
-        XCTAssertEqual(
-            CMTime(value: -3600, timescale: 1).fractionValue,
-            Fraction(-3600, 1)
+        #expect(
+            CMTime(value: -3600, timescale: 1).fractionValue
+                == Fraction(-3600, 1)
         )
     }
 }

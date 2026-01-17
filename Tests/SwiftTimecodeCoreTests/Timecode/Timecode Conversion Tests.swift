@@ -5,26 +5,22 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class Timecode_Conversion_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
+@Suite struct Timecode_Conversion_Tests {
+    /// Baseline check: Ensure conversion produces identical output if frame rates are equal.
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func converted_NewFrameRate(frameRate: TimecodeFrameRate) async throws {
+        let tc = try Timecode(.components(h: 1), at: frameRate, base: .max100SubFrames)
+        
+        let convertedTC = try tc.converted(to: frameRate)
+        
+        #expect(tc == convertedTC)
+    }
     
-    func testConverted_NewFrameRate() throws {
-        // baseline check:
-        // ensure conversion produces identical output if frame rates are equal
-        
-        for item in TimecodeFrameRate.allCases {
-            let tc = try Timecode(.components(h: 1), at: item, base: .max100SubFrames)
-            
-            let convertedTC = try tc.converted(to: item)
-            
-            XCTAssertEqual(tc, convertedTC)
-        }
-        
-        // spot-check an example conversion
-        
+    /// Spot-check an example conversion.
+    @Test
+    func converted_NewFrameRate_spotCheck() async throws {
         let convertedTC = try Timecode(
             .components(h: 1),
             at: .fps23_976,
@@ -32,14 +28,14 @@ final class Timecode_Conversion_Tests: XCTestCase {
         )
         .converted(to: .fps30)
         
-        XCTAssertEqual(convertedTC.frameRate, .fps30)
-        XCTAssertEqual(convertedTC.subFramesBase, .max100SubFrames)
-        XCTAssertEqual(convertedTC.components, Timecode.Components(h: 1, m: 00, s: 03, f: 18, sf: 00))
+        #expect(convertedTC.frameRate == .fps30)
+        #expect(convertedTC.subFramesBase == .max100SubFrames)
+        #expect(convertedTC.components == Timecode.Components(h: 1, m: 00, s: 03, f: 18, sf: 00))
     }
     
-    func testConverted_NewFrameRate_NewSubFramesBaseA() throws {
-        // spot-check an example conversion
-        
+    /// Spot-check an example conversion.
+    @Test
+    func converted_NewFrameRate_NewSubFramesBaseA() async throws {
         let convertedTC = try Timecode(
             .components(sf: 50),
             at: .fps30,
@@ -47,14 +43,14 @@ final class Timecode_Conversion_Tests: XCTestCase {
         )
         .converted(to: .fps60, base: .max80SubFrames)
         
-        XCTAssertEqual(convertedTC.frameRate, .fps60)
-        XCTAssertEqual(convertedTC.subFramesBase, .max80SubFrames)
-        XCTAssertEqual(convertedTC.components, Timecode.Components(f: 1))
+        #expect(convertedTC.frameRate == .fps60)
+        #expect(convertedTC.subFramesBase == .max80SubFrames)
+        #expect(convertedTC.components == Timecode.Components(f: 1))
     }
     
-    func testConverted_NewFrameRate_NewSubFramesBaseB() throws {
-        // spot-check an example conversion
-        
+    /// Spot-check an example conversion.
+    @Test
+    func converted_NewFrameRate_NewSubFramesBaseB() async throws {
         let convertedTC = try Timecode(
             .components(h: 1, sf: 40),
             at: .fps23_976,
@@ -62,41 +58,39 @@ final class Timecode_Conversion_Tests: XCTestCase {
         )
         .converted(to: .fps30, base: .max100SubFrames)
         
-        XCTAssertEqual(convertedTC.frameRate, .fps30)
-        XCTAssertEqual(convertedTC.subFramesBase, .max100SubFrames)
-        XCTAssertEqual(convertedTC.components, Timecode.Components(h: 1, m: 00, s: 03, f: 18, sf: 62))
+        #expect(convertedTC.frameRate == .fps30)
+        #expect(convertedTC.subFramesBase == .max100SubFrames)
+        #expect(convertedTC.components == Timecode.Components(h: 1, m: 00, s: 03, f: 18, sf: 62))
     }
     
-    func testConverted_NewFrameRate_PreservingValues() throws {
-        // baseline check:
-        // ensure conversion produces identical output if frame rates are equal
+    /// Baseline check: Ensure conversion produces identical output if frame rates are equal.
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func converted_NewFrameRate_PreservingValues(frameRate: TimecodeFrameRate) async throws {
+        let tc = try Timecode(.components(h: 1), at: frameRate)
         
-        for item in TimecodeFrameRate.allCases {
-            let tc = try Timecode(.components(h: 1), at: item)
-            
-            let convertedTC = try tc.converted(to: item, preservingValues: true)
-            
-            XCTAssertEqual(tc, convertedTC)
-        }
+        let convertedTC = try tc.converted(to: frameRate, preservingValues: true)
         
-        // spot-check: arbitrary non-zero timecode values that should be able to be preserved across all frame rates
-        
-        for sourceFrameRate in TimecodeFrameRate.allCases {
-            for destinationFrameRate in TimecodeFrameRate.allCases {
-                let convertedTC = try Timecode(
-                    .components(h: 2, m: 07, s: 24, f: 11),
-                    at: sourceFrameRate,
-                    base: .max100SubFrames
-                )
+        #expect(tc == convertedTC)
+    }
+    
+    /// Spot-check: Arbitrary non-zero timecode values that should be able to be preserved across all frame rates.
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func converted_NewFrameRate_PreservingValues(sourceFrameRate: TimecodeFrameRate) async throws {
+        for destinationFrameRate in TimecodeFrameRate.allCases {
+            let convertedTC = try Timecode(
+                .components(h: 2, m: 07, s: 24, f: 11),
+                at: sourceFrameRate,
+                base: .max100SubFrames
+            )
                 .converted(to: destinationFrameRate, preservingValues: true)
-                
-                XCTAssertEqual(convertedTC.frameRate, destinationFrameRate)
-                XCTAssertEqual(convertedTC.components, Timecode.Components(h: 2, m: 07, s: 24, f: 11, sf: 00))
-            }
+            
+            #expect(convertedTC.frameRate == destinationFrameRate)
+            #expect(convertedTC.components == Timecode.Components(h: 2, m: 07, s: 24, f: 11, sf: 00))
         }
-        
-        // spot-check: frames value too large to preserve; convert timecode instead
-        
+    }
+    
+    /// Spot-check: frames value too large to preserve; convert timecode instead
+    @Test func converted_NewFrameRate_PreservingValues_Conversion() async throws {
         let convertedTC = try Timecode(
             .components(h: 1, m: 0, s: 0, f: 96),
             at: .fps100,
@@ -104,25 +98,27 @@ final class Timecode_Conversion_Tests: XCTestCase {
         )
         .converted(to: .fps50, preservingValues: true)
             
-        XCTAssertEqual(convertedTC.frameRate, .fps50)
-        XCTAssertEqual(convertedTC.components, Timecode.Components(h: 1, m: 00, s: 00, f: 48, sf: 00))
+        #expect(convertedTC.frameRate == .fps50)
+        #expect(convertedTC.components == Timecode.Components(h: 1, m: 00, s: 00, f: 48, sf: 00))
     }
     
-    func testTransform() throws {
+    @Test
+    func transform() async throws {
         var tc = try Timecode(.components(m: 1), at: .fps24)
         
         let transformer = TimecodeTransformer(.offset(by: .positive(tc)))
         tc.transform(using: transformer)
         
-        XCTAssertEqual(tc, try Timecode(.components(m: 2), at: .fps24))
+        #expect(try tc == Timecode(.components(m: 2), at: .fps24))
     }
     
-    func testTransformed() throws {
+    @Test
+    func transformed() async throws {
         let tc = try Timecode(.components(m: 1), at: .fps24)
         
         let transformer = TimecodeTransformer(.offset(by: .positive(tc)))
         let newTC = tc.transformed(using: transformer)
         
-        XCTAssertEqual(newTC, try Timecode(.components(m: 2), at: .fps24))
+        #expect(try newTC == Timecode(.components(m: 2), at: .fps24))
     }
 }

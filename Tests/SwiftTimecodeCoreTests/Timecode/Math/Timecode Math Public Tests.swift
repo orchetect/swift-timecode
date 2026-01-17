@@ -5,13 +5,11 @@
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
-import XCTest
+import Testing
 
-final class Timecode_Math_Public_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testAddTimecode() throws {
+@Suite struct Timecode_Math_Public_Tests {
+    @Test
+    func addTimecode() async throws {
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
         
         let tc1 = try Timecode(
@@ -21,13 +19,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.add(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 02, s: 03, f: 04))
+        #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
         
         try tc.add(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 04, s: 06, f: 08))
+        #expect(tc.components == Timecode.Components(h: 02, m: 04, s: 06, f: 08))
     }
     
-    func testAddTimecodeByClamping() throws {
+    @Test
+    func addTimecodeByClamping() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -41,10 +40,11 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.add(tc1, by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
     
-    func testAddTimecodeByWrapping() throws {
+    @Test
+    func addTimecodeByWrapping() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -58,22 +58,24 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.add(tc1, by: .wrapping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 02, s: 03, f: 04))
+        #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
         
         try tc.add(tc1, by: .wrapping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 16, m: 04, s: 06, f: 08))
+        #expect(tc.components == Timecode.Components(h: 16, m: 04, s: 06, f: 08))
     }
     
-    func testAddDifferingFrameRates() throws {
+    @Test
+    func addDifferingFrameRates() async throws {
         var tc = try Timecode(.components(h: 1), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
         
         try tc.add(tc1)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 00, s: 03, f: 15))
+        #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 03, f: 15))
     }
     
-    func testAddingTimecode() throws {
+    @Test
+    func addingTimecode() async throws {
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
         
         let tc1 = try Timecode(
@@ -83,13 +85,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         tc = try tc.adding(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 02, s: 03, f: 04))
+        #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
         
         tc = try tc.adding(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 04, s: 06, f: 08))
+        #expect(tc.components == Timecode.Components(h: 02, m: 04, s: 06, f: 08))
     }
     
-    func testAddingTimecodeByClamping() throws {
+    @Test
+    func addingTimecodeByClamping() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -103,10 +106,11 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.adding(tc1, by: .clamping)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
+        #expect(tc2.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
     
-    func testAddingTimecodeByWrapping() throws {
+    @Test
+    func addingTimecodeByWrapping() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -120,21 +124,23 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.adding(tc1, by: .wrapping)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 01, m: 02, s: 03, f: 04))
+        #expect(tc2.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
         
         let tc3 = try tc2.adding(tc1, by: .wrapping)
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 16, m: 04, s: 06, f: 08))
+        #expect(tc3.components == Timecode.Components(h: 16, m: 04, s: 06, f: 08))
     }
     
-    func testAddingDifferingFrameRates() throws {
+    @Test
+    func addingDifferingFrameRates() async throws {
         let tc = try Timecode(.components(h: 1), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
         
         let tc2 = try tc.adding(tc1)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 02, m: 00, s: 03, f: 15))
+        #expect(tc2.components == Timecode.Components(h: 02, m: 00, s: 03, f: 15))
     }
     
-    func testSubtractTimecode() throws {
+    @Test
+    func subtractTimecode() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -148,13 +154,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.subtract(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 09, m: 59, s: 59, f: 23))
+        #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
         
         try tc.subtract(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 09, m: 59, s: 59, f: 22))
+        #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
     
-    func testSubtractTimecodeByClamping() throws {
+    @Test
+    func subtractTimecodeByClamping() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -168,13 +175,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.subtract(tc1, by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         try tc.subtract(tc1, by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
     
-    func testSubtractTimecodeByWrapping() throws {
+    @Test
+    func subtractTimecodeByWrapping() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -188,21 +196,23 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.subtract(tc1, by: .wrapping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         try tc.subtract(tc1, by: .wrapping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 22, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 22, m: 00, s: 00, f: 00))
     }
     
-    func testSubtractDifferingFrameRates() throws {
+    @Test
+    func subtractDifferingFrameRates() async throws {
         var tc = try Timecode(.components(h: 2), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
         
         try tc.subtract(tc1)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 59, s: 56, f: 10))
+        #expect(tc.components == Timecode.Components(h: 00, m: 59, s: 56, f: 10))
     }
     
-    func testSubtractingTimecode() throws {
+    @Test
+    func subtractingTimecode() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -216,13 +226,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.subtracting(tc1)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 09, m: 59, s: 59, f: 23))
+        #expect(tc2.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
         
         let tc3 = try tc2.subtracting(tc1)
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 09, m: 59, s: 59, f: 22))
+        #expect(tc3.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
     
-    func testSubtractingTimecodeByClamping() throws {
+    @Test
+    func subtractingTimecodeByClamping() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -236,13 +247,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.subtracting(tc1, by: .clamping)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc2.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         let tc3 = try tc2.subtracting(tc1, by: .clamping)
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc3.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
     
-    func testSubtractingTimecodeByWrapping() throws {
+    @Test
+    func subtractingTimecodeByWrapping() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -256,32 +268,35 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.subtracting(tc1, by: .wrapping)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc2.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         let tc3 = try tc2.subtracting(tc1, by: .wrapping)
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 22, m: 00, s: 00, f: 00))
+        #expect(tc3.components == Timecode.Components(h: 22, m: 00, s: 00, f: 00))
     }
     
-    func testSubtractingDifferingFrameRates() throws {
+    @Test
+    func subtractingDifferingFrameRates() async throws {
         let tc = try Timecode(.components(h: 2), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
         
         let tc2 = try tc.subtracting(tc1)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 00, m: 59, s: 56, f: 10))
+        #expect(tc2.components == Timecode.Components(h: 00, m: 59, s: 56, f: 10))
     }
     
-    func testAddTimecodeSourceValue() throws {
+    @Test
+    func addTimecodeSourceValue() async throws {
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
         
         try tc.add(.components(h: 1))
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
         
         try tc.add(.string("01:00:00:00"))
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
     }
     
     /// Just test one of the validation rules to make sure they work.
-    func testAddTimecodeSourceValueByClamping() throws {
+    @Test
+    func addTimecodeSourceValueByClamping() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -289,24 +304,26 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.add(.components(h: 10), by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 20, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 20, m: 00, s: 00, f: 00))
         
         try tc.add(.string("10:00:00:00"), by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
     
-    func testAddingTimecodeSourceValue() throws {
+    @Test
+    func addingTimecodeSourceValue() async throws {
         let tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
         
         let tc2 = try tc.adding(.components(h: 1))
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00))
+        #expect(tc2.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
         
         let tc3 = try tc2.adding(.string("01:00:00:00"))
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 02, m: 00, s: 00, f: 00))
+        #expect(tc3.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
     }
     
     /// Just test one of the validation rules to make sure they work.
-    func testAddingTimecodeSourceValueByClamping() throws {
+    @Test
+    func addingTimecodeSourceValueByClamping() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -314,13 +331,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.adding(.components(h: 10), by: .clamping)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 20, m: 00, s: 00, f: 00))
+        #expect(tc2.components == Timecode.Components(h: 20, m: 00, s: 00, f: 00))
         
         let tc3 = try tc2.adding(.string("10:00:00:00"), by: .clamping)
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
+        #expect(tc3.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
     
-    func testSubtractTimecodeSourceValue() throws {
+    @Test
+    func subtractTimecodeSourceValue() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -328,14 +346,15 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.subtract(.components(f: 1))
-        XCTAssertEqual(tc.components, Timecode.Components(h: 09, m: 59, s: 59, f: 23))
+        #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
         
         try tc.subtract(.string("00:00:00:01"))
-        XCTAssertEqual(tc.components, Timecode.Components(h: 09, m: 59, s: 59, f: 22))
+        #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
     
     /// Just test one of the validation rules to make sure they work.
-    func testSubtractTimecodeSourceValueByClamping() throws {
+    @Test
+    func subtractTimecodeSourceValueByClamping() async throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -343,13 +362,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         try tc.subtract(.components(h: 6), by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         try tc.subtract(.string("06:00:00:00"), by: .clamping)
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
     
-    func testSubtractingTimecodeSourceValue() throws {
+    @Test
+    func subtractingTimecodeSourceValue() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -357,14 +377,15 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.subtracting(.components(f: 1))
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 09, m: 59, s: 59, f: 23))
+        #expect(tc2.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
         
         let tc3 = try tc2.subtracting(.string("00:00:00:01"))
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 09, m: 59, s: 59, f: 22))
+        #expect(tc3.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
     
     /// Just test one of the validation rules to make sure they work.
-    func testSubtractingTimecodeSourceValueByClamping() throws {
+    @Test
+    func subtractingTimecodeSourceValueByClamping() async throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -372,13 +393,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         let tc2 = try tc.subtracting(.components(h: 06), by: .clamping)
-        XCTAssertEqual(tc2.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc2.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         let tc3 = try tc2.subtracting(.string("06:00:00:00"), by: .clamping)
-        XCTAssertEqual(tc3.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc3.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
     
-    func testAdd_and_Subtract_Components_Methods() throws {
+    @Test
+    func add_and_Subtract_Components_Methods() async throws {
         // .add / .subtract methods
         
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
@@ -391,11 +413,11 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 23))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 23))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 23))
         
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 01))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 01, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -405,15 +427,15 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(h: 01, m: 15, s: 30, f: 10))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 15, s: 30, f: 10))
+        #expect(tc.components == Timecode.Components(h: 01, m: 15, s: 30, f: 10))
         
         try tc.add(Timecode.Components(h: 01, m: 15, s: 30, f: 10))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 31, s: 00, f: 20))
+        #expect(tc.components == Timecode.Components(h: 02, m: 31, s: 00, f: 20))
         
-        XCTAssertThrowsError(try tc.add(Timecode.Components(h: 23, m: 15, s: 30, f: 10)))
+        #expect(throws: (any Error).self) { try tc.add(Timecode.Components(h: 23, m: 15, s: 30, f: 10)) }
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 31, s: 00, f: 20)) // unchanged value
+        #expect(tc.components == Timecode.Components(h: 02, m: 31, s: 00, f: 20)) // unchanged value
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -421,7 +443,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
             limit: .max24Hours
         )
         
-        XCTAssertThrowsError(try tc.subtract(Timecode.Components(h: 02, m: 31, s: 00, f: 20)))
+        #expect(throws: (any Error).self) { try tc.subtract(Timecode.Components(h: 02, m: 31, s: 00, f: 20)) }
         
         tc = try Timecode(
             .components(h: 23, m: 59, s: 59, f: 23),
@@ -431,7 +453,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.subtract(Timecode.Components(h: 23, m: 59, s: 59, f: 23))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 23, m: 59, s: 59, f: 23),
@@ -439,9 +461,9 @@ final class Timecode_Math_Public_Tests: XCTestCase {
             limit: .max24Hours
         )
         
-        XCTAssertThrowsError(try tc.subtract(Timecode.Components(h: 23, m: 59, s: 59, f: 24))) // 1 frame too many
+        #expect(throws: (any Error).self) { try tc.subtract(Timecode.Components(h: 23, m: 59, s: 59, f: 24)) } // 1 frame too many
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23)) // unchanged value
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23)) // unchanged value
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -451,7 +473,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(f: 24)) // roll up to 1 sec
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 01, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -461,7 +483,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(s: 60)) // roll up to 1 min
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 01, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 01, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -471,7 +493,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(m: 60)) // roll up to 1 hr
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(d: 0, h: 00, m: 00, s: 00, f: 00),
@@ -481,7 +503,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(h: 24)) // roll up to 1 day
         
-        XCTAssertEqual(tc.components, Timecode.Components(d: 01, h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(d: 01, h: 00, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -491,7 +513,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 2_073_599))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23))
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23))
         
         tc = try Timecode(
             .components(h: 23, m: 59, s: 59, f: 23),
@@ -501,13 +523,13 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.subtract(Timecode.Components(h: 00, m: 00, s: 00, f: 2_073_599))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
         
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 200))
         
         try tc.subtract(Timecode.Components(h: 00, m: 00, s: 00, f: 199))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 01))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 01))
         
         // clamping
         
@@ -520,7 +542,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.add(Timecode.Components(h: 25), by: .clamping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 79))
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 79))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -530,7 +552,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.subtract(Timecode.Components(h: 4), by: .clamping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
         
         // wrapping
         
@@ -542,7 +564,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.add(Timecode.Components(h: 25), by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -552,7 +574,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.add(Timecode.Components(f: -1), by: .wrapping) // add negative number
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 59, s: 59, f: 23))
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -562,7 +584,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.subtract(Timecode.Components(h: 4), by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 20, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 20, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -572,7 +594,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.subtract(Timecode.Components(h: -4), by: .wrapping) // subtract negative number
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 04, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
         
         // drop rates
         
@@ -584,11 +606,11 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 29))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 29))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 29))
         
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 01))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 01, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -598,7 +620,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(m: 60)) // roll up to 1 hr
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
         
         try tc = Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -608,7 +630,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.add(Timecode.Components(f: 30)) // roll up to 1 sec
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 01, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
         
         try tc = Timecode(
             .components(h: 00, m: 00, s: 59, f: 00),
@@ -619,7 +641,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         // roll up to 1 sec and 2 frames (2 dropped frames every minute except every 10th minute)
         try tc.add(Timecode.Components(f: 30))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 01, s: 00, f: 02))
+        #expect(tc.components == Timecode.Components(h: 00, m: 01, s: 00, f: 02))
         
         tc = try Timecode(
             .components(h: 00, m: 01, s: 00, f: 02),
@@ -630,14 +652,15 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         // roll up to 1 sec and 2 frames (2 dropped frames every minute except every 10th minute)
         try tc.add(Timecode.Components(m: 01))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 02, s: 00, f: 02))
+        #expect(tc.components == Timecode.Components(h: 00, m: 02, s: 00, f: 02))
         
         try tc.add(Timecode.Components(m: 08))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 10, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 10, s: 00, f: 00))
     }
     
-    func testAdding_Components_Methods() throws {
+    @Test
+    func adding_Components_Methods() async throws {
         // .adding()
         
         let tc = try Timecode(
@@ -647,23 +670,24 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         // exactly
-        XCTAssertEqual(
-            try tc.adding(Timecode.Components(h: 1)).components,
-            Timecode.Components(h: 1, m: 10, s: 00, f: 00)
+        #expect(
+            try tc.adding(Timecode.Components(h: 1)).components
+                == Timecode.Components(h: 1, m: 10, s: 00, f: 00)
         )
         
-        XCTAssertEqual(
-            tc.adding(Timecode.Components(h: 26), by: .wrapping).components,
-            Timecode.Components(h: 2, m: 10, s: 00, f: 00)
+        #expect(
+            tc.adding(Timecode.Components(h: 26), by: .wrapping).components
+                == Timecode.Components(h: 2, m: 10, s: 00, f: 00)
         )
         
-        XCTAssertEqual(
-            tc.adding(Timecode.Components(h: 26), by: .clamping).components,
-            Timecode.Components(h: 23, m: 59, s: 59, f: 29, sf: tc.subFramesBase.rawValue - 1)
+        #expect(
+            tc.adding(Timecode.Components(h: 26), by: .clamping).components
+                == Timecode.Components(h: 23, m: 59, s: 59, f: 29, sf: tc.subFramesBase.rawValue - 1)
         )
     }
     
-    func testSubtracting_Components_Methods() throws {
+    @Test
+    func subtracting_Components_Methods() async throws {
         // .subtracting()
         
         let tc = try Timecode(
@@ -673,13 +697,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         // exactly
-        XCTAssertEqual(
-            try tc.subtracting(Timecode.Components(m: 5)).components,
-            Timecode.Components(h: 0, m: 05, s: 00, f: 02) // remember, we're using drop rate!
+        #expect(
+            try tc.subtracting(Timecode.Components(m: 5)).components
+                == Timecode.Components(h: 0, m: 05, s: 00, f: 02) // remember, we're using drop rate!
         )
     }
     
-    func testMultiply_and_Divide() throws {
+    @Test
+    func multiply_and_Divide() async throws {
         // .multiply / .divide methods
         
         var tc = try Timecode(
@@ -689,7 +714,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         try tc.multiply(2)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -699,7 +724,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.multiply(2.5)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 30, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 02, m: 30, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -709,7 +734,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.multiply(2)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -719,7 +744,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         try tc.multiply(2.5)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 30, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 02, m: 30, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -727,9 +752,9 @@ final class Timecode_Math_Public_Tests: XCTestCase {
             limit: .max24Hours
         )
         
-        XCTAssertThrowsError(try tc.multiply(25))
+        #expect(throws: (any Error).self) { try tc.multiply(25) }
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00)) // unchanged
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00)) // unchanged
         
         // clamping
         
@@ -741,10 +766,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.multiply(25.0, by: .clamping)
         
-        XCTAssertEqual(
-            tc.components,
-            Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
-        )
+        #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1))
         
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
@@ -754,7 +776,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.divide(4, by: .clamping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
         
         // wrapping - multiply
         
@@ -766,7 +788,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.multiply(25.0, by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -776,7 +798,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.multiply(2, by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 02, m: 00, s: 00, f: 00)) // normal, no wrap
+        #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00)) // normal, no wrap
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -786,7 +808,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.multiply(25, by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 00, s: 00, f: 00)) // wraps
+        #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00)) // wraps
         
         // wrapping - divide
         
@@ -798,7 +820,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.divide(-2, by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 23, m: 30, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 23, m: 30, s: 00, f: 00))
         
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
@@ -808,7 +830,7 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.divide(2, by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 00, m: 30, s: 00, f: 00)) // normal, no wrap
+        #expect(tc.components == Timecode.Components(h: 00, m: 30, s: 00, f: 00)) // normal, no wrap
         
         tc = try Timecode(
             .components(h: 12, m: 00, s: 00, f: 00),
@@ -818,10 +840,11 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.divide(-2, by: .wrapping)
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 18, m: 00, s: 00, f: 00)) // wraps
+        #expect(tc.components == Timecode.Components(h: 18, m: 00, s: 00, f: 00)) // wraps
     }
     
-    func testMultiplying() throws {
+    @Test
+    func multiplying() async throws {
         // .multiplying()
         
         let tc = try Timecode(
@@ -831,13 +854,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         // exactly
-        XCTAssertEqual(
-            try tc.multiplying(2).components,
-            Timecode.Components(h: 08, m: 00, s: 00, f: 00)
+        #expect(
+            try tc.multiplying(2).components
+                == Timecode.Components(h: 08, m: 00, s: 00, f: 00)
         )
     }
     
-    func testDividing() throws {
+    @Test
+    func dividing() async throws {
         // .dividing()
         
         let tc = try Timecode(
@@ -847,13 +871,14 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
         
         // exactly
-        XCTAssertEqual(
-            try tc.dividing(2).components,
-            Timecode.Components(h: 02, m: 00, s: 00, f: 00)
+        #expect(
+            try tc.dividing(2).components
+                == Timecode.Components(h: 02, m: 00, s: 00, f: 00)
         )
     }
     
-    func testOffset() throws {
+    @Test
+    func offset() async throws {
         var tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -868,18 +893,19 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         tc.offset(by: .init(intervalTC, .plus))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 01, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 01, s: 00, f: 00))
         
         tc.offset(by: .init(intervalTC, .plus))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 02, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 00, f: 00))
         
         tc.offset(by: .init(intervalTC, .minus))
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 01, m: 01, s: 00, f: 00))
+        #expect(tc.components == Timecode.Components(h: 01, m: 01, s: 00, f: 00))
     }
     
-    func testOffsetting() throws {
+    @Test
+    func offsetting() async throws {
         let tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -892,15 +918,16 @@ final class Timecode_Math_Public_Tests: XCTestCase {
             limit: .max24Hours
         )
         
-        XCTAssertEqual(
+        #expect(
             tc
                 .offsetting(by: .init(intervalTC, .plus))
-                .components,
-            Timecode.Components(h: 01, m: 01, s: 00, f: 00)
+                .components
+                ==  Timecode.Components(h: 01, m: 01, s: 00, f: 00)
         )
     }
     
-    func testIntervalTo() throws {
+    @Test
+    func intervalTo() async throws {
         let tc1 = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
@@ -917,32 +944,32 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         var interval = tc1.interval(to: tc2)
         
-        XCTAssertEqual(interval.isNegative, false)
-        XCTAssertEqual(
-            interval.flattened(),
-            try Timecode(
+        #expect(!interval.isNegative)
+        #expect(
+            try interval.flattened()
+            == Timecode(
                 .components(h: 00, m: 04, s: 37, f: 15),
                 at: .fps23_976,
                 limit: .max24Hours
             )
         )
-        
+
         // negative
         
         interval = tc2.interval(to: tc1)
         
-        XCTAssertEqual(interval.isNegative, true) // 23:55:22:09
-        XCTAssertEqual(
-            interval.absoluteInterval,
-            try Timecode(
+        #expect(interval.isNegative) // 23:55:22:09
+        #expect(
+            try interval.absoluteInterval
+            == Timecode(
                 .components(h: 00, m: 04, s: 37, f: 15),
                 at: .fps23_976,
                 limit: .max24Hours
             )
         )
-        XCTAssertEqual(
-            interval.flattened(),
-            try Timecode(
+        #expect(
+            try interval.flattened()
+            == Timecode(
                 .components(h: 23, m: 55, s: 22, f: 09),
                 at: .fps23_976,
                 limit: .max24Hours
@@ -961,18 +988,18 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         interval = tc1.interval(to: tc3)
         
-        XCTAssertEqual(interval.isNegative, false)
-        XCTAssertEqual(
-            interval.absoluteInterval,
-            try Timecode(
+        #expect(!interval.isNegative)
+        #expect(
+            try interval.absoluteInterval
+            == Timecode(
                 .components(d: 1, h: 02, m: 04, s: 37, f: 15),
                 at: .fps23_976,
                 limit: .max100Days
             )
         )
-        XCTAssertEqual(
-            interval.flattened(),
-            try Timecode(
+        #expect(
+            try interval.flattened()
+            == Timecode(
                 .components(h: 02, m: 04, s: 37, f: 15),
                 at: .fps23_976,
                 limit: .max24Hours
@@ -983,18 +1010,18 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         
         interval = tc3.interval(to: tc1)
         
-        XCTAssertEqual(interval.isNegative, true)
-        XCTAssertEqual(
-            interval.absoluteInterval,
-            try Timecode(
+        #expect(interval.isNegative)
+        #expect(
+            try interval.absoluteInterval
+            == Timecode(
                 .components(d: 1, h: 02, m: 04, s: 37, f: 15),
                 at: .fps23_976,
                 limit: .max100Days
             )
         )
-        XCTAssertEqual(
-            interval.flattened(),
-            Timecode(
+        #expect(
+            interval.flattened()
+            == Timecode(
                 .components(d: 98, h: 21, m: 55, s: 22, f: 09),
                 at: .fps23_976,
                 limit: .max100Days,
@@ -1003,17 +1030,18 @@ final class Timecode_Math_Public_Tests: XCTestCase {
         )
     }
     
-    func testTimecodeInterval() throws {
+    @Test
+    func timecodeInterval() async throws {
         let interval = try Timecode(
             .components(h: 02, m: 04, s: 37, f: 15),
             at: .fps24
         ).asInterval(.minus)
         
-        XCTAssertEqual(
-            interval.flattened().components,
-            Timecode.Components(h: 21, m: 55, s: 22, f: 9)
+        #expect(
+            interval.flattened().components
+                == Timecode.Components(h: 21, m: 55, s: 22, f: 9)
         )
-        XCTAssertEqual(interval.flattened().frameRate, .fps24)
-        XCTAssertTrue(interval.isNegative)
+        #expect(interval.flattened().frameRate == .fps24)
+        #expect(interval.isNegative)
     }
 }

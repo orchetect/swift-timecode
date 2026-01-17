@@ -5,35 +5,35 @@
 //
 
 @testable import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeInterval_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testInitA() throws {
+@Suite struct TimecodeInterval_Tests {
+    @Test
+    func initA() async throws {
         // positive
         
         let intervalTC = try Timecode(.components(m: 1), at: .fps24)
         
         let interval = TimecodeInterval(intervalTC)
         
-        XCTAssertEqual(interval.absoluteInterval, intervalTC)
-        XCTAssertEqual(interval.sign, .plus)
+        #expect(interval.absoluteInterval == intervalTC)
+        #expect(interval.sign == .plus)
     }
     
-    func testInitB() throws {
+    @Test
+    func initB() async throws {
         // negative
         
         let intervalTC = try Timecode(.components(m: 1), at: .fps24)
         
         let interval = TimecodeInterval(intervalTC, .minus)
         
-        XCTAssertEqual(interval.absoluteInterval, intervalTC)
-        XCTAssertEqual(interval.sign, .minus)
+        #expect(interval.absoluteInterval == intervalTC)
+        #expect(interval.sign == .minus)
     }
     
-    func testInitC() {
+    @Test
+    func initC() async {
         // Timecode.Components can contain negative values;
         // this should not alter the sign however
         
@@ -41,127 +41,129 @@ final class TimecodeInterval_Tests: XCTestCase {
         
         let interval = TimecodeInterval(intervalTC)
         
-        XCTAssertEqual(interval.absoluteInterval, intervalTC)
-        XCTAssertEqual(interval.sign, .plus)
+        #expect(interval.absoluteInterval == intervalTC)
+        #expect(interval.sign == .plus)
     }
     
-    func testIsNegative() {
-        XCTAssertEqual(
-            TimecodeInterval(Timecode(.zero, at: .fps24))
+    @Test
+    func isNegative() async {
+        #expect(
+            !TimecodeInterval(Timecode(.zero, at: .fps24))
                 .isNegative,
-            false
         )
         
-        XCTAssertEqual(
+        #expect(
             TimecodeInterval(Timecode(.zero, at: .fps24), .minus)
-                .isNegative,
-            true
+                .isNegative
         )
     }
     
-    func testTimecodeA() throws {
+    @Test
+    func timecodeA() async throws {
         // positive
         
         let intervalTC = try Timecode(.components(m: 1), at: .fps24)
         
         let interval = TimecodeInterval(intervalTC)
         
-        XCTAssertEqual(interval.flattened(), intervalTC)
+        #expect(interval.flattened() == intervalTC)
     }
     
-    func testTimecodeB() throws {
+    @Test
+    func timecodeB() async throws {
         // negative, wrapping
         
         let intervalTC = try Timecode(.components(m: 1), at: .fps24)
         
         let interval = TimecodeInterval(intervalTC, .minus)
         
-        XCTAssertEqual(
-            interval.flattened(),
-            try Timecode(.components(h: 23, m: 59, s: 00, f: 00), at: .fps24)
+        #expect(
+            try interval.flattened()
+                == Timecode(.components(h: 23, m: 59, s: 00, f: 00), at: .fps24)
         )
     }
     
-    func testTimecodeC() throws {
+    @Test
+    func timecodeC() async throws {
         // positive, wrapping
         
         let intervalTC = Timecode(.components(h: 26), at: .fps24, by: .allowingInvalid)
         
         let interval = TimecodeInterval(intervalTC)
         
-        XCTAssertEqual(
-            interval.flattened(),
-            try Timecode(.components(h: 02, m: 00, s: 00, f: 00), at: .fps24)
+        #expect(
+            try interval.flattened()
+                == Timecode(.components(h: 02, m: 00, s: 00, f: 00), at: .fps24)
         )
     }
     
-    /// Requires @testable
-    func testTimecodeOffsettingA() throws {
+    /// Requires `@testable import`.
+    @Test
+    func timecodeOffsettingA() async throws {
         // positive
         
         let intervalTC = Timecode(.components(m: 1), at: .fps24, by: .allowingInvalid)
         
         let interval = TimecodeInterval(intervalTC)
         
-        XCTAssertEqual(
-            try interval.timecode(offsetting: Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 01, s: 00, f: 00), at: .fps24)
+        #expect(
+            try interval.timecode(offsetting: Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 01, s: 00, f: 00), at: .fps24)
         )
     }
     
-    /// Requires @testable
-    func testTimecodeOffsettingB() throws {
+    /// Requires `@testable import`.
+    @Test
+    func timecodeOffsettingB() async throws {
         // negative
         
         let intervalTC = Timecode(.components(m: 1), at: .fps24, by: .allowingInvalid)
         
         let interval = TimecodeInterval(intervalTC, .minus)
         
-        XCTAssertEqual(
-            try interval.timecode(offsetting: Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 00, m: 59, s: 00, f: 00), at: .fps24)
+        #expect(
+            try interval.timecode(offsetting: Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 00, m: 59, s: 00, f: 00), at: .fps24)
         )
     }
     
-    func testRealTimeValueA() throws {
+    @Test
+    func realTimeValueA() async throws {
         // positive
         
         let intervalTC = try Timecode(.components(h: 1), at: .fps24)
         
         let interval = TimecodeInterval(intervalTC)
         
-        XCTAssertEqual(interval.realTimeValue, intervalTC.realTimeValue)
+        #expect(interval.realTimeValue == intervalTC.realTimeValue)
     }
     
-    func testRealTimeValueB() throws {
+    @Test
+    func realTimeValueB() async throws {
         // negative
         
         let intervalTC = try Timecode(.components(h: 1), at: .fps24)
         
         let interval = TimecodeInterval(intervalTC, .minus)
         
-        XCTAssertEqual(interval.realTimeValue, -intervalTC.realTimeValue)
+        #expect(interval.realTimeValue == -intervalTC.realTimeValue)
     }
     
-    func testStaticConstructors_Positive() throws {
+    @Test
+    func staticConstructors_Positive() async throws {
         let interval: TimecodeInterval = try .positive(
             Timecode(.components(h: 1), at: .fps24)
         )
-        XCTAssertEqual(
-            interval.absoluteInterval,
-            try Timecode(.components(h: 1), at: .fps24)
-        )
-        XCTAssertFalse(interval.isNegative)
+        #expect(try interval.absoluteInterval == Timecode(.components(h: 1), at: .fps24))
+        #expect(!interval.isNegative)
     }
     
-    func testStaticConstructors_Negative() throws {
+    @Test
+    func staticConstructors_Negative() async throws {
         let interval: TimecodeInterval = try .negative(
             Timecode(.components(h: 1), at: .fps24)
         )
-        XCTAssertEqual(
-            interval.absoluteInterval,
-            try Timecode(.components(h: 1), at: .fps24)
-        )
-        XCTAssertTrue(interval.isNegative)
+        #expect(try interval.absoluteInterval == Timecode(.components(h: 1), at: .fps24))
+        #expect(interval.isNegative)
     }
 }

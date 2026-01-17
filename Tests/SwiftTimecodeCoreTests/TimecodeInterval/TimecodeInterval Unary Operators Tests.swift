@@ -5,23 +5,22 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeInterval_UnaryOperators_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testNegative() throws {
+@Suite struct TimecodeInterval_UnaryOperators_Tests {
+    @Test
+    func negative() async throws {
         let interval = try -Timecode(.components(m: 1), at: .fps24)
         
-        XCTAssertEqual(interval.absoluteInterval, try Timecode(.components(m: 1), at: .fps24))
-        XCTAssertTrue(interval.isNegative)
+        #expect(try interval.absoluteInterval == Timecode(.components(m: 1), at: .fps24))
+        #expect(interval.isNegative)
     }
     
-    func testPositive() throws {
+    @Test
+    func positive() async throws {
         let interval = try +Timecode(.components(m: 1), at: .fps24)
         
-        XCTAssertEqual(interval.absoluteInterval, try Timecode(.components(m: 1), at: .fps24))
-        XCTAssertFalse(interval.isNegative)
+        #expect(try interval.absoluteInterval == Timecode(.components(m: 1), at: .fps24))
+        #expect(!interval.isNegative)
     }
 }

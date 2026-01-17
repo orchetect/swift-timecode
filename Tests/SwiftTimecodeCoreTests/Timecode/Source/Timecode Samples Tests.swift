@@ -5,26 +5,23 @@
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
-import XCTest
+import Testing
 
-final class Timecode_Source_Samples_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testTimecode_init_Samples_Exactly() throws {
-        for item in TimecodeFrameRate.allCases {
-            let tc = try Timecode(
-                .samples(48000 * 2, sampleRate: 48000),
-                at: item
-            )
-            
-            // don't imperatively check each result, just make sure that a value was set;
-            // setter logic is unit-tested elsewhere, we just want to check the Timecode.init interface here.
-            XCTAssertNotEqual(tc.seconds, 0, "for \(item)")
-        }
+@Suite struct Timecode_Source_Samples_Tests {
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_init_Samples_Exactly(frameRate: TimecodeFrameRate) async throws {
+        let tc = try Timecode(
+            .samples(48000 * 2, sampleRate: 48000),
+            at: frameRate
+        )
+        
+        // don't imperatively check each result, just make sure that a value was set;
+        // setter logic is unit-tested elsewhere, we just want to check the Timecode.init interface here.
+        #expect(tc.seconds != 0)
     }
     
-    func testTimecode_init_Samples_Clamping() {
+    @Test
+    func timecode_init_Samples_Clamping() async {
         let tc = Timecode(
             .samples(
                 4_147_200_000 + 172_800_000, // 25 hours @ 24fps
@@ -34,13 +31,14 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
             by: .clamping
         )
         
-        XCTAssertEqual(
-            tc.components,
-            Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
+        #expect(
+            tc.components
+                == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
     
-    func testTimecode_init_Samples_Wrapping() {
+    @Test
+    func timecode_init_Samples_Wrapping() async {
         let tc = Timecode(
             .samples(
                 4_147_200_000 + 172_800_000, // 25 hours @ 24fps
@@ -50,10 +48,11 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
             by: .wrapping
         )
         
-        XCTAssertEqual(tc.components, Timecode.Components(h: 1))
+        #expect(tc.components == Timecode.Components(h: 1))
     }
     
-    func testTimecode_init_Samples_RawValues() {
+    @Test
+    func timecode_init_Samples_RawValues() async {
         let tc = Timecode(
             .samples(
                 (4_147_200_000 * 2) + 172_800_000, // 2 days + 1 hour @ 24fps
@@ -63,10 +62,11 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
             by: .allowingInvalid
         )
         
-        XCTAssertEqual(tc.components, Timecode.Components(d: 2, h: 1))
+        #expect(tc.components == Timecode.Components(d: 2, h: 1))
     }
     
-    func testTimecode_init_Samples_RawValues_Negative() {
+    @Test
+    func timecode_init_Samples_RawValues_Negative() async {
         let tc = Timecode(
             .samples(
                 -((4_147_200_000 * 2) + 172_800_000), // 2 days + 1 hour @ 24fps
@@ -77,10 +77,11 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
         )
         
         // Negates only the largest non-zero component if input is negative
-        XCTAssertEqual(tc.components, Timecode.Components(d: -2, h: 1))
+        #expect(tc.components == Timecode.Components(d: -2, h: 1))
     }
     
-    func testSamplesGetSet_48KHz() throws {
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_samplesGetSet_48KHz(frameRate: TimecodeFrameRate) async throws {
         // pre-computed constants
         
         // confirmed correct in PT and Cubase
@@ -90,7 +91,7 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
         let samplesIn1DayTC_30DF = 4_143_052_800.0
         
         // allow for the over-estimate padding value that gets added in the TC->samples method
-        let accuracy = 0.001
+        let tolerance = 0.001
         
         // MARK: samples as Double
         func validate(
@@ -109,23 +110,11 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
                 // DAWs seem to round using standard rounding rules (?)
                 sv.round()
             }
-            XCTAssertEqual(
-                sv,
-                samplesIn1DayTC,
-                accuracy: accuracy,
-                "at \(fRate)"
-            )
+            #expect(sv.isApproximatelyEqual(to: samplesIn1DayTC, absoluteTolerance: tolerance))
             
             // set
-            try tc.set(.samples(
-                samplesIn1DayTC,
-                sampleRate: sRate
-            ))
-            XCTAssertEqual(
-                tc.components,
-                Timecode.Components(d: 1),
-                "at \(fRate)"
-            )
+            try tc.set(.samples(samplesIn1DayTC, sampleRate: sRate))
+            #expect(tc.components == Timecode.Components(d: 1))
         }
         
         // MARK: samples as Int
@@ -138,103 +127,91 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
             
             // get
             try tc.set(.components(d: 1))
-            XCTAssertEqual(
-                tc.samplesValue(sampleRate: sRate),
-                samplesIn1DayTC,
-                "at \(fRate)"
-            )
+            #expect(tc.samplesValue(sampleRate: sRate) == samplesIn1DayTC)
             
             // set
-            try tc.set(.samples(
-                samplesIn1DayTC,
-                sampleRate: sRate
-            ))
-            XCTAssertEqual(
-                tc.components,
-                Timecode.Components(d: 1),
-                "at \(fRate)"
-            )
+            try tc.set(.samples(samplesIn1DayTC, sampleRate: sRate))
+            #expect(tc.components == Timecode.Components(d: 1))
         }
         
         // 48KHz ___________________________________
         
-        for fRate in TimecodeFrameRate.allCases {
-            let sRate = 48000
+        let sRate = 48000
+        
+        var samplesIn1DayTCDouble = 0.0
+        var samplesIn1DayTCInt = 0
+        var roundedForDropFrame = false
+        
+        switch frameRate {
+        case .fps23_976,
+                .fps24_98,
+                .fps29_97,
+                .fps47_952,
+                .fps59_94,
+                .fps95_904,
+                .fps119_88:
             
-            var samplesIn1DayTCDouble = 0.0
-            var samplesIn1DayTCInt = 0
-            var roundedForDropFrame = false
+            samplesIn1DayTCDouble = samplesIn1DayTC_ShrunkFrameRates
+            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            roundedForDropFrame = false
             
-            switch fRate {
-            case .fps23_976,
-                 .fps24_98,
-                 .fps29_97,
-                 .fps47_952,
-                 .fps59_94,
-                 .fps95_904,
-                 .fps119_88:
-                
-                samplesIn1DayTCDouble = samplesIn1DayTC_ShrunkFrameRates
-                samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
-                roundedForDropFrame = false
-                
-            case .fps24,
-                 .fps25,
-                 .fps30,
-                 .fps48,
-                 .fps50,
-                 .fps60,
-                 .fps90,
-                 .fps96,
-                 .fps100,
-                 .fps120:
-                
-                samplesIn1DayTCDouble = samplesIn1DayTC_BaseFrameRates
-                samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
-                roundedForDropFrame = false
-                
-            case .fps29_97d,
-                 .fps59_94d,
-                 .fps119_88d:
-                
-                // Cubase:
-                // - reports 4147195853 @ 1 day
-                // - there may be rounding happening in Cubase
-                // Pro Tools:
-                // - reports 2073597926 @ 12 hours
-                // - double this would technically be 4147195854 but Cubase shows 1 frame less
-                
-                samplesIn1DayTCDouble = samplesIn1DayTC_DropFrameRates
-                samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
-                roundedForDropFrame = true // DAWs seem to using standard rounding for DF (?)
-                
-            case .fps30d,
-                 .fps60d,
-                 .fps120d:
-                
-                samplesIn1DayTCDouble = samplesIn1DayTC_30DF
-                samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
-                roundedForDropFrame = false
-            }
+        case .fps24,
+                .fps25,
+                .fps30,
+                .fps48,
+                .fps50,
+                .fps60,
+                .fps90,
+                .fps96,
+                .fps100,
+                .fps120:
             
-            // int
-            try validate(
-                using: samplesIn1DayTCInt,
-                sRate: sRate,
-                fRate: fRate
-            )
+            samplesIn1DayTCDouble = samplesIn1DayTC_BaseFrameRates
+            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            roundedForDropFrame = false
             
-            // double
-            try validate(
-                using: samplesIn1DayTCDouble,
-                sRate: sRate,
-                fRate: fRate,
-                roundedForDropFrame: roundedForDropFrame
-            )
+        case .fps29_97d,
+                .fps59_94d,
+                .fps119_88d:
+            
+            // Cubase:
+            // - reports 4147195853 @ 1 day
+            // - there may be rounding happening in Cubase
+            // Pro Tools:
+            // - reports 2073597926 @ 12 hours
+            // - double this would technically be 4147195854 but Cubase shows 1 frame less
+            
+            samplesIn1DayTCDouble = samplesIn1DayTC_DropFrameRates
+            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            roundedForDropFrame = true // DAWs seem to using standard rounding for DF (?)
+            
+        case .fps30d,
+                .fps60d,
+                .fps120d:
+            
+            samplesIn1DayTCDouble = samplesIn1DayTC_30DF
+            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            roundedForDropFrame = false
         }
+        
+        // int
+        try validate(
+            using: samplesIn1DayTCInt,
+            sRate: sRate,
+            fRate: frameRate
+        )
+        
+        // double
+        try validate(
+            using: samplesIn1DayTCDouble,
+            sRate: sRate,
+            fRate: frameRate,
+            roundedForDropFrame: roundedForDropFrame
+        )
     }
     
-    func testTimecode_Samples_SubFrames() throws {
+    @Test
+    func timecode_Samples_SubFrames() async throws {
         // ensure subframes are calculated correctly
         
         // test for precision and rounding issues by iterating every subframe
@@ -294,22 +271,23 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
         }
         
         if !frameRatesWithSetTimecodeErrors.isEmpty {
-            XCTFail(
+            Issue.record(
                 "These frame rates had \(frameRatesWithSetTimecodeErrorsCount) errors setting timecode from samples: \(frameRatesWithSetTimecodeErrors.sorted())"
             )
         }
         
         if !frameRatesWithMismatchingComponents.isEmpty {
-            XCTFail(
+            Issue.record(
                 "These frame rates had \(frameRatesWithMismatchingComponentsCount) errors with mismatching timecode components after converting samples: \(frameRatesWithSetTimecodeErrors.sorted())"
             )
         }
     }
     
-    func testEdgeCases() throws {
+    @Test
+    func edgeCases() async throws {
         // test for really large values
         
-        XCTAssertEqual(
+        #expect(
             Timecode(
                 .components(
                     d: 1234567891234564567,
@@ -321,8 +299,8 @@ final class Timecode_Source_Samples_Tests: XCTestCase {
                 ),
                 at: .fps24, by: .allowingInvalid
             )
-            .samplesValue(sampleRate: 48000),
-            0 // failsafe value
+            .samplesValue(sampleRate: 48000)
+            == 0 // failsafe value
         )
     }
 }

@@ -5,24 +5,23 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeTransformer_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testNone() throws {
+@Suite struct TimecodeTransformer_Tests {
+    @Test
+    func none() async throws {
         // .none
         
         let transformer = TimecodeTransformer(.none)
         
-        XCTAssertEqual(
-            try transformer.transform(Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 00, s: 00, f: 00), at: .fps24)
+        #expect(
+            try transformer.transform(Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 00, s: 00, f: 00), at: .fps24)
         )
     }
     
-    func testOffset() throws {
+    @Test
+    func offset() async throws {
         // .offset()
         
         let deltaTC = try Timecode(.components(m: 1), at: .fps24)
@@ -34,45 +33,48 @@ final class TimecodeTransformer_Tests: XCTestCase {
         
         transformer.enabled = false
         
-        XCTAssertEqual(
-            try transformer.transform(Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 00, s: 00, f: 00), at: .fps24)
+        #expect(
+            try transformer.transform(Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 00, s: 00, f: 00), at: .fps24)
         )
         
         // enabled
         
         transformer.enabled = true
         
-        XCTAssertEqual(
-            try transformer.transform(Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 01, s: 00, f: 00), at: .fps24)
+        #expect(
+            try transformer.transform(Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 01, s: 00, f: 00), at: .fps24)
         )
     }
     
-    func testCustom() throws {
+    @Test
+    func custom() async throws {
         // .custom()
         
         let transformer = TimecodeTransformer(.custom { // inputTC -> Timecode in
             $0.adding(Timecode.Components(m: 1), by: .wrapping)
         })
         
-        XCTAssertEqual(
-            try transformer.transform(Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 01, s: 00, f: 00), at: .fps24)
+        #expect(
+            try transformer.transform(Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 01, s: 00, f: 00), at: .fps24)
         )
     }
     
-    func testEmpty() throws {
+    @Test
+    func empty() async throws {
         // array init allows empty transform array
         let transformer = TimecodeTransformer([])
         
-        XCTAssertEqual(
-            try transformer.transform(Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 00, s: 00, f: 00), at: .fps24)
+        #expect(
+            try transformer.transform(Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 00, s: 00, f: 00), at: .fps24)
         )
     }
     
-    func testMultiple_Offsets() throws {
+    @Test
+    func multiple_Offsets() async throws {
         // .offset(by:)
         
         let deltaTC1 = try Timecode(.components(m: 1), at: .fps24)
@@ -83,13 +85,14 @@ final class TimecodeTransformer_Tests: XCTestCase {
         
         let transformer = TimecodeTransformer([.offset(by: delta1), .offset(by: delta2)])
         
-        XCTAssertEqual(
-            try transformer.transform(Timecode(.components(h: 1), at: .fps24)),
-            try Timecode(.components(h: 01, m: 00, s: 59, f: 00), at: .fps24)
+        #expect(
+            try transformer.transform(Timecode(.components(h: 1), at: .fps24))
+                == Timecode(.components(h: 01, m: 00, s: 59, f: 00), at: .fps24)
         )
     }
     
-    func testShorthand() throws {
+    @Test
+    func shorthand() async throws {
         let delta = Timecode(.zero, at: .fps24)
         _ = TimecodeTransformer(.offset(by: .positive(delta)))
     }

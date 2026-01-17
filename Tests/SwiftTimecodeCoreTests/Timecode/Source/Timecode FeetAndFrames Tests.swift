@@ -5,112 +5,112 @@
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
-import XCTest
+import Testing
 
-final class Timecode_Source_FeetAndFrames_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testTimecode_23_976fps_zero() throws {
+@Suite struct Timecode_Source_FeetAndFrames_Tests {
+    @Test
+    func timecode_23_976fps_zero() throws {
         let ff = Timecode(.zero, at: .fps23_976).feetAndFramesValue
-        XCTAssertEqual(ff.feet, 0)
-        XCTAssertEqual(ff.frames, 0)
+        #expect(ff.feet == 0)
+        #expect(ff.frames == 0)
     }
     
-    func testTimecode_23_976fps_1min() throws {
+    @Test
+    func timecode_23_976fps_1min() throws {
         let ff = try Timecode(.components(m: 1), at: .fps23_976).feetAndFramesValue
-        XCTAssertEqual(ff.feet, 90)
-        XCTAssertEqual(ff.frames, 0)
+        #expect(ff.feet == 90)
+        #expect(ff.frames == 0)
     }
     
-    func testTimecode_24fps_zero() throws {
+    @Test
+    func timecode_24fps_zero() throws {
         let ff = Timecode(.zero, at: .fps24).feetAndFramesValue
-        XCTAssertEqual(ff.feet, 0)
-        XCTAssertEqual(ff.frames, 0)
+        #expect(ff.feet == 0)
+        #expect(ff.frames == 0)
     }
     
-    func testTimecode_24fps_1min() throws {
+    @Test
+    func timecode_24fps_1min() throws {
         let ff = try Timecode(.components(m: 1), at: .fps24).feetAndFramesValue
-        XCTAssertEqual(ff.feet, 90)
-        XCTAssertEqual(ff.frames, 0)
+        #expect(ff.feet == 90)
+        #expect(ff.frames == 0)
     }
     
-    func testTimecode_allRates_complex() throws {
-        for frate in TimecodeFrameRate.allCases {
-            let ff = try Timecode(
-                .components(h: 1, m: 2, s: 3, f: 4),
-                at: frate
-            )
-            .feetAndFramesValue
-            
-            // TimecodeFrameRate.maxTotalFrames is a good reference for groupings
-            // which shows frame rates with the same frame counts over time
-            switch frate {
-            case .fps23_976, .fps24:
-                XCTAssertEqual(ff.feet, 5584, "\(frate)")
-                XCTAssertEqual(ff.frames, 12, "\(frate)")
-            case .fps24_98, .fps25:
-                XCTAssertEqual(ff.feet, 5817, "\(frate)")
-                XCTAssertEqual(ff.frames, 07, "\(frate)")
-            case .fps29_97, .fps30:
-                XCTAssertEqual(ff.feet, 6980, "\(frate)")
-                XCTAssertEqual(ff.frames, 14, "\(frate)")
-            case .fps29_97d, .fps30d:
-                XCTAssertEqual(ff.feet, 6973, "\(frate)")
-                XCTAssertEqual(ff.frames, 14, "\(frate)")
-            case .fps47_952, .fps48:
-                XCTAssertEqual(ff.feet, 11169, "\(frate)")
-                XCTAssertEqual(ff.frames, 04, "\(frate)")
-            case .fps50:
-                XCTAssertEqual(ff.feet, 11634, "\(frate)")
-                XCTAssertEqual(ff.frames, 10, "\(frate)")
-            case .fps59_94, .fps60:
-                XCTAssertEqual(ff.feet, 13961, "\(frate)")
-                XCTAssertEqual(ff.frames, 08, "\(frate)")
-            case .fps59_94d, .fps60d:
-                XCTAssertEqual(ff.feet, 13947, "\(frate)")
-                XCTAssertEqual(ff.frames, 08, "\(frate)")
-            case .fps90:
-                XCTAssertEqual(ff.feet, 20942, "\(frate)")
-                XCTAssertEqual(ff.frames, 02, "\(frate)")
-            case .fps95_904, .fps96:
-                XCTAssertEqual(ff.feet, 22338, "\(frate)")
-                XCTAssertEqual(ff.frames, 04, "\(frate)")
-            case .fps100:
-                XCTAssertEqual(ff.feet, 23269, "\(frate)")
-                XCTAssertEqual(ff.frames, 00, "\(frate)")
-            case .fps119_88, .fps120:
-                XCTAssertEqual(ff.feet, 27922, "\(frate)")
-                XCTAssertEqual(ff.frames, 12, "\(frate)")
-            case .fps119_88d, .fps120d:
-                XCTAssertEqual(ff.feet, 27894, "\(frate)")
-                XCTAssertEqual(ff.frames, 12, "\(frate)")
-            }
-            
-            XCTAssertEqual(ff.subFrames, 0, "\(frate)")
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_allRates_complex(frameRate: TimecodeFrameRate) throws {
+        let ff = try Timecode(
+            .components(h: 1, m: 2, s: 3, f: 4),
+            at: frameRate
+        )
+        .feetAndFramesValue
+        
+        // TimecodeFrameRate.maxTotalFrames is a good reference for groupings
+        // which shows frame rates with the same frame counts over time
+        switch frameRate {
+        case .fps23_976, .fps24:
+            #expect(ff.feet == 5584)
+            #expect(ff.frames == 12)
+        case .fps24_98, .fps25:
+            #expect(ff.feet == 5817)
+            #expect(ff.frames == 07)
+        case .fps29_97, .fps30:
+            #expect(ff.feet == 6980)
+            #expect(ff.frames == 14)
+        case .fps29_97d, .fps30d:
+            #expect(ff.feet == 6973)
+            #expect(ff.frames == 14)
+        case .fps47_952, .fps48:
+            #expect(ff.feet == 11169)
+            #expect(ff.frames == 04)
+        case .fps50:
+            #expect(ff.feet == 11634)
+            #expect(ff.frames == 10)
+        case .fps59_94, .fps60:
+            #expect(ff.feet == 13961)
+            #expect(ff.frames == 08)
+        case .fps59_94d, .fps60d:
+            #expect(ff.feet == 13947)
+            #expect(ff.frames == 08)
+        case .fps90:
+            #expect(ff.feet == 20942)
+            #expect(ff.frames == 02)
+        case .fps95_904, .fps96:
+            #expect(ff.feet == 22338)
+            #expect(ff.frames == 04)
+        case .fps100:
+            #expect(ff.feet == 23269)
+            #expect(ff.frames == 00)
+        case .fps119_88, .fps120:
+            #expect(ff.feet == 27922)
+            #expect(ff.frames == 12)
+        case .fps119_88d, .fps120d:
+            #expect(ff.feet == 27894)
+            #expect(ff.frames == 12)
         }
+        
+        #expect(ff.subFrames == 0)
     }
     
     /// Ensure subFrames are correct when set.
-    func testTimecode_allRates_subFrames() throws {
-        for frate in TimecodeFrameRate.allCases {
-            let ff = try Timecode(.components(h: 1, m: 2, s: 3, f: 4, sf: 24), at: frate)
-                .feetAndFramesValue
-            
-            XCTAssertEqual(ff.subFrames, 24, "\(frate)")
-        }
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_allRates_subFrames(frameRate: TimecodeFrameRate) throws {
+        let ff = try Timecode(.components(h: 1, m: 2, s: 3, f: 4, sf: 24), at: frameRate)
+            .feetAndFramesValue
+        
+        #expect(ff.subFrames == 24)
     }
     
-    func testEdgeCases() throws {
+    @Test
+    func edgeCases() throws {
         // test for really large values
         
-        XCTAssertThrowsError(try FeetAndFrames("12345678912345645678+12345678912345645678"))
-        XCTAssertThrowsError(try FeetAndFrames("12345678912345645678+12345678912345645678.12345678912345645678"))
-        XCTAssertThrowsError(try FeetAndFrames("12345678912345645678+00"))
-        XCTAssertThrowsError(try FeetAndFrames("00+12345678912345645678"))
-        XCTAssertThrowsError(try FeetAndFrames("00+00.12345678912345645678"))
+        #expect(throws: (any Error).self) { try FeetAndFrames("12345678912345645678+12345678912345645678") }
+        #expect(throws: (any Error).self) { try FeetAndFrames("12345678912345645678+12345678912345645678.12345678912345645678") }
+        #expect(throws: (any Error).self) { try FeetAndFrames("12345678912345645678+00") }
+        #expect(throws: (any Error).self) { try FeetAndFrames("00+12345678912345645678") }
+        #expect(throws: (any Error).self) { try FeetAndFrames("00+00.12345678912345645678") }
         
-        XCTAssertEqual(
+        #expect(
             Timecode(
                 .components(
                     d: 1234567891234564567,
@@ -123,8 +123,8 @@ final class Timecode_Source_FeetAndFrames_Tests: XCTestCase {
                 at: .fps24,
                 by: .allowingInvalid
             )
-            .feetAndFramesValue,
-            .init(feet: 0, frames: 0, subFrames: 1234567891234564567) // failsafe values
+            .feetAndFramesValue
+            == FeetAndFrames(feet: 0, frames: 0, subFrames: 1234567891234564567) // failsafe values
         )
     }
 }

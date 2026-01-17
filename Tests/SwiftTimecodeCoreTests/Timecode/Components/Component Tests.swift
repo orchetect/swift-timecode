@@ -5,149 +5,155 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class Timecode_Component_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
+@Suite struct Timecode_Component_Tests {
     fileprivate typealias C = Timecode.Component
     
     // MARK: - Comparable
     
-    func testComparable() {
+    @Test
+    func comparable() async {
         // baseline
         
-        XCTAssertTrue(C.days < C.hours)
-        XCTAssertTrue(C.hours < C.minutes)
-        XCTAssertTrue(C.minutes < C.seconds)
-        XCTAssertTrue(C.seconds < C.frames)
-        XCTAssertTrue(C.frames < C.subFrames)
+        #expect(C.days < C.hours)
+        #expect(C.hours < C.minutes)
+        #expect(C.minutes < C.seconds)
+        #expect(C.seconds < C.frames)
+        #expect(C.frames < C.subFrames)
         
-        XCTAssertTrue(C.hours > C.days)
-        XCTAssertTrue(C.minutes > C.hours)
-        XCTAssertTrue(C.seconds > C.minutes)
-        XCTAssertTrue(C.frames > C.seconds)
-        XCTAssertTrue(C.subFrames > C.frames)
+        #expect(C.hours > C.days)
+        #expect(C.minutes > C.hours)
+        #expect(C.seconds > C.minutes)
+        #expect(C.frames > C.seconds)
+        #expect(C.subFrames > C.frames)
         
         // exhaustive
         
-        XCTAssertFalse(C.days < C.days)
-        XCTAssertTrue(C.days < C.hours)
-        XCTAssertTrue(C.days < C.minutes)
-        XCTAssertTrue(C.days < C.seconds)
-        XCTAssertTrue(C.days < C.frames)
-        XCTAssertTrue(C.days < C.subFrames)
+        #expect(!(C.days < C.days))
+        #expect(C.days < C.hours)
+        #expect(C.days < C.minutes)
+        #expect(C.days < C.seconds)
+        #expect(C.days < C.frames)
+        #expect(C.days < C.subFrames)
         
-        XCTAssertFalse(C.hours < C.days)
-        XCTAssertFalse(C.hours < C.hours)
-        XCTAssertTrue(C.hours < C.minutes)
-        XCTAssertTrue(C.hours < C.seconds)
-        XCTAssertTrue(C.hours < C.frames)
-        XCTAssertTrue(C.hours < C.subFrames)
+        #expect(!(C.hours < C.days))
+        #expect(!(C.hours < C.hours))
+        #expect(C.hours < C.minutes)
+        #expect(C.hours < C.seconds)
+        #expect(C.hours < C.frames)
+        #expect(C.hours < C.subFrames)
         
-        XCTAssertFalse(C.minutes < C.days)
-        XCTAssertFalse(C.minutes < C.hours)
-        XCTAssertFalse(C.minutes < C.minutes)
-        XCTAssertTrue(C.minutes < C.seconds)
-        XCTAssertTrue(C.minutes < C.frames)
-        XCTAssertTrue(C.minutes < C.subFrames)
+        #expect(!(C.minutes < C.days))
+        #expect(!(C.minutes < C.hours))
+        #expect(!(C.minutes < C.minutes))
+        #expect(C.minutes < C.seconds)
+        #expect(C.minutes < C.frames)
+        #expect(C.minutes < C.subFrames)
         
-        XCTAssertFalse(C.seconds < C.days)
-        XCTAssertFalse(C.seconds < C.hours)
-        XCTAssertFalse(C.seconds < C.minutes)
-        XCTAssertFalse(C.seconds < C.seconds)
-        XCTAssertTrue(C.seconds < C.frames)
-        XCTAssertTrue(C.seconds < C.subFrames)
+        #expect(!(C.seconds < C.days))
+        #expect(!(C.seconds < C.hours))
+        #expect(!(C.seconds < C.minutes))
+        #expect(!(C.seconds < C.seconds))
+        #expect(C.seconds < C.frames)
+        #expect(C.seconds < C.subFrames)
         
-        XCTAssertFalse(C.frames < C.days)
-        XCTAssertFalse(C.frames < C.hours)
-        XCTAssertFalse(C.frames < C.minutes)
-        XCTAssertFalse(C.frames < C.seconds)
-        XCTAssertFalse(C.frames < C.frames)
-        XCTAssertTrue(C.frames < C.subFrames)
+        #expect(!(C.frames < C.days))
+        #expect(!(C.frames < C.hours))
+        #expect(!(C.frames < C.minutes))
+        #expect(!(C.frames < C.seconds))
+        #expect(!(C.frames < C.frames))
+        #expect(C.frames < C.subFrames)
         
-        XCTAssertFalse(C.subFrames < C.days)
-        XCTAssertFalse(C.subFrames < C.hours)
-        XCTAssertFalse(C.subFrames < C.minutes)
-        XCTAssertFalse(C.subFrames < C.seconds)
-        XCTAssertFalse(C.subFrames < C.frames)
-        XCTAssertFalse(C.subFrames < C.subFrames)
+        #expect(!(C.subFrames < C.days))
+        #expect(!(C.subFrames < C.hours))
+        #expect(!(C.subFrames < C.minutes))
+        #expect(!(C.subFrames < C.seconds))
+        #expect(!(C.subFrames < C.frames))
+        #expect(!(C.subFrames < C.subFrames))
     }
     
     // MARK: - Next
     
-    func testNext_HHMMSSFF() throws {
-        XCTAssertEqual(C.days.next(excluding: [.days, .subFrames]), .hours)
-        XCTAssertEqual(C.hours.next(excluding: [.days, .subFrames]), .minutes)
-        XCTAssertEqual(C.minutes.next(excluding: [.days, .subFrames]), .seconds)
-        XCTAssertEqual(C.seconds.next(excluding: [.days, .subFrames]), .frames)
-        XCTAssertEqual(C.frames.next(excluding: [.days, .subFrames]), .hours)
-        XCTAssertEqual(C.subFrames.next(excluding: [.days, .subFrames]), .hours)
+    @Test
+    func next_HHMMSSFF() async throws {
+        #expect(C.days.next(excluding: [.days, .subFrames]) == .hours)
+        #expect(C.hours.next(excluding: [.days, .subFrames]) == .minutes)
+        #expect(C.minutes.next(excluding: [.days, .subFrames]) == .seconds)
+        #expect(C.seconds.next(excluding: [.days, .subFrames]) == .frames)
+        #expect(C.frames.next(excluding: [.days, .subFrames]) == .hours)
+        #expect(C.subFrames.next(excluding: [.days, .subFrames]) == .hours)
     }
     
-    func testNext_HHMMSSFFXX() throws {
-        XCTAssertEqual(C.days.next(excluding: [.days]), .hours)
-        XCTAssertEqual(C.hours.next(excluding: [.days]), .minutes)
-        XCTAssertEqual(C.minutes.next(excluding: [.days]), .seconds)
-        XCTAssertEqual(C.seconds.next(excluding: [.days]), .frames)
-        XCTAssertEqual(C.frames.next(excluding: [.days]), .subFrames)
-        XCTAssertEqual(C.subFrames.next(excluding: [.days]), .hours)
+    @Test
+    func next_HHMMSSFFXX() async throws {
+        #expect(C.days.next(excluding: [.days]) == .hours)
+        #expect(C.hours.next(excluding: [.days]) == .minutes)
+        #expect(C.minutes.next(excluding: [.days]) == .seconds)
+        #expect(C.seconds.next(excluding: [.days]) == .frames)
+        #expect(C.frames.next(excluding: [.days]) == .subFrames)
+        #expect(C.subFrames.next(excluding: [.days]) == .hours)
     }
     
-    func testNext_DDHHMMSSFF() throws {
-        XCTAssertEqual(C.days.next(excluding: [.subFrames]), .hours)
-        XCTAssertEqual(C.hours.next(excluding: [.subFrames]), .minutes)
-        XCTAssertEqual(C.minutes.next(excluding: [.subFrames]), .seconds)
-        XCTAssertEqual(C.seconds.next(excluding: [.subFrames]), .frames)
-        XCTAssertEqual(C.frames.next(excluding: [.subFrames]), .days)
-        XCTAssertEqual(C.subFrames.next(excluding: [.subFrames]), .days)
+    @Test
+    func next_DDHHMMSSFF() async throws {
+        #expect(C.days.next(excluding: [.subFrames]) == .hours)
+        #expect(C.hours.next(excluding: [.subFrames]) == .minutes)
+        #expect(C.minutes.next(excluding: [.subFrames]) == .seconds)
+        #expect(C.seconds.next(excluding: [.subFrames]) == .frames)
+        #expect(C.frames.next(excluding: [.subFrames]) == .days)
+        #expect(C.subFrames.next(excluding: [.subFrames]) == .days)
     }
     
-    func testNext_DDHHMMSSFFXX() throws {
-        XCTAssertEqual(C.days.next(excluding: []), .hours)
-        XCTAssertEqual(C.hours.next(excluding: []), .minutes)
-        XCTAssertEqual(C.minutes.next(excluding: []), .seconds)
-        XCTAssertEqual(C.seconds.next(excluding: []), .frames)
-        XCTAssertEqual(C.frames.next(excluding: []), .subFrames)
-        XCTAssertEqual(C.subFrames.next(excluding: []), .days)
+    @Test
+    func next_DDHHMMSSFFXX() async throws {
+        #expect(C.days.next(excluding: []) == .hours)
+        #expect(C.hours.next(excluding: []) == .minutes)
+        #expect(C.minutes.next(excluding: []) == .seconds)
+        #expect(C.seconds.next(excluding: []) == .frames)
+        #expect(C.frames.next(excluding: []) == .subFrames)
+        #expect(C.subFrames.next(excluding: []) == .days)
     }
     
     // MARK: - Previous
     
-    func testPrevious_HHMMSSFF() throws {
-        XCTAssertEqual(C.days.previous(excluding: [.days, .subFrames]), .frames)
-        XCTAssertEqual(C.hours.previous(excluding: [.days, .subFrames]), .frames)
-        XCTAssertEqual(C.minutes.previous(excluding: [.days, .subFrames]), .hours)
-        XCTAssertEqual(C.seconds.previous(excluding: [.days, .subFrames]), .minutes)
-        XCTAssertEqual(C.frames.previous(excluding: [.days, .subFrames]), .seconds)
-        XCTAssertEqual(C.subFrames.previous(excluding: [.days, .subFrames]), .frames)
+    @Test
+    func previous_HHMMSSFF() async throws {
+        #expect(C.days.previous(excluding: [.days, .subFrames]) == .frames)
+        #expect(C.hours.previous(excluding: [.days, .subFrames]) == .frames)
+        #expect(C.minutes.previous(excluding: [.days, .subFrames]) == .hours)
+        #expect(C.seconds.previous(excluding: [.days, .subFrames]) == .minutes)
+        #expect(C.frames.previous(excluding: [.days, .subFrames]) == .seconds)
+        #expect(C.subFrames.previous(excluding: [.days, .subFrames]) == .frames)
     }
     
-    func testPrevious_HHMMSSFFXX() throws {
-        XCTAssertEqual(C.days.previous(excluding: [.days]), .subFrames)
-        XCTAssertEqual(C.hours.previous(excluding: [.days]), .subFrames)
-        XCTAssertEqual(C.minutes.previous(excluding: [.days]), .hours)
-        XCTAssertEqual(C.seconds.previous(excluding: [.days]), .minutes)
-        XCTAssertEqual(C.frames.previous(excluding: [.days]), .seconds)
-        XCTAssertEqual(C.subFrames.previous(excluding: [.days]), .frames)
+    @Test
+    func previous_HHMMSSFFXX() async throws {
+        #expect(C.days.previous(excluding: [.days]) == .subFrames)
+        #expect(C.hours.previous(excluding: [.days]) == .subFrames)
+        #expect(C.minutes.previous(excluding: [.days]) == .hours)
+        #expect(C.seconds.previous(excluding: [.days]) == .minutes)
+        #expect(C.frames.previous(excluding: [.days]) == .seconds)
+        #expect(C.subFrames.previous(excluding: [.days]) == .frames)
     }
     
-    func testPrevious_DDHHMMSSFF() throws {
-        XCTAssertEqual(C.days.previous(excluding: [.subFrames]), .frames)
-        XCTAssertEqual(C.hours.previous(excluding: [.subFrames]), .days)
-        XCTAssertEqual(C.minutes.previous(excluding: [.subFrames]), .hours)
-        XCTAssertEqual(C.seconds.previous(excluding: [.subFrames]), .minutes)
-        XCTAssertEqual(C.frames.previous(excluding: [.subFrames]), .seconds)
-        XCTAssertEqual(C.subFrames.previous(excluding: [.subFrames]), .frames)
+    @Test
+    func previous_DDHHMMSSFF() async throws {
+        #expect(C.days.previous(excluding: [.subFrames]) == .frames)
+        #expect(C.hours.previous(excluding: [.subFrames]) == .days)
+        #expect(C.minutes.previous(excluding: [.subFrames]) == .hours)
+        #expect(C.seconds.previous(excluding: [.subFrames]) == .minutes)
+        #expect(C.frames.previous(excluding: [.subFrames]) == .seconds)
+        #expect(C.subFrames.previous(excluding: [.subFrames]) == .frames)
     }
     
-    func testPrevious_DDHHMMSSFFXX() throws {
-        XCTAssertEqual(C.days.previous(excluding: []), .subFrames)
-        XCTAssertEqual(C.hours.previous(excluding: []), .days)
-        XCTAssertEqual(C.minutes.previous(excluding: []), .hours)
-        XCTAssertEqual(C.seconds.previous(excluding: []), .minutes)
-        XCTAssertEqual(C.frames.previous(excluding: []), .seconds)
-        XCTAssertEqual(C.subFrames.previous(excluding: []), .frames)
+    @Test
+    func previous_DDHHMMSSFFXX() async throws {
+        #expect(C.days.previous(excluding: []) == .subFrames)
+        #expect(C.hours.previous(excluding: []) == .days)
+        #expect(C.minutes.previous(excluding: []) == .hours)
+        #expect(C.seconds.previous(excluding: []) == .minutes)
+        #expect(C.frames.previous(excluding: []) == .seconds)
+        #expect(C.subFrames.previous(excluding: []) == .frames)
     }
 }

@@ -7,11 +7,11 @@
 #if canImport(UniformTypeIdentifiers) && canImport(CoreTransferable)
 
 @testable import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class NSItemProviderTests: XCTestCase {
-    @MainActor
+@Suite struct NSItemProviderTests {
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    @MainActor @Test
     func testEncodeDecode() async throws {
         let properties = Timecode.Properties(
             rate: .fps120,
@@ -33,12 +33,12 @@ final class NSItemProviderTests: XCTestCase {
             propertiesForString: wrongProperties
         )
         
-        XCTAssertEqual(decoded.components, timecode.components)
-        XCTAssertEqual(decoded.properties, timecode.properties)
+        #expect(decoded.components == timecode.components)
+        #expect(decoded.properties == timecode.properties)
     }
     
-    @MainActor
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    @MainActor @Test
     func testDecodeString() async throws {
         let properties = Timecode.Properties(
             rate: .fps120,
@@ -62,12 +62,12 @@ final class NSItemProviderTests: XCTestCase {
             propertiesForString: newProperties
         )
         
-        XCTAssertEqual(decoded.components, timecode.components)
-        XCTAssertEqual(decoded.properties, newProperties)
+        #expect(decoded.components == timecode.components)
+        #expect(decoded.properties == newProperties)
     }
     
-    @MainActor
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
+    @MainActor @Test
     func testDecodeJSON() async throws {
         let properties = Timecode.Properties(
             rate: .fps120,
@@ -89,8 +89,8 @@ final class NSItemProviderTests: XCTestCase {
             propertiesForString: wrongProperties
         )
         
-        XCTAssertEqual(decoded.components, timecode.components)
-        XCTAssertEqual(decoded.properties, timecode.properties)
+        #expect(decoded.components == timecode.components)
+        #expect(decoded.properties == timecode.properties)
     }
 }
 

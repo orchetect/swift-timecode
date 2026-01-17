@@ -5,191 +5,173 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeAdHocTests: XCTestCase {
-    func testTimecode_Clamping() {
-        // 24 hour
-        
-        for item in TimecodeFrameRate.allCases {
-            XCTAssertEqual(
-                Timecode(
-                    .components(h: -1, m: -1, s: -1, f: -1),
-                    at: item,
-                    by: .clampingComponents
-                )
-                .components,
-                Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0),
-                "for \(item)"
-            )
-        }
-        
-        for item in TimecodeFrameRate.allCases {
-            let clamped = Timecode(
-                .components(h: 99, m: 99, s: 99, f: 10000),
-                at: item,
+@Suite struct TimecodeAdHocTests {
+    // MARK: - Clamping
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_24HourLimit_Underflow(frameRate: TimecodeFrameRate) async {
+        #expect(
+            Timecode(
+                .components(h: -1, m: -1, s: -1, f: -1),
+                at: frameRate,
                 by: .clampingComponents
             )
             .components
-            
-            XCTAssertEqual(
-                clamped,
-                Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: item.maxFrameNumberDisplayable),
-                "for \(item)"
-            )
-        }
-        
-        // 24 hour - testing with days
-        
-        for item in TimecodeFrameRate.allCases {
-            XCTAssertEqual(
-                Timecode(
-                    .components(d: -1, h: -1, m: -1, s: -1, f: -1),
-                    at: item,
-                    by: .clampingComponents
-                )
-                .components,
-                Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0),
-                "for \(item)"
-            )
-        }
-        
-        for item in TimecodeFrameRate.allCases {
-            let clamped = Timecode(
-                .components(d: 99, h: 99, m: 99, s: 99, f: 10000),
-                at: item,
-                by: .clampingComponents
-            )
-            .components
-            
-            XCTAssertEqual(
-                clamped,
-                Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: item.maxFrameNumberDisplayable),
-                "for \(item)"
-            )
-        }
-        
-        // 100 days
-        
-        for item in TimecodeFrameRate.allCases {
-            XCTAssertEqual(
-                Timecode(
-                    .components(h: -1, m: -1, s: -1, f: -1),
-                    at: item,
-                    by: .clampingComponents
-                )
-                .components,
-                Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0),
-                "for \(item)"
-            )
-        }
-        
-        for item in TimecodeFrameRate.allCases {
-            let clamped = Timecode(
-                .components(h: 99, m: 99, s: 99, f: 10000),
-                at: item,
-                by: .clampingComponents
-            )
-            .components
-            
-            XCTAssertEqual(
-                clamped,
-                Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: item.maxFrameNumberDisplayable),
-                "for \(item)"
-            )
-        }
-        
-        // 100 days - testing with days
-        
-        for item in TimecodeFrameRate.allCases {
-            XCTAssertEqual(
-                Timecode(
-                    .components(d: -1, h: -1, m: -1, s: -1, f: -1),
-                    at: item,
-                    limit: .max100Days,
-                    by: .clampingComponents
-                )
-                .components,
-                Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0),
-                "for \(item)"
-            )
-        }
-        
-        for item in TimecodeFrameRate.allCases {
-            let clamped = Timecode(
-                .components(d: 99, h: 99, m: 99, s: 99, f: 10000),
-                at: item,
-                limit: .max100Days,
-                by: .clampingComponents
-            )
-            .components
-            
-            XCTAssertEqual(
-                clamped,
-                Timecode.Components(d: 99, h: 23, m: 59, s: 59, f: item.maxFrameNumberDisplayable),
-                "for \(item)"
-            )
-        }
+            == Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0)
+        )
     }
     
-    func testTimecode_Wrapping() {
-        // 24 hour
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_24HourLimit_Overflow(frameRate: TimecodeFrameRate) async {
+        let clamped = Timecode(
+            .components(h: 99, m: 99, s: 99, f: 10000),
+            at: frameRate,
+            by: .clampingComponents
+        )
+            .components
         
-        for item in TimecodeFrameRate.allCases {
-            let wrapped = Timecode(
-                .components(d: 1),
-                at: item,
-                by: .wrapping
+        #expect(clamped == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: frameRate.maxFrameNumberDisplayable))
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_24HourLimit_Underflow_WithDays(frameRate: TimecodeFrameRate) async {
+        #expect(
+            Timecode(
+                .components(d: -1, h: -1, m: -1, s: -1, f: -1),
+                at: frameRate,
+                by: .clampingComponents
             )
             .components
-            
-            let result = Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0)
-            
-            XCTAssertEqual(wrapped, result, "for \(item)")
-        }
+            == Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0)
+        )
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_24HourLimit_Overflow_WithDays(frameRate: TimecodeFrameRate) async {
+        let clamped = Timecode(
+            .components(d: 99, h: 99, m: 99, s: 99, f: 10000),
+            at: frameRate,
+            by: .clampingComponents
+        )
+            .components
         
-        for item in TimecodeFrameRate.allCases {
-            let wrapped = Timecode(
-                .components(f: -1),
-                at: item,
-                by: .wrapping
+        #expect(clamped == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: frameRate.maxFrameNumberDisplayable))
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_100DaysLimit_Underflow(frameRate: TimecodeFrameRate) async {
+        #expect(
+            Timecode(
+                .components(h: -1, m: -1, s: -1, f: -1),
+                at: frameRate,
+                by: .clampingComponents
             )
             .components
-            
-            let result = Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: item.maxFrameNumberDisplayable, sf: 0)
-            
-            XCTAssertEqual(wrapped, result, "for \(item)")
-        }
-        
-        // 24 hour - testing with days
-        
-        for item in TimecodeFrameRate.allCases {
-            let wrapped = Timecode(
-                .components(d: 1, h: 2, m: 30, s: 20, f: 0),
-                at: item,
-                by: .wrapping
-            )
+            == Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0)
+        )
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_100DaysLimit_Overflow(frameRate: TimecodeFrameRate) async {
+        let clamped = Timecode(
+            .components(h: 99, m: 99, s: 99, f: 10000),
+            at: frameRate,
+            by: .clampingComponents
+        )
             .components
-            
-            let result = Timecode.Components(d: 0, h: 2, m: 30, s: 20, f: 0)
-            
-            XCTAssertEqual(wrapped, result, "for \(item)")
-        }
         
-        // 100 days
-        
-        for item in TimecodeFrameRate.allCases {
-            let wrapped = Timecode(
-                .components(d: -1),
-                at: item,
+        #expect(clamped == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: frameRate.maxFrameNumberDisplayable))
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_100DaysLimit_Underflow_WithDays(frameRate: TimecodeFrameRate) async {
+        #expect(
+            Timecode(
+                .components(d: -1, h: -1, m: -1, s: -1, f: -1),
+                at: frameRate,
                 limit: .max100Days,
-                by: .wrapping
+                by: .clampingComponents
             )
             .components
-            
-            let result = Timecode.Components(d: 99, h: 0, m: 0, s: 0, f: 0)
-            
-            XCTAssertEqual(wrapped, result, "for \(item)")
-        }
+            == Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0)
+        )
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Clamping_100DaysLimit_Overflow_WithDays(frameRate: TimecodeFrameRate) async {
+        let clamped = Timecode(
+            .components(d: 99, h: 99, m: 99, s: 99, f: 10000),
+            at: frameRate,
+            limit: .max100Days,
+            by: .clampingComponents
+        )
+            .components
+        
+        #expect(clamped == Timecode.Components(d: 99, h: 23, m: 59, s: 59, f: frameRate.maxFrameNumberDisplayable))
+    }
+    
+    // MARK: - Wrapping
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Wrapping_24HourLimit_Overflow(frameRate: TimecodeFrameRate) async {
+        let wrapped = Timecode(
+            .components(d: 1),
+            at: frameRate,
+            by: .wrapping
+        )
+            .components
+        
+        let result = Timecode.Components(d: 0, h: 0, m: 0, s: 0, f: 0)
+        
+        #expect(wrapped == result)
+    }
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Wrapping_24HourLimit_Underflow(frameRate: TimecodeFrameRate) async {
+        let wrapped = Timecode(
+            .components(f: -1),
+            at: frameRate,
+            by: .wrapping
+        )
+            .components
+        
+        let result = Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: frameRate.maxFrameNumberDisplayable, sf: 0)
+        
+        #expect(wrapped == result)
+    }
+    
+    // 24 hour - testing with days
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Wrapping_24HourLimit_Overflow_WithDays(frameRate: TimecodeFrameRate) async {
+        let wrapped = Timecode(
+            .components(d: 1, h: 2, m: 30, s: 20, f: 0),
+            at: frameRate,
+            by: .wrapping
+        )
+            .components
+        
+        let result = Timecode.Components(d: 0, h: 2, m: 30, s: 20, f: 0)
+        
+        #expect(wrapped == result)
+    }
+    
+    // 100 days
+    
+    @Test(arguments: TimecodeFrameRate.allCases)
+    func timecode_Wrapping_100DaysLimit_Underflow_WithDays(frameRate: TimecodeFrameRate) async {
+        let wrapped = Timecode(
+            .components(d: -1),
+            at: frameRate,
+            limit: .max100Days,
+            by: .wrapping
+        )
+            .components
+        
+        let result = Timecode.Components(d: 99, h: 0, m: 0, s: 0, f: 0)
+        
+        #expect(wrapped == result)
     }
 }

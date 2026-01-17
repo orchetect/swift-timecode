@@ -6,46 +6,40 @@
 
 import CoreMedia
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeInterval_Rational_CMTime_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testTimecodeInterval_init_cmTime() throws {
+@Suite struct TimecodeInterval_Rational_CMTime_Tests {
+    @Test
+    func timecodeInterval_init_cmTime() async throws {
         let ti = try TimecodeInterval(
             CMTime(value: 60, timescale: 30),
             at: .fps24
         )
         
-        XCTAssertEqual(ti.sign, .plus)
+        #expect(ti.sign == .plus)
         
-        XCTAssertEqual(
-            ti.absoluteInterval,
-            try Timecode(.components(s: 2), at: .fps24)
-        )
+        #expect(try ti.absoluteInterval == Timecode(.components(s: 2), at: .fps24))
     }
     
-    func testCMTime() throws {
+    @Test
+    func cmTime() async throws {
         let ti = try TimecodeInterval(
             Timecode(.components(s: 2), at: .fps24)
         )
         
         let cmTime = ti.cmTimeValue
         
-        XCTAssertEqual(cmTime.seconds.sign, .plus)
-        XCTAssertEqual(cmTime.value, 2)
-        XCTAssertEqual(cmTime.timescale, 1)
+        #expect(cmTime.seconds.sign == .plus)
+        #expect(cmTime.value == 2)
+        #expect(cmTime.timescale == 1)
     }
     
-    func testCMTime_timecodeInterval() throws {
+    @Test
+    func cmTime_timecodeInterval() async throws {
         let ti = try CMTime(value: 60, timescale: 30).timecodeInterval(at: .fps24)
         
-        XCTAssertEqual(ti.sign, .plus)
+        #expect(ti.sign == .plus)
         
-        XCTAssertEqual(
-            ti.absoluteInterval,
-            try Timecode(.components(s: 2), at: .fps24)
-        )
+        #expect(try ti.absoluteInterval == Timecode(.components(s: 2), at: .fps24))
     }
 }

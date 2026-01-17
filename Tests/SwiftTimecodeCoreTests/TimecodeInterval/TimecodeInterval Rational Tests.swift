@@ -5,62 +5,48 @@
 //
 
 import SwiftTimecodeCore
-import XCTest
+import Testing
 
-final class TimecodeInterval_Rational_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
-    func testRational() throws {
+@Suite struct TimecodeInterval_Rational_Tests {
+    @Test
+    func rational() async throws {
         let ti = try TimecodeInterval(
             Fraction(60, 30),
             at: .fps24
         )
         
-        XCTAssertEqual(ti.sign, .plus)
+        #expect(ti.sign == .plus)
         
-        XCTAssertEqual(
-            ti.absoluteInterval,
-            try Timecode(.components(s: 2), at: .fps24)
-        )
+        #expect(try ti.absoluteInterval == Timecode(.components(s: 2), at: .fps24))
         
-        XCTAssertEqual(
-            ti.flattened(),
-            try Timecode(.components(s: 2), at: .fps24)
-        )
+        #expect(try ti.flattened() == Timecode(.components(s: 2), at: .fps24))
         
-        XCTAssertEqual(ti.rationalValue, Fraction(2, 1))
+        #expect(ti.rationalValue == Fraction(2, 1))
     }
     
-    func testRationalNegative() throws {
+    @Test
+    func rationalNegative() async throws {
         let ti = try TimecodeInterval(
             Fraction(-60, 30),
             at: .fps24
         )
         
-        XCTAssertEqual(ti.sign, .minus)
+        #expect(ti.sign == .minus)
         
-        XCTAssertEqual(
-            ti.absoluteInterval,
-            try Timecode(.components(s: 2), at: .fps24)
-        )
+        #expect(try ti.absoluteInterval == Timecode(.components(s: 2), at: .fps24))
         
-        XCTAssertEqual(
-            ti.flattened(), // wraps around clock by underflowing
-            try Timecode(.components(h: 23, m: 59, s: 58, f: 00), at: .fps24)
-        )
+        // wraps around clock by underflowing
+        #expect(try ti.flattened() == Timecode(.components(h: 23, m: 59, s: 58, f: 00), at: .fps24))
         
-        XCTAssertEqual(ti.rationalValue, Fraction(-2, 1))
+        #expect(ti.rationalValue == Fraction(-2, 1))
     }
     
-    func testFraction_timecodeInterval() throws {
+    @Test
+    func fraction_timecodeInterval() async throws {
         let ti = try Fraction(60, 30).timecodeInterval(at: .fps24)
         
-        XCTAssertEqual(ti.sign, .plus)
+        #expect(ti.sign == .plus)
         
-        XCTAssertEqual(
-            ti.absoluteInterval,
-            try Timecode(.components(s: 2), at: .fps24)
-        )
+        #expect(try ti.absoluteInterval == Timecode(.components(s: 2), at: .fps24))
     }
 }

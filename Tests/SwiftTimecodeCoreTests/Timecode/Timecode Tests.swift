@@ -4,13 +4,11 @@
 //  © 2020-2025 Steffan Andrews • Licensed under MIT License
 //
 
-/* @testable */ import SwiftTimecodeCore
-import XCTest
+import SwiftTimecodeCore
+import Testing
 
-final class Timecode_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
+@Suite struct Timecode_Tests {
     // no tests in this file
-    func testEmpty() throws { }
+    @Test
+    func empty() async throws { }
 }
