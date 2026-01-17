@@ -33,7 +33,7 @@ import Testing
     /// Establish baseline SwiftUI standard library behavior.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testShapeStyleViewModifier_Baseline() async {
+    func shapeStyleViewModifier_Baseline() async {
         // `any ShapeStyle` works
         _ = timecodeField
             .foregroundStyle(anyShapeStyle)
@@ -57,7 +57,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeField() async {
+    func viewModifier_timecodeField() async {
         _ = timecodeField
             .timecodeFormat(.default())
         
@@ -77,7 +77,7 @@ import Testing
     /// only need perfunctory syntax checks.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeFieldHighlightStyle() async {
+    func viewModifier_timecodeFieldHighlightStyle() async {
         // MARK: Basic
         
         _ = timecodeField
@@ -153,7 +153,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeSeparatorStyle() async {
+    func viewModifier_timecodeSeparatorStyle() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeSeparatorStyle(.black)
@@ -185,7 +185,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeSubFramesStyle_StyleOnly() async {
+    func viewModifier_timecodeSubFramesStyle_StyleOnly() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeSubFramesStyle(.black)
@@ -215,14 +215,14 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeSubFramesStyle_ScaleOnly() async {
+    func viewModifier_timecodeSubFramesStyle_ScaleOnly() async {
         _ = timecodeField
             .timecodeSubFramesStyle(scale: .default)
     }
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeSubFramesStyle_StyleAndScale() async {
+    func viewModifier_timecodeSubFramesStyle_StyleAndScale() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeSubFramesStyle(.black, scale: .default)
@@ -254,7 +254,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeValidationStyle() async {
+    func viewModifier_timecodeValidationStyle() async {
         // MARK: Basic
         _ = timecodeField
             .timecodeValidationStyle(.black)
@@ -286,7 +286,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testViewModifier_timecodeFieldInputRejectionFeedback() async {
+    func viewModifier_timecodeFieldInputRejectionFeedback() async {
         _ = timecodeField
             .timecodeFieldInputRejectionFeedback(.validationBased(animation: .shake))
         

@@ -42,7 +42,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Error() async {
+    func validatePasteResult_Error() async {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         // if we pass in an error, the properties and policies don't matter as it will early return
@@ -62,7 +62,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_EnforceValid_AutoAdvance_SameProperties_ValidValues() async throws {
+    func validatePasteResult_Preserve_EnforceValid_AutoAdvance_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -81,7 +81,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_EnforceValid_AutoAdvance_SameProperties_InvalidValues() async {
+    func validatePasteResult_Preserve_EnforceValid_AutoAdvance_SameProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         #expect(
@@ -98,7 +98,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_EnforceValid_AutoAdvance_DifferentProperties_ValidValues() async {
+    func validatePasteResult_Preserve_EnforceValid_AutoAdvance_DifferentProperties_ValidValues() async {
         // frames value 22 is valid at local 24fps but we're using 48fps which violates preserveLocalProperties policy
         let timecode = Timecode(.components(f: 22), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
@@ -118,7 +118,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_EnforceValid_AutoAdvance_DifferentProperties_InvalidValues() async {
+    func validatePasteResult_Preserve_EnforceValid_AutoAdvance_DifferentProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -139,7 +139,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_SameProperties_ValidValues() async throws {
+    func validatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -158,7 +158,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_SameProperties_InvalidValues() async {
+    func validatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_SameProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         #expect(
@@ -175,7 +175,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_DifferentProperties_ValidValues() async throws {
+    func validatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_DifferentProperties_ValidValues() async throws {
         // frames value of 46 is invalid at local 24fps but valid at new frame rate of 48fps
         let timecode = Timecode(.components(f: 46), at: .fps48, base: .max80SubFrames, limit: .max100Days, by: .allowingInvalid)
         
@@ -198,7 +198,7 @@ import Testing
     /// Allow new properties, but the new timecode itself is invalid.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_DifferentProperties_InvalidValues() async {
+    func validatePasteResult_AllowNewProperties_EnforceValid_AutoAdvance_DifferentProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -219,7 +219,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_SameProperties_ValidValues() async throws {
+    func validatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -238,7 +238,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_SameProperties_InvalidValues() async {
+    func validatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_SameProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         #expect(
@@ -255,7 +255,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_DifferentProperties_ValidValues() async {
+    func validatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_DifferentProperties_ValidValues() async {
         let timecode = Timecode(.components(f: 46), at: .fps48, base: .max80SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -276,7 +276,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_DifferentProperties_InvalidValues() async {
+    func validatePasteResult_DiscardProperties_EnforceValid_AutoAdvance_DifferentProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -297,7 +297,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_AutoAdvance_SameProperties_ValidValues() async throws {
+    func validatePasteResult_Preserve_AllowInvalid_AutoAdvance_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -316,7 +316,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_AutoAdvance_SameProperties_InvalidValues() async {
+    func validatePasteResult_Preserve_AllowInvalid_AutoAdvance_SameProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         #expect(
@@ -333,7 +333,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_AutoAdvance_DifferentProperties_ValidValues() async {
+    func validatePasteResult_Preserve_AllowInvalid_AutoAdvance_DifferentProperties_ValidValues() async {
         // frames value 22 is valid at local 24fps but we're using 48fps which violates preserveLocalProperties policy
         let timecode = Timecode(.components(f: 22), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
@@ -353,7 +353,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_AutoAdvance_DifferentProperties_InvalidValues() async {
+    func validatePasteResult_Preserve_AllowInvalid_AutoAdvance_DifferentProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -375,7 +375,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_SameProperties_ValidValues() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -394,7 +394,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_SameProperties_InvalidValues() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_SameProperties_InvalidValues() async throws {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -413,7 +413,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_DifferentProperties_ValidValues() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_DifferentProperties_ValidValues() async throws {
         // frames value of 46 is invalid at local 24fps but valid at new frame rate of 48fps
         let timecode = Timecode(.components(f: 46), at: .fps48, base: .max80SubFrames, limit: .max100Days, by: .allowingInvalid)
         
@@ -436,7 +436,7 @@ import Testing
     /// Allow new properties, but the new timecode itself is invalid.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_DifferentProperties_InvalidValues() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_AutoAdvance_DifferentProperties_InvalidValues() async throws {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -459,7 +459,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_SameProperties_ValidValues() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -478,7 +478,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_SameProperties_InvalidValues() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_SameProperties_InvalidValues() async throws {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -497,7 +497,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_DifferentProperties_ValidValues() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_DifferentProperties_ValidValues() async throws {
         let timecode = Timecode(.components(f: 46), at: .fps48, base: .max80SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -518,7 +518,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_DifferentProperties_InvalidValues() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_AutoAdvance_DifferentProperties_InvalidValues() async throws {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -544,7 +544,7 @@ import Testing
     // Just one test is probably enough to confirm `unbounded` isn't allowing invalid values with `enforceValid`.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_EnforceValid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async {
+    func validatePasteResult_Preserve_EnforceValid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async {
         let timecode = Timecode(.components(f: 234), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         #expect(
@@ -564,7 +564,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_Unbounded_SameProperties_ValidValues() async throws {
+    func validatePasteResult_Preserve_AllowInvalid_Unbounded_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.components(f: 12), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -583,7 +583,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_Unbounded_SameProperties_InvalidValuesWithinDigitBounds() async throws {
+    func validatePasteResult_Preserve_AllowInvalid_Unbounded_SameProperties_InvalidValuesWithinDigitBounds() async throws {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -602,7 +602,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async throws {
+    func validatePasteResult_Preserve_AllowInvalid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async throws {
         let timecode = Timecode(.components(f: 234), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -621,7 +621,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_Unbounded_DifferentProperties_ValidValues() async {
+    func validatePasteResult_Preserve_AllowInvalid_Unbounded_DifferentProperties_ValidValues() async {
         // frames value 22 is valid at local 24fps but we're using 48fps which violates preserveLocalProperties policy
         let timecode = Timecode(.components(f: 22), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
@@ -641,7 +641,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_Preserve_AllowInvalid_Unbounded_DifferentProperties_InvalidValues() async {
+    func validatePasteResult_Preserve_AllowInvalid_Unbounded_DifferentProperties_InvalidValues() async {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -663,7 +663,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_SameProperties_ValidValues() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -682,7 +682,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesWithinDigitBounds() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesWithinDigitBounds() async throws {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -701,7 +701,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async throws {
         let timecode = Timecode(.components(f: 234), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -720,7 +720,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_DifferentProperties_ValidValues() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_DifferentProperties_ValidValues() async throws {
         // frames value of 46 is invalid at local 24fps but valid at new frame rate of 48fps
         let timecode = Timecode(.components(f: 46), at: .fps48, base: .max80SubFrames, limit: .max100Days, by: .allowingInvalid)
         
@@ -743,7 +743,7 @@ import Testing
     /// Allow new properties, but the new timecode itself is invalid.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesWithinDigitBounds() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesWithinDigitBounds() async throws {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -765,7 +765,7 @@ import Testing
     /// Allow new properties, but the new timecode itself is invalid.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesOutsideDigitBounds() async throws {
+    func validatePasteResult_AllowNewProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesOutsideDigitBounds() async throws {
         let timecode = Timecode(.components(f: 234), at: .fps48, base: .max100SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -788,7 +788,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_Unbounded_SameProperties_ValidValues() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_Unbounded_SameProperties_ValidValues() async throws {
         let timecode = Timecode(.zero, at: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
         
         let validated = try #require(TimecodeField.validate(
@@ -807,7 +807,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesWithinDigitBounds() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesWithinDigitBounds() async throws {
         let timecode = Timecode(.components(f: 30), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -826,7 +826,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_Unbounded_SameProperties_InvalidValuesOutsideDigitBounds() async throws {
         let timecode = Timecode(.components(f: 234), at: testFrameRate, base: testSubFramesBase, limit: .max24Hours, by: .allowingInvalid)
         
         let validated = try #require(TimecodeField.validate(
@@ -845,7 +845,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_Unbounded_DifferentProperties_ValidValues() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_Unbounded_DifferentProperties_ValidValues() async throws {
         let timecode = Timecode(.components(f: 46), at: .fps48, base: .max80SubFrames, limit: .max100Days, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -866,7 +866,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesWithinDigitBounds() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesWithinDigitBounds() async throws {
         let timecode = Timecode(.components(f: 50), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)
@@ -887,7 +887,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testValidatePasteResult_DiscardProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesOutsideDigitBounds() async throws {
+    func validatePasteResult_DiscardProperties_AllowInvalid_Unbounded_DifferentProperties_InvalidValuesOutsideDigitBounds() async throws {
         let timecode = Timecode(.components(f: 234), at: .fps48, base: .max100SubFrames, limit: .max24Hours, by: .allowingInvalid)
         
         let localProperties = Timecode.Properties(rate: testFrameRate, base: testSubFramesBase, limit: .max24Hours)

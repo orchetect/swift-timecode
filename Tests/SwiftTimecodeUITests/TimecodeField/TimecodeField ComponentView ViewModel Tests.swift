@@ -37,7 +37,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testBaselineState() async {
+    func baselineState() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
         #expect(model.component == .days)
@@ -48,7 +48,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testBaselineStateB() async {
+    func baselineStateB() async {
         let model = viewModelFactory(component: .hours, rate: .fps30, base: .max80SubFrames, limit: .max100Days)
         
         #expect(model.component == .hours)
@@ -59,7 +59,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testInvisibleComponents_Max24Hours() async {
+    func invisibleComponents_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
         #expect(model.invisibleComponents(timecodeFormat: []) == [.days, .subFrames])
@@ -73,7 +73,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testInvisibleComponents_Max100Hours() async {
+    func invisibleComponents_Max100Hours() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
         #expect(model.invisibleComponents(timecodeFormat: []) == [.subFrames])
@@ -87,7 +87,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testFirstVisibleComponent_Max24Hours() async {
+    func firstVisibleComponent_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
         #expect(model.firstVisibleComponent(timecodeFormat: []) == .hours)
@@ -101,7 +101,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testFirstVisibleComponent_Max100Hours() async {
+    func firstVisibleComponent_Max100Hours() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
         #expect(model.firstVisibleComponent(timecodeFormat: []) == .days)
@@ -117,7 +117,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testDays_PreviousComponent_Max24Hours() async {
+    func days_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
@@ -128,7 +128,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testHours_PreviousComponent_Max24Hours() async {
+    func hours_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .hours, limit: .max24Hours)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
@@ -139,7 +139,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testSubframes_PreviousComponent_Max24Hours() async {
+    func subframes_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .subFrames, limit: .max24Hours)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
@@ -150,7 +150,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testFrames_PreviousComponent_Max24Hours() async {
+    func frames_PreviousComponent_Max24Hours() async {
         let model = viewModelFactory(component: .frames, limit: .max24Hours)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .seconds)
@@ -163,7 +163,7 @@ import Testing
     @Test
     // MARK: - .previousComponent (100 Days)
     
-    func testDays_PreviousComponent_Max100Days() async {
+    func days_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
@@ -174,7 +174,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testHours_PreviousComponent_Max100Days() async {
+    func hours_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .hours, limit: .max100Days)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .days)
@@ -185,7 +185,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testSubframes_PreviousComponent_Max100Days() async {
+    func subframes_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .subFrames, limit: .max100Days)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .frames)
@@ -196,7 +196,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testFrames_PreviousComponent_Max100Days() async {
+    func frames_PreviousComponent_Max100Days() async {
         let model = viewModelFactory(component: .frames, limit: .max100Days)
         
         #expect(model.previousComponent(timecodeFormat: [], wrap: .wrap) == .seconds)
@@ -209,7 +209,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testDays_NextComponent_Max24Hours() async {
+    func days_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .days, limit: .max24Hours)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
@@ -220,7 +220,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testHours_NextComponent_Max24Hours() async {
+    func hours_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .hours, limit: .max24Hours)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .minutes)
@@ -231,7 +231,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testFrames_NextComponent_Max24Hours() async {
+    func frames_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .frames, limit: .max24Hours)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
@@ -242,7 +242,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testSubframes_NextComponent_Max24Hours() async {
+    func subframes_NextComponent_Max24Hours() async {
         let model = viewModelFactory(component: .subFrames, limit: .max24Hours)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
@@ -255,7 +255,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testDays_NextComponent_Max100Days() async {
+    func days_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .days, limit: .max100Days)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .hours)
@@ -266,7 +266,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testHours_NextComponent_Max100Days() async {
+    func hours_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .hours, limit: .max100Days)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .minutes)
@@ -277,7 +277,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testFrames_NextComponent_Max100Days() async {
+    func frames_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .frames, limit: .max100Days)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .days)
@@ -288,7 +288,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testSubframes_NextComponent_Max100Days() async {
+    func subframes_NextComponent_Max100Days() async {
         let model = viewModelFactory(component: .subFrames, limit: .max100Days)
         
         #expect(model.nextComponent(timecodeFormat: [], wrap: .wrap) == .days)
@@ -301,7 +301,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testIsDaysVisible_Max24Hours() async {
+    func isDaysVisible_Max24Hours() async {
         typealias VM = TimecodeField.ComponentView.ViewModel
         
         #expect(!VM.isDaysVisible(format: [], limit: .max24Hours))
@@ -312,7 +312,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testIsDaysVisible_Max100Days() async {
+    func isDaysVisible_Max100Days() async {
         typealias VM = TimecodeField.ComponentView.ViewModel
         
         #expect(VM.isDaysVisible(format: [], limit: .max100Days))
@@ -325,7 +325,7 @@ import Testing
     
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Test
-    func testIsSubFramesVisible() async {
+    func isSubFramesVisible() async {
         typealias VM = TimecodeField.ComponentView.ViewModel
         
         #expect(!VM.isSubFramesVisible(format: []))
