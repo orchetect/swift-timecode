@@ -43,16 +43,25 @@ let package = Package(
         ),
         .testTarget(
             name: "SwiftTimecodeCoreTests",
-            dependencies: ["SwiftTimecodeCore"]
+            dependencies: [
+                "SwiftTimecodeCore",
+                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+            ]
         ),
         .testTarget(
             name: "SwiftTimecodeAVTests",
-            dependencies: ["SwiftTimecodeAV"],
+            dependencies: [
+                "SwiftTimecodeAV",
+                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+            ],
             resources: [.copy("TestResource/Media Files")]
         ),
         .testTarget(
             name: "SwiftTimecodeUITests",
-            dependencies: ["SwiftTimecodeUI"],
+            dependencies: [
+                "SwiftTimecodeUI",
+                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+            ],
             linkerSettings: [
                 .linkedFramework("SwiftUI", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS]))
             ]
