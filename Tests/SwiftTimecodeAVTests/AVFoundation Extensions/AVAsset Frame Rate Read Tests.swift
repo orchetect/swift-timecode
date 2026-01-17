@@ -9,144 +9,156 @@
 
 import AVFoundation
 @testable import SwiftTimecodeAV
-import XCTest
+import Testing
+import TestingExtensions
 
-final class AVAsset_FrameRateRead_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
+@Suite struct AVAsset_FrameRateRead_Tests {
     // MARK: - TimecodeFrameRate
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecodeFrameRate_23_976fps_A() async throws {
+    @Test
+    func timecodeFrameRate_23_976fps_A() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.timecodeFrameRate()
-        XCTAssertEqual(frameRate, .fps23_976)
+        #expect(frameRate == .fps23_976)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecodeFrameRate_23_976fps_B() async throws {
+    @Test
+    func timecodeFrameRate_23_976fps_B() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.timecodeFrameRate()
-        XCTAssertEqual(frameRate, .fps23_976)
+        #expect(frameRate == .fps23_976)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecodeFrameRate_24fps() async throws {
+    @Test
+    func timecodeFrameRate_24fps() async throws {
         let url = try TestResource.timecodeTrack_24_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.timecodeFrameRate()
-        XCTAssertEqual(frameRate, .fps24)
+        #expect(frameRate == .fps24)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecodeFrameRate_29_97dropfps() async throws {
+    @Test
+    func timecodeFrameRate_29_97dropfps() async throws {
         let url = try TestResource.timecodeTrack_29_97d_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.timecodeFrameRate()
         
-        let isTimecodeFrameRateDropFrame = try await asset.isTimecodeFrameRateDropFrame
-        XCTAssert(isTimecodeFrameRateDropFrame == true)
+        let isTimecodeFrameRateDropFrame: Bool = try await #require(asset.isTimecodeFrameRateDropFrame as Bool?)
+        #expect(isTimecodeFrameRateDropFrame)
         
-        XCTAssertEqual(frameRate, .fps29_97d)
+        #expect(frameRate == .fps29_97d)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecodeFrameRate_29_97fps() async throws {
+    @Test
+    func timecodeFrameRate_29_97fps() async throws {
         let url = try TestResource.videoTrack_29_97_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.timecodeFrameRate()
         
-        let isTimecodeFrameRateDropFrame = try await asset.isTimecodeFrameRateDropFrame
-        XCTAssertEqual(isTimecodeFrameRateDropFrame, false)
+        let isTimecodeFrameRateDropFrame = try await #require(asset.isTimecodeFrameRateDropFrame as Bool?)
+        #expect(!isTimecodeFrameRateDropFrame)
         
-        XCTAssertEqual(frameRate, .fps29_97)
+        #expect(frameRate == .fps29_97)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecodeFrameRate_29_97fps_from2997i() async throws {
+    @Test
+    func timecodeFrameRate_29_97fps_from2997i() async throws {
         let url = try TestResource.videoAndTimecodeTrack_29_97i_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.timecodeFrameRate()
         
-        let isTimecodeFrameRateDropFrame = try await asset.isTimecodeFrameRateDropFrame
-        XCTAssertEqual(isTimecodeFrameRateDropFrame, false)
+        let isTimecodeFrameRateDropFrame = try await #require(asset.isTimecodeFrameRateDropFrame as Bool?)
+        #expect(!isTimecodeFrameRateDropFrame)
         
-        XCTAssertEqual(frameRate, .fps29_97)
+        #expect(frameRate == .fps29_97)
     }
     
     // MARK: - VideoFrameRate
     
     /// Even though file has no video tracks, it infers video frame rate from the timecode track.
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_23_98p_A() async throws {
+    @Test
+    func videoFrameRate_23_98p_A() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps23_98p)
+        #expect(frameRate == .fps23_98p)
     }
     
     /// Even though file has no video tracks, it infers video frame rate from the timecode track.
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_23_98p_B() async throws {
+    @Test
+    func videoFrameRate_23_98p_B() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps23_98p)
+        #expect(frameRate == .fps23_98p)
     }
     
     /// Even though file has no video tracks, it infers video frame rate from the timecode track.
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_24p() async throws {
+    @Test
+    func videoFrameRate_24p() async throws {
         let url = try TestResource.timecodeTrack_24_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps24p)
+        #expect(frameRate == .fps24p)
     }
     
     /// Even though file has no video tracks, it infers video frame rate from the timecode track.
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_29_97p_fromDrop() async throws {
+    @Test
+    func videoFrameRate_29_97p_fromDrop() async throws {
         let url = try TestResource.timecodeTrack_29_97d_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps29_97p)
+        #expect(frameRate == .fps29_97p)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_29_97i() async throws {
+    @Test
+    func videoFrameRate_29_97i() async throws {
         let url = try TestResource.videoAndTimecodeTrack_29_97i_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps29_97i)
+        #expect(frameRate == .fps29_97i)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_29_97p() async throws {
+    @Test
+    func videoFrameRate_29_97p() async throws {
         let url = try TestResource.videoTrack_29_97_Start_00_00_00_00.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps29_97p)
+        #expect(frameRate == .fps29_97p)
     }
     
     // MARK: - VideoFrameRate (VFR)
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_25p_VFR_A() async throws {
+    @Test
+    func videoFrameRate_25p_VFR_A() async throws {
         let url = try TestResource.videoTrack_25_VFR_1sec.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps25p)
+        #expect(frameRate == .fps25p)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testVideoFrameRate_25p_VFR_B() async throws {
+    @Test
+    func videoFrameRate_25p_VFR_B() async throws {
         let url = try TestResource.videoTrack_25_VFR_2sec.url()
         let asset = AVAsset(url: url)
         let frameRate = try await asset.videoFrameRate()
-        XCTAssertEqual(frameRate, .fps25p)
+        #expect(frameRate == .fps25p)
     }
 }
 

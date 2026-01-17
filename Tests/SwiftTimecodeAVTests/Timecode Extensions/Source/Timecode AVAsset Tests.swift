@@ -9,44 +9,45 @@
 
 import AVFoundation
 @testable import SwiftTimecodeAV
-import XCTest
+import Testing
+import TestingExtensions
 
-final class Timecode_AVAsset_Tests: XCTestCase {
-    override func setUp() { }
-    override func tearDown() { }
-    
+@Suite struct Timecode_AVAsset_Tests {
     // NOTE:
     // These tests are just to verify baseline results using this API on `Timecode`.
     // More extensive AVAsset parsing tests are in AVAsset Extensions Tests.swift
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecode_init_startOfAsset() async throws {
+    @Test
+    func timecode_init_startOfAsset() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         
         let timecode = try await Timecode(.avAsset(asset, .start))
-        XCTAssertEqual(timecode.components, Timecode.Components(m: 58, s: 40))
-        XCTAssertEqual(timecode.frameRate, .fps23_976)
+        #expect(timecode.components == Timecode.Components(m: 58, s: 40))
+        #expect(timecode.frameRate == .fps23_976)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecode_init_durationOfAsset() async throws {
+    @Test
+    func timecode_init_durationOfAsset() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         
         let timecode = try await Timecode(.avAsset(asset, .duration))
-        XCTAssertEqual(timecode.components, Timecode.Components(m: 24, s: 10, f: 19, sf: 03))
-        XCTAssertEqual(timecode.frameRate, .fps23_976)
+        #expect(timecode.components == Timecode.Components(m: 24, s: 10, f: 19, sf: 03))
+        #expect(timecode.frameRate == .fps23_976)
     }
     
     @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
-    func testTimecode_init_endOfAsset() async throws {
+    @Test
+    func timecode_init_endOfAsset() async throws {
         let url = try TestResource.timecodeTrack_23_976_Start_00_58_40_00.url()
         let asset = AVAsset(url: url)
         
         let timecode = try await Timecode(.avAsset(asset, .end))
-        XCTAssertEqual(timecode.components, Timecode.Components(h: 1, m: 22, s: 50, f: 19, sf: 03))
-        XCTAssertEqual(timecode.frameRate, .fps23_976)
+        #expect(timecode.components == Timecode.Components(h: 1, m: 22, s: 50, f: 19, sf: 03))
+        #expect(timecode.frameRate == .fps23_976)
     }
 }
 
