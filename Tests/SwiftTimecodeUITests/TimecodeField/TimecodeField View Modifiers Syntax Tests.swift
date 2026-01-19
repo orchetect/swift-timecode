@@ -21,12 +21,22 @@ import Testing
 @MainActor @Suite struct TimecodeField_View_Modifiers_Syntax_Tests {
     // MARK: - Test Constants
     
-    private let timecodeField = TimecodeField(components: .constant(.zero))
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+    private var timecodeField: TimecodeField { TimecodeField(components: .constant(.zero)) }
+    
     private let isFoo = true
-    private let anyShapeStyle: any ShapeStyle = .tint
-    private let anyOptionalShapeStyle: (any ShapeStyle)? = .tint
-    private let concreteStyle: TintShapeStyle = .tint
-    private let optionalConcreteStyle: TintShapeStyle? = .tint
+    
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    private var anyShapeStyle: any ShapeStyle { .tint }
+    
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    private var anyOptionalShapeStyle: (any ShapeStyle)? { .tint }
+    
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    private var concreteStyle: TintShapeStyle { .tint }
+    
+    @available(iOS 15.0, macOS 12.0, tvOS 15.0, watchOS 8.0, *)
+    private var optionalConcreteStyle: TintShapeStyle? { .tint }
     
     // MARK: - Tests
     

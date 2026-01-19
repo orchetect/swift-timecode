@@ -18,6 +18,7 @@ import Testing
     private var testUpperLimit: Timecode.UpperLimit { .max24Hours }
     
     /// Returns a new component state instance using the timecode properties constants.
+    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     private func stateModelFactory(
         component: Timecode.Component,
         rate: TimecodeFrameRate? = nil,
