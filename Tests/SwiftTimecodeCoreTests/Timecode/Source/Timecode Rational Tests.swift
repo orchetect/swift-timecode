@@ -113,7 +113,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_Rational_Clamping() {
+    func timecode_init_Rational_Clamping() async {
         let tc = Timecode(
             .rational(Fraction(86400 + 3600, 1)), // 25 hours @ 24fps
             at: .fps24,
@@ -127,7 +127,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_Rational_Clamping_Negative() {
+    func timecode_init_Rational_Clamping_Negative() async {
         let tc = Timecode(
             .rational(Fraction(-2, 1)),
             at: .fps24,
@@ -141,7 +141,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_Rational_Wrapping() {
+    func timecode_init_Rational_Wrapping() async {
         let tc = Timecode(
             .rational(Fraction(86400 + 3600, 1)), // 25 hours @ 24fps
             at: .fps24,
@@ -155,7 +155,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_Rational_Wrapping_Negative() {
+    func timecode_init_Rational_Wrapping_Negative() async {
         let tc = Timecode(
             .rational(Fraction(-2, 1)),
             at: .fps24,
@@ -169,7 +169,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_Rational_RawValues() {
+    func timecode_init_Rational_RawValues() async {
         let tc = Timecode(
             .rational(Fraction((86400 * 2) + 3600, 1)), // 2 days + 1 hour @ 24fps
             at: .fps24,
@@ -183,7 +183,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_Rational_RawValues_Negative() {
+    func timecode_init_Rational_RawValues_Negative() async {
         let tc = Timecode(
             .rational(Fraction(-(3600 + 60 + 5), 1)),
             at: .fps24,

@@ -50,7 +50,7 @@ import Testing
     }
     
     @Test
-    func timecode_init_FrameCount_RawValues() {
+    func timecode_init_FrameCount_RawValues() async {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
                 .frames((2073600 * 2) + 86400), // 2 days + 1 hour @ 24fps
