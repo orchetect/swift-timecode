@@ -18,6 +18,7 @@ let package = Package(
     ],
     dependencies: [
         // used only for Dev tests, not part of regular unit tests
+        .package(url: "https://github.com/apple/swift-numerics", from: "1.1.1"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.2.4"),
         .package(url: "https://github.com/orchetect/xctest-extensions", from: "2.0.0")
     ],
@@ -45,6 +46,7 @@ let package = Package(
             name: "SwiftTimecodeCoreTests",
             dependencies: [
                 "SwiftTimecodeCore",
+                .product(name: "Numerics", package: "swift-numerics"),
                 .product(name: "TestingExtensions", package: "swift-testing-extensions"),
             ]
         ),
