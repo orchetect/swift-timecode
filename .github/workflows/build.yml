@@ -29,6 +29,18 @@ env:
   WORKSPACEPATH: ".swiftpm/xcode/package.xcworkspace"
 
 jobs:
+  linux:
+    name: Tests (Linux)
+    runs-on: ubuntu-latest
+    container: swift:6.0.3
+    timeout-minutes: 20
+    steps:
+    - uses: actions/checkout@main
+    - name: Build
+      run: swift build --target SwiftTimecodeCore
+    - name: Unit Tests
+      run: swift test --filter SwiftTimecodeCoreTests
+
   macOS:
     name: Tests (macOS)
     runs-on: macos-latest

@@ -4,7 +4,6 @@
 //  © 2020-2025 Steffan Andrews • Licensed under MIT License
 //
 
-import Darwin
 import Foundation
 
 extension Timecode: Equatable {

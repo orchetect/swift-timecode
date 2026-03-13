@@ -9,13 +9,13 @@
 /// ----------------------------------------------
 /// ----------------------------------------------
 
-#if canImport(Foundation)
-
-#if os(macOS)
+#if canImport(AppKit)
 import AppKit
-#else
+#elseif canImport(UIKit)
 import UIKit
 #endif
+
+#if canImport(AppKit) || canImport(UIKit)
 
 extension NSAttributedString {
     /// Convenience. Returns a new `NSAttributedString` with the attribute applied to the entire string.
