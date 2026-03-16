@@ -4,6 +4,8 @@
 //  © 2020-2025 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(CoreMedia)
+
 import CoreMedia
 import SwiftTimecodeCore
 import Testing
@@ -43,3 +45,5 @@ import Testing
         #expect(try ti.absoluteInterval == Timecode(.components(s: 2), at: .fps24))
     }
 }
+
+#endif

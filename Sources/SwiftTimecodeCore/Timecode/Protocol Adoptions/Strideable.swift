@@ -4,7 +4,13 @@
 //  © 2020-2025 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(Darwin)
 import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Musl)
+import Musl
+#endif
 
 extension Timecode: Strideable {
     public typealias Stride = Int

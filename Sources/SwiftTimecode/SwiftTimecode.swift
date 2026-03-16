@@ -9,8 +9,12 @@
 @_documentation(visibility: internal)
 @_exported import SwiftTimecodeCore
 
+#if canImport(Darwin)
+
 @_documentation(visibility: internal)
 @_exported import SwiftTimecodeAV
 
 @_documentation(visibility: internal)
 @_exported import SwiftTimecodeUI
+
+#endif

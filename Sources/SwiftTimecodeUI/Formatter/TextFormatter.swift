@@ -26,9 +26,11 @@ extension Timecode {
         public var subFramesBase: SubFramesBase?
         public var stringFormat: Timecode.StringFormat = .default()
         
+        #if canImport(Darwin)
         /// The formatter's `attributedString(...) -> NSAttributedString` output will override a control's alignment (ie: `NSTextField`).
         /// Setting alignment here will add the appropriate paragraph alignment attribute to the output `NSAttributedString`.
         public var alignment: NSTextAlignment = .natural
+        #endif
         
         /// When set true, invalid timecode component values are individually attributed.
         public var showsValidation: Bool = false
@@ -82,7 +84,9 @@ extension Timecode {
             subFramesBase = other.subFramesBase
             stringFormat = other.stringFormat
             
+            #if canImport(Darwin)
             alignment = other.alignment
+            #endif
             showsValidation = other.showsValidation
             invalidAttributes = other.invalidAttributes
         }
@@ -130,7 +134,9 @@ extension Timecode {
                         )
                         : NSAttributedString(string: stringForObj, attributes: attrs)
                 )
+                #if canImport(Darwin)
                 .addingAttribute(alignment: alignment)
+                #endif
             }
             
             // grab properties from the formatter
@@ -151,7 +157,9 @@ extension Timecode {
                     )
                     : NSAttributedString(string: stringForObj, attributes: attrs)
             )
+            #if canImport(Darwin)
             .addingAttribute(alignment: alignment)
+            #endif
         }
         
         override public func getObjectValue(

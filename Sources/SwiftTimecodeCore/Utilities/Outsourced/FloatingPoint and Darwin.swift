@@ -10,8 +10,12 @@
 /// ----------------------------------------------
 
 #if canImport(Darwin)
-
 import Darwin
+#elseif canImport(Glibc)
+import Glibc
+#elseif canImport(Musl)
+import Musl
+#endif
 
 // MARK: - ceiling / floor
 
@@ -20,14 +24,26 @@ extension FloatingPoint {
     /// (Functional convenience method)
     @_disfavoredOverload
     package var ceiling: Self {
+        #if canImport(Darwin)
         Darwin.ceil(self)
+        #elseif canImport(Glibc)
+        Glibc.ceil(self)
+        #elseif canImport(Musl)
+        Musl.ceil(self)
+        #endif
     }
     
     /// Same as `floor()`
     /// (Functional convenience method)
     @_disfavoredOverload
     package var floor: Self {
+        #if canImport(Darwin)
         Darwin.floor(self)
+        #elseif canImport(Glibc)
+        Glibc.floor(self)
+        #elseif canImport(Musl)
+        Musl.floor(self)
+        #endif
     }
 }
 
@@ -126,5 +142,3 @@ extension FloatingPoint {
         integralAndFraction.fraction
     }
 }
-
-#endif

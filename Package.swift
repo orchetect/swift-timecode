@@ -12,35 +12,21 @@ let package = Package(
     ],
     products: [
         .library(name: "SwiftTimecode", targets: ["SwiftTimecode"]),
-        .library(name: "SwiftTimecodeCore", type: .static, targets: ["SwiftTimecodeCore"]),
-        .library(name: "SwiftTimecodeAV", targets: ["SwiftTimecodeAV"]),
-        .library(name: "SwiftTimecodeUI", targets: ["SwiftTimecodeUI"])
+        .library(name: "SwiftTimecodeCore", type: .static, targets: ["SwiftTimecodeCore"])
     ],
     dependencies: [
         // used only for Dev tests, not part of regular unit tests
         .package(url: "https://github.com/apple/swift-numerics", from: "1.1.1"),
-        .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.0"),
-        .package(url: "https://github.com/orchetect/xctest-extensions", from: "2.0.0")
+        .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.2.4")
     ],
     targets: [
         .target(
             name: "SwiftTimecode",
-            dependencies: ["SwiftTimecodeCore", "SwiftTimecodeAV", "SwiftTimecodeUI"]
+            dependencies: ["SwiftTimecodeCore"]
         ),
         .target(
             name: "SwiftTimecodeCore",
             dependencies: []
-        ),
-        .target(
-            name: "SwiftTimecodeAV",
-            dependencies: ["SwiftTimecodeCore"]
-        ),
-        .target(
-            name: "SwiftTimecodeUI",
-            dependencies: ["SwiftTimecodeCore"],
-            linkerSettings: [
-                .linkedFramework("SwiftUI", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS]))
-            ]
         ),
         .testTarget(
             name: "SwiftTimecodeCoreTests",
@@ -50,38 +36,53 @@ let package = Package(
                 .product(name: "TestingExtensions", package: "swift-testing-extensions"),
             ]
         ),
-        .testTarget(
-            name: "SwiftTimecodeAVTests",
-            dependencies: [
-                "SwiftTimecodeAV",
-                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
-            ],
-            resources: [.copy("TestResource/Media Files")]
-        ),
-        .testTarget(
-            name: "SwiftTimecodeUITests",
-            dependencies: [
-                "SwiftTimecodeUI",
-                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
-            ],
-            linkerSettings: [
-                .linkedFramework("SwiftUI", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS]))
-            ]
-        ),
-        // dev tests
-        // (not meant to be run as unit tests, but only to verify library's computational integrity
-        // when making major changes to the library, as these tests require modification to be meaningful)
-        .testTarget(
-            name: "SwiftTimecodeDevTests",
-            dependencies: [
-                "SwiftTimecodeCore",
-                "SwiftTimecodeAV",
-                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
-                .product(name: "XCTestExtensions", package: "xctest-extensions")
-            ]
-        )
     ]
 )
+
+#if canImport(Darwin)
+/// AV and UI targets are only compatible with Apple platforms.
+
+package.products += [
+    .library(name: "SwiftTimecodeAV", targets: ["SwiftTimecodeAV"]),
+    .library(name: "SwiftTimecodeUI", targets: ["SwiftTimecodeUI"])
+]
+
+package.targets.first(where: { $0.name == "SwiftTimecode" })?.dependencies += [
+    "SwiftTimecodeAV", "SwiftTimecodeUI"
+]
+
+package.targets += [
+    .target(
+        name: "SwiftTimecodeAV",
+        dependencies: ["SwiftTimecodeCore"]
+    ),
+    .target(
+        name: "SwiftTimecodeUI",
+        dependencies: ["SwiftTimecodeCore"],
+        linkerSettings: [
+            .linkedFramework("SwiftUI", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS]))
+        ]
+    ),
+    .testTarget(
+        name: "SwiftTimecodeAVTests",
+        dependencies: [
+            "SwiftTimecodeAV",
+            .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+        ],
+        resources: [.copy("TestResource/Media Files")]
+    ),
+    .testTarget(
+        name: "SwiftTimecodeUITests",
+        dependencies: [
+            "SwiftTimecodeUI",
+            .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+        ],
+        linkerSettings: [
+            .linkedFramework("SwiftUI", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS]))
+        ]
+    )
+]
+#endif
 
 /// Conditionally opt-in to Swift DocC Plugin when an environment flag is present.
 if ProcessInfo.processInfo.environment["ENABLE_DOCC_PLUGIN"] != nil {

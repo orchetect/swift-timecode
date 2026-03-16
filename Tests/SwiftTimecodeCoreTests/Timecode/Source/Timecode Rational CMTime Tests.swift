@@ -4,6 +4,8 @@
 //  © 2020-2025 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(CoreMedia)
+
 import CoreMedia
 import SwiftTimecodeCore // do NOT import as @testable in this file
 import Testing
@@ -185,3 +187,5 @@ import Testing
         #expect(tc.cmTimeValue.timescale == 30000)
     }
 }
+
+#endif

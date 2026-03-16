@@ -9,12 +9,17 @@
 /// ----------------------------------------------
 /// ----------------------------------------------
 
-#if canImport(Foundation)
+#if canImport(Darwin)
+import struct Foundation.NSRange
+import class Foundation.NSAttributedString
+import class Foundation.NSMutableAttributedString
 
 #if os(macOS)
-import AppKit
+import class AppKit.NSMutableParagraphStyle
+import enum AppKit.NSTextAlignment
 #else
-import UIKit
+import class UIKit.NSMutableParagraphStyle
+import enum UIKit.NSTextAlignment
 #endif
 
 extension NSAttributedString {
