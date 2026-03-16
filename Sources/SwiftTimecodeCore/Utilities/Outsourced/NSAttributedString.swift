@@ -9,13 +9,18 @@
 /// ----------------------------------------------
 /// ----------------------------------------------
 
-#if canImport(AppKit)
-import AppKit
-#elseif canImport(UIKit)
-import UIKit
-#endif
+#if canImport(Darwin)
+import struct Foundation.NSRange
+import class Foundation.NSAttributedString
+import class Foundation.NSMutableAttributedString
 
-#if canImport(AppKit) || canImport(UIKit)
+#if os(macOS)
+import class AppKit.NSMutableParagraphStyle
+import enum AppKit.NSTextAlignment
+#else
+import class UIKit.NSMutableParagraphStyle
+import enum UIKit.NSTextAlignment
+#endif
 
 extension NSAttributedString {
     /// Convenience. Returns a new `NSAttributedString` with the attribute applied to the entire string.
