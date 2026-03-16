@@ -4,13 +4,15 @@
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Forchetect%2Fswift-timecode%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/orchetect/swift-timecode) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Forchetect%2Fswift-timecode%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/orchetect/swift-timecode) [![Xcode 16](https://img.shields.io/badge/Xcode-16-blue.svg?style=flat)](https://developer.apple.com/swift) [![License: MIT](http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/swift-timecode/blob/main/LICENSE)
 
-The most robust, precise and complete Swift library for working with SMPTE/EBU timecode. Supports 23 industry-standard timecode frame rates with a suite of conversions, calculations and integrations with Apple AV frameworks.
+The most robust, precise and complete multi-platform Swift library for working with SMPTE/EBU timecode.
+
+Supports 23 industry-standard timecode frame rates with a suite of conversions, calculations and integrations with Apple AV frameworks.
 
 Timecode is a broadcast and post-production standard for addressing video frames. It is often used for video burn-in timecode (BITC), and display in a DAW (Digital Audio Workstation) or video playback/editing applications.
 
 ## Supported Timecode Frame Rates
 
-The following timecode rates and formats are supported.
+The following timecode rates and formats are supported:
 
 | Film / ATSC / HD | PAL / SECAM / DVB / ATSC | NTSC / ATSC / PAL-M | NTSC Non-Standard | ATSC / HD |
 | ---------------- | ------------------------ | ------------------- | ----------------- | --------- |
@@ -24,7 +26,7 @@ The following timecode rates and formats are supported.
 
 ## Supported Video Frame Rates
 
-The following video frame rates are supported. (Video rates)
+The following video frame rates are supported:
 
 | Film / HD | PAL       | NTSC            |
 | --------- | --------- | --------------- |
@@ -38,14 +40,13 @@ The following video frame rates are supported. (Video rates)
 
 ## Core Features
 
-- Convert timecode between:
+- Convert timecode to/from:
   - timecode display string
   - total elapsed frame count
   - real wall-clock time
   - elapsed audio samples at any audio sample rate
   - rational time notation (such as `CMTime` or Final Cut Pro XML and AAF encoding)
   - feet + frames
-- Convert timecode and/or frame rate to a rational fraction, and vice-versa (including `CMTime`)
 - Support for Days as a timecode component (some DAWs including Cubase support > 24 hour timecode)
 - Support for Subframes
 - Math operations: add, subtract, multiply, divide
@@ -74,7 +75,7 @@ To add this package to a Swift package, add the dependency to your package and t
 ```swift
 let package = Package(
     dependencies: [
-        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.0.0")
+        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.0")
     ],
     targets: [
         .target(
@@ -88,6 +89,8 @@ let package = Package(
 
 Import the entire library to use all features (core, AV, UI):
 ```swift
+// on Apple platforms, imports Core/AV/UI.
+// on Linux, imports Core.
 import SwiftTimecode
 ```
 
