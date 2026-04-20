@@ -1,7 +1,7 @@
 //
 //  Transferable.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(UniformTypeIdentifiers) && canImport(CoreTransferable)
@@ -24,7 +24,7 @@ extension Timecode: Transferable {
             let decoded = try decoder.decode(Timecode.self, from: data)
             return decoded
         }
-        
+
         // This works but we have to hard-code properties (frame rate, subframes base, upperlimit).
         // so the alternative solution is to manually use two NSItemProvider (Timecode and String)
         // when using .onCopyCommand {} and .onPasteCommand {}
@@ -41,7 +41,7 @@ extension Timecode: Transferable {
         //     let timecode = try Timecode(.string(string), at: .fps30, by: .allowingInvalid)
         //     return timecode
         // }
-        
+
         // Can allow .draggable() SwiftUI modifier to drag as plain text.
         // This is lossy, of course, as some properties cannot be inferred from a timecode string
         // such frame rate, subframes base, or upperlimit.

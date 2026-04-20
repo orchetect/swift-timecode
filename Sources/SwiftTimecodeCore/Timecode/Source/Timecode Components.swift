@@ -1,7 +1,7 @@
 //
 //  Timecode Components.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - TimecodeSource
@@ -10,7 +10,7 @@ extension Timecode.Components: _TimecodeSource {
     package func set(timecode: inout Timecode) throws {
         try timecode._setTimecode(exactly: self)
     }
-    
+
     package func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) {
         switch validation {
         case .clamping:
@@ -32,7 +32,7 @@ extension TimecodeSourceValue {
     public static func components(_ source: Timecode.Components) -> Self {
         .init(value: source)
     }
-    
+
     /// Timecode components.
     public static func components(
         d: Int = 0,
@@ -67,29 +67,29 @@ extension Timecode {
             .invalidComponents(using: properties)
             .isEmpty
         else { throw ValidationError.outOfBounds }
-        
+
         components = values
     }
-    
+
     /// Set timecode from components.
     /// Clamps to valid timecode as set by the `upperLimit` property.
     ///
     /// (Validation is based on the frame rate and `upperLimit` property.)
     mutating func _setTimecode(clamping source: Components) {
         let result = _add(clamping: source, to: .zero)
-        
+
         _setTimecode(rawValues: result)
     }
-    
+
     /// Set timecode from components, clamping individual values if necessary.
     ///
     /// (Validation is based on the frame rate and `upperLimit` property.)
     mutating func _setTimecode(clampingComponents values: Components) {
         components = values
-        
+
         clampComponents()
     }
-    
+
     /// Set timecode from tuple values.
     ///
     /// Timecode will wrap if out-of-bounds. Will handle negative values and wrap accordingly.
@@ -101,7 +101,7 @@ extension Timecode {
             to: .zero
         ))
     }
-    
+
     /// Set timecode from tuple values.
     /// Timecode values will not be validated or rejected if they overflow.
     mutating func _setTimecode(rawValues values: Components) {

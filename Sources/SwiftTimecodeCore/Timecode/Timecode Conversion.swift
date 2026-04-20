@@ -1,12 +1,12 @@
 //
 //  Timecode Conversion.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
     // MARK: - FrameRate
-    
+
     /// Return a new `Timecode` object converted to a new frame rate.
     ///
     /// - Warning: This conversion process may be lossy.
@@ -35,14 +35,14 @@ extension Timecode {
         preservingValues: Bool = false
     ) throws -> Timecode {
         let newSubFramesBase = newSubFramesBase ?? subFramesBase
-        
+
         // just return self if new parameters are equal to current parameters
         guard frameRate != newFrameRate ||
             subFramesBase != newSubFramesBase
         else {
             return self
         }
-        
+
         if preservingValues,
            let newTC = try? Timecode(
                .components(components),
@@ -53,9 +53,9 @@ extension Timecode {
         {
             return newTC
         }
-        
+
         // convert to new frame rate, retaining all ancillary property values
-        
+
         return try Timecode(
             .realTime(seconds: realTimeValue),
             at: newFrameRate,
@@ -63,14 +63,14 @@ extension Timecode {
             limit: upperLimit
         )
     }
-    
+
     // MARK: - TimecodeTransformer
-    
+
     /// Returns the timecode transformed by the given transformer.
     public func transformed(using transformer: TimecodeTransformer) -> Timecode {
         transformer.transform(self)
     }
-    
+
     /// Transforms the timecode in-place using the given transformer.
     public mutating func transform(using transformer: TimecodeTransformer) {
         self = transformer.transform(self)

@@ -1,7 +1,7 @@
 //
 //  Components.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
@@ -105,42 +105,42 @@ extension Timecode {
     /// ```
     public struct Components {
         // MARK: Contents
-        
+
         /// Timecode days component.
         ///
         /// Valid only if ``Timecode/upperLimit-swift.property`` is set to `.max100Days`.
         ///
         /// Setting this value directly does not trigger any validation.
         public var days: Int
-        
+
         /// Timecode hours component.
         ///
         /// Valid range: 0 ... 23.
         ///
         /// Setting this value directly does not trigger any validation.
         public var hours: Int
-        
+
         /// Timecode minutes component.
         ///
         /// Valid range: 0 ... 59.
         ///
         /// Setting this value directly does not trigger any validation.
         public var minutes: Int
-        
+
         /// Timecode seconds component.
         ///
         /// Valid range: 0 ... 59.
         ///
         /// Setting this value directly does not trigger any validation.
         public var seconds: Int
-        
+
         /// Timecode frames component.
         ///
         /// Valid range is dependent on the `frameRate` property.
         ///
         /// Setting this value directly does not trigger any validation.
         public var frames: Int
-        
+
         /// Timecode subframes component.
         /// Represents a subdivision of the current frame.
         ///
@@ -152,9 +152,9 @@ extension Timecode {
         /// - DAWs such as Pro Tools use 100 subframes per frame (0 ... 99).
         /// - MIDI Timecode (MTC) uses 4 subframes per frame, also known as quarter-frames (0 ... 3).
         public var subFrames: Int
-        
+
         // MARK: init
-        
+
         public init(
             d: Int = 0,
             h: Int = 0,
@@ -179,7 +179,9 @@ extension Timecode.Components: Hashable { }
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension Timecode.Components: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension Timecode.Components: Sendable { }
@@ -191,12 +193,12 @@ extension Timecode.Components: Codable { }
 extension Timecode.Components {
     /// Components value of zero (00:00:00:00).
     public static let zero: Self = .init(d: 0, h: 0, m: 0, s: 0, f: 0, sf: 0)
-    
+
     /// Create a new set of valid timecode components with random values using the given properties.
     public static func random(using properties: Timecode.Properties) -> Self {
         .init(randomUsing: properties)
     }
-    
+
     /// Create a new set of timecode components within the given ranges, allowing potential invalid values.
     public static func random(in ranges: Timecode.ComponentRanges) -> Self {
         .init(randomIn: ranges)
@@ -209,7 +211,7 @@ extension Timecode.Components {
     /// Create a new set of valid timecode components with random values using the given properties.
     init(randomUsing properties: Timecode.Properties) {
         var components = Self.zero
-        
+
         if properties.upperLimit == .max100Days {
             components.days = components.validRange(of: .days, using: properties).randomElement()!
         }
@@ -218,10 +220,10 @@ extension Timecode.Components {
         components.seconds = components.validRange(of: .seconds, using: properties).randomElement()!
         components.frames = components.validRange(of: .frames, using: properties).randomElement()!
         components.subFrames = components.validRange(of: .subFrames, using: properties).randomElement()!
-        
+
         self = components
     }
-    
+
     /// Create a new set of timecode components within the given ranges, allowing potential invalid values.
     init(randomIn ranges: Timecode.ComponentRanges) {
         self.init(
@@ -249,7 +251,7 @@ extension Timecode.Components {
             sf: dictionary[.subFrames] ?? 0
         )
     }
-    
+
     /// Get or set the timecode component values as a dictionary keyed by ``Timecode/Component``.
     public var dictionary: [Timecode.Component: Int] {
         get {
@@ -266,7 +268,7 @@ extension Timecode.Components {
             set(from: newValue)
         }
     }
-    
+
     /// Internal:
     /// Sets component values from a dictionary keyed by ``Timecode/Component``.
     mutating func set(from dictionary: [Timecode.Component: Int]) {
@@ -292,7 +294,7 @@ extension Timecode.Components {
         self.init()
         set(from: array)
     }
-    
+
     /// Get or set the timecode component values as an array of key/value pairs keyed by ``Timecode/Component``.
     public var array: [(component: Timecode.Component, value: Int)] {
         get {
@@ -309,7 +311,7 @@ extension Timecode.Components {
             set(from: newValue)
         }
     }
-    
+
     /// Internal:
     /// Sets component values from an array of key/value pairs keyed by ``Timecode/Component``.
     mutating func set(from array: [(component: Timecode.Component, value: Int)]) {
@@ -358,38 +360,38 @@ extension Timecode.Components {
         let properties = Timecode.Properties(rate: frameRate, base: base, limit: limit)
         return invalidComponents(using: properties)
     }
-    
+
     /// Returns a set of invalid components, if any.
     /// A fully valid timecode will return an empty set.
     public func invalidComponents(
         using properties: Timecode.Properties
     ) -> Set<Timecode.Component> {
         var invalids: Set<Timecode.Component> = []
-        
+
         if !validRange(of: .days, using: properties)
             .contains(days)
         { invalids.insert(.days) }
-        
+
         if !validRange(of: .hours, using: properties)
             .contains(hours)
         { invalids.insert(.hours) }
-        
+
         if !validRange(of: .minutes, using: properties)
             .contains(minutes)
         { invalids.insert(.minutes) }
-        
+
         if !validRange(of: .seconds, using: properties)
             .contains(seconds)
         { invalids.insert(.seconds) }
-        
+
         if !validRange(of: .frames, using: properties)
             .contains(frames)
         { invalids.insert(.frames) }
-        
+
         if !validRange(of: .subFrames, using: properties)
             .contains(subFrames)
         { invalids.insert(.subFrames) }
-        
+
         return invalids
     }
 }

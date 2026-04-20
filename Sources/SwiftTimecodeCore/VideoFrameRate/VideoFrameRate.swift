@@ -1,7 +1,7 @@
 //
 //  VideoFrameRate.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -57,80 +57,80 @@ public enum VideoFrameRate: String, FrameRateProtocol {
     // TODO: Seen in professional gear: 1, 2, 3, 4, 5, 6, 8, 10, 12, 12.5, 14.98, 15, 20
     // TODO: Triple rates seen in professional gear: 71.9928, 72, 75, 89.91
     // TODO: Adobe Premiere offers 10, 12, 12.5 and 15.
-    
+
     /// 23.98 fps (23.976) progressive.
     case fps23_98p = "23.98p"
-    
+
     /// 24 fps progressive.
     case fps24p = "24p"
-    
+
     /// 25 fps progressive.
     case fps25p = "25p"
-    
+
     /// 25 fps interlaced.
     /// (50 fields producing 25 frames.)
     case fps25i = "25i"
-    
+
     /// 29.97 fps progressive.
     case fps29_97p = "29.97p"
-    
+
     /// 29.97 fps interlaced.
     /// (59.94 fields producing 29.97 frames.)
     case fps29_97i = "29.97i"
-    
+
     /// 30 fps progressive.
     case fps30p = "30p"
-    
+
     /// 47.95 fps (47.952) progressive.
     ///
     /// Supported by Avid.
     case fps47_95p = "47.95p"
-    
+
     /// 48 fps progressive.
     ///
     /// Supported by Avid.
     case fps48p = "48p"
-    
+
     /// 50 fps progressive.
     case fps50p = "50p"
-    
+
     /// 50 fps interlaced.
     /// (100 fields producing 50 frames.)
     case fps50i = "50i"
-    
+
     /// 59.94 fps progressive.
     case fps59_94p = "59.94p"
-    
+
     /// 59.94 fps interlaced.
     /// (119.88 fields producing 59.94 frames.)
     case fps59_94i = "59.94i"
-    
+
     /// 60 fps progressive.
     case fps60p = "60p"
-    
+
     /// 60 fps interlaced.
     /// (120 fields producing 60 frames.)
     case fps60i = "60i"
-    
+
     /// 90 fps progressive.
     case fps90p = "90p"
-    
+
     /// 95.9 fps (95.904) progressive.
     case fps95_9p = "95.9p"
-    
+
     /// 96 fps progressive.
     case fps96p = "96p"
-    
+
     /// 100 fps progressive.
     ///
     /// Supported by Avid. (Not qualified for smooth playback.)
     case fps100p = "100p"
-    
+
     /// 119.88 fps progressive.
     ///
     /// Supported by Avid. (Not qualified for smooth playback.)
     case fps119_88p = "119.88p"
-    
+
     /// 120 fps progressive.
     ///
     /// Supported by Avid. (Not qualified for smooth playback.)
@@ -151,5 +151,7 @@ extension VideoFrameRate: Codable { }
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension VideoFrameRate: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }

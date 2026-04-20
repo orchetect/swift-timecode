@@ -1,25 +1,26 @@
 //
 //  Timecode FrameCount Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
 import Testing
 
-@Suite struct Timecode_Source_FrameCount_Tests {
+@Suite
+struct Timecode_Source_FrameCount_Tests {
     @Test
-    func timecode_init_FrameCount_Exactly() async throws {
+    func timecode_init_FrameCount_Exactly() throws {
         let tc = try Timecode(
             .frames(Timecode.FrameCount(.frames(670_907), base: .max80SubFrames)),
             at: .fps30
         )
-        
+
         #expect(tc.components == Timecode.Components(d: 00, h: 06, m: 12, s: 43, f: 17, sf: 00))
     }
-    
+
     @Test
-    func timecode_init_FrameCount_Clamping() async {
+    func timecode_init_FrameCount_Clamping() {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
                 .frames(2_073_600 + 86400), // 25 hours @ 24fps
@@ -28,47 +29,47 @@ import Testing
             at: .fps24,
             by: .clamping
         )
-        
+
         #expect(
             tc.components
-            == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
+                == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
-    
+
     @Test
-    func timecode_init_FrameCount_Wrapping() async {
+    func timecode_init_FrameCount_Wrapping() {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
-                .frames(2073600 + 86400), // 25 hours @ 24fps
+                .frames(2_073_600 + 86400), // 25 hours @ 24fps
                 base: .max80SubFrames
             )),
             at: .fps24,
             by: .wrapping
         )
-        
+
         #expect(tc.components == Timecode.Components(h: 01))
     }
-    
+
     @Test
-    func timecode_init_FrameCount_RawValues() async {
+    func timecode_init_FrameCount_RawValues() {
         let tc = Timecode(
             .frames(Timecode.FrameCount(
-                .frames((2073600 * 2) + 86400), // 2 days + 1 hour @ 24fps
+                .frames((2_073_600 * 2) + 86400), // 2 days + 1 hour @ 24fps
                 base: .max80SubFrames
             )),
             at: .fps24,
             by: .allowingInvalid
         )
-        
+
         #expect(tc.components == Timecode.Components(d: 2, h: 01))
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func allFrameRates_maxTotalFrames(frameRate: TimecodeFrameRate) async {
+    func allFrameRates_maxTotalFrames(frameRate: TimecodeFrameRate) {
         // duration of 24 hours elapsed, rolling over to 1 day
-        
+
         // also helps ensure Strideable `.distance(to:)` returns the correct values
-        
+
         // max frames in 24 hours
         let maxFramesIn24hours = switch frameRate {
         case .fps23_976: 2_073_600
@@ -95,14 +96,14 @@ import Testing
         case .fps120: 10_368_000
         case .fps120d: 10_357_632
         }
-        
+
         #expect(frameRate.maxTotalFrames(in: .max24Hours) == maxFramesIn24hours)
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func allFrameRates_maxTotalFramesExpressible(frameRate: TimecodeFrameRate) async {
+    func allFrameRates_maxTotalFramesExpressible(frameRate: TimecodeFrameRate) {
         // number of total elapsed frames in (24 hours - 1 frame), or essentially the maximum timecode expressible for each frame rate
-        
+
         // max frames in 24 hours - 1
         let maxFramesExpressibleIn24hours = switch frameRate {
         case .fps23_976: 2_073_600 - 1
@@ -129,28 +130,28 @@ import Testing
         case .fps120: 10_368_000 - 1
         case .fps120d: 10_357_632 - 1
         }
-        
+
         #expect(frameRate.maxTotalFramesExpressible(in: .max24Hours) == maxFramesExpressibleIn24hours)
     }
-    
+
     @Test
-    func setTimecodeExactly() async throws {
+    func setTimecodeExactly() throws {
         // this is not meant to test the underlying logic, simply that `.set()` produces the intended outcome
-        
+
         var tc = Timecode(.zero, at: .fps30, base: .max80SubFrames)
-        
+
         try tc.set(.frames(Timecode.FrameCount(
             .frames(670_907),
             base: .max80SubFrames
         )))
-        
+
         #expect(tc.components == Timecode.Components(d: 00, h: 06, m: 12, s: 43, f: 17, sf: 00))
     }
-    
+
     @Test
-    func setTimecodeFrameCount_Clamping() async {
+    func setTimecodeFrameCount_Clamping() {
         var tc = Timecode(.zero, at: .fps24, base: .max80SubFrames)
-        
+
         tc.set(
             .frames(Timecode.FrameCount(
                 .frames(2_073_600 + 86400), // 25 hours @ 24fps
@@ -161,32 +162,32 @@ import Testing
 
         #expect(
             tc.components
-            == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
+                == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
-    
+
     @Test
-    func setTimecodeFrameCount_Wrapping() async {
+    func setTimecodeFrameCount_Wrapping() {
         var tc = Timecode(.zero, at: .fps24, base: .max80SubFrames)
-        
+
         tc.set(
             .frames(Timecode.FrameCount(
-                .frames(2073600 + 86400), // 25 hours @ 24fps
+                .frames(2_073_600 + 86400), // 25 hours @ 24fps
                 base: .max80SubFrames
             )),
             by: .wrapping
         )
-        
+
         #expect(tc.components == Timecode.Components(h: 01))
     }
 
     @Test
-    func setTimecodeFrameCount_RawValues()async {
+    func setTimecodeFrameCount_RawValues() {
         var tc = Timecode(.zero, at: .fps24, base: .max80SubFrames)
-        
+
         tc.set(
             .frames(Timecode.FrameCount(
-                .frames((2073600 * 2) + 86400), // 2 days + 1 hour @ 24fps
+                .frames((2_073_600 * 2) + 86400), // 2 days + 1 hour @ 24fps
                 base: .max80SubFrames
             )),
             by: .allowingInvalid
@@ -194,14 +195,14 @@ import Testing
 
         #expect(tc.components == Timecode.Components(d: 2, h: 01))
     }
-    
+
     @Test
-    func static_componentsOfFrameCount_2997d() async {
+    func static_componentsOfFrameCount_2997d() {
         // edge cases
-        
+
         let totalFramesIn24Hr = 2_589_408
         // let totalSubFramesIn24Hr = 207152640
-        
+
         let tcc = Timecode.components(
             of: Timecode.FrameCount(
                 .split(frames: totalFramesIn24Hr - 1, subFrames: 79),
@@ -209,14 +210,14 @@ import Testing
             ),
             at: .fps29_97d
         )
-        
+
         #expect(tcc == Timecode.Components(d: 0, h: 23, m: 59, s: 59, f: 29, sf: 79))
     }
-    
+
     @Test
-    func isZero() async {
+    func isZero() {
         // true
-        
+
         // frames
         #expect(Timecode.FrameCount(.frames(0), base: .max80SubFrames).isZero)
         // split
@@ -225,9 +226,9 @@ import Testing
         #expect(Timecode.FrameCount(.combined(frames: 0.0), base: .max80SubFrames).isZero)
         // split unitinterval
         #expect(Timecode.FrameCount(.splitUnitInterval(frames: 0, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
-        
+
         // false
-        
+
         // frames
         #expect(!Timecode.FrameCount(.frames(1), base: .max80SubFrames).isZero)
         #expect(!Timecode.FrameCount(.frames(-1), base: .max80SubFrames).isZero)
@@ -251,26 +252,27 @@ import Testing
         #expect(!Timecode.FrameCount(.splitUnitInterval(frames: -1, subFramesUnitInterval: 0.0), base: .max80SubFrames).isZero)
         #expect(!Timecode.FrameCount(.splitUnitInterval(frames: -1, subFramesUnitInterval: -0.1), base: .max80SubFrames).isZero)
     }
-    
+
     @Test
-    func edgeCases() async throws {
+    func edgeCases() {
         // test for really large values
-        
+
         #expect(
             Timecode(
                 .components(
-                    d: 1234567891234564567,
-                    h: 1234567891234564567,
-                    m: 1234567891234564567,
-                    s: 1234567891234564567,
-                    f: 1234567891234564567,
-                    sf: 1234567891234564567
+                    d: 1_234_567_891_234_564_567,
+                    h: 1_234_567_891_234_564_567,
+                    m: 1_234_567_891_234_564_567,
+                    s: 1_234_567_891_234_564_567,
+                    f: 1_234_567_891_234_564_567,
+                    sf: 1_234_567_891_234_564_567
                 ),
                 at: .fps24,
                 base: .max100SubFrames,
                 by: .allowingInvalid
             )
-            .frameCount.wholeFrames
+            .frameCount
+            .wholeFrames
             == 0 // failsafe value
         )
     }

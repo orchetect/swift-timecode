@@ -1,7 +1,7 @@
 //
 //  RemoveTimecodeTrackView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Observation
@@ -9,17 +9,17 @@ import SwiftUI
 
 struct RemoveTimecodeTrackView: View {
     @Environment(Model.self) private var model
-    
+
     @Binding var isExportProgressShown: Bool
-    
+
     @State private var isFolderPickerShown: Bool = false
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Form {
                 Text("Removes the timecode track from the video if one is present.")
                 Text("A copy of the video will be exported and the original file will remain unmodified.")
-                
+
                 LabeledContent("") {
                     Button("Export") {
                         isFolderPickerShown = true
@@ -30,11 +30,12 @@ struct RemoveTimecodeTrackView: View {
             .formStyle(.grouped)
         }
         .padding()
-        
+
         #if os(macOS)
-        // note that SwiftUI's .fileImporter does not produce a security-scoped URL suitable for writing to on macOS (but seems fine on iOS).
-        // also, SwiftUI's .fileExporter insists on writing the data to disk for us with no way to write to the URL manually.
-        // hence, our workaround is to use a custom NSOpenPanel wrapper.
+        // note that SwiftUI's .fileImporter does not produce a security-scoped URL suitable for writing to
+        // on macOS (but seems fine on iOS).
+        // also, SwiftUI's .fileExporter insists on writing the data to disk for us with no way to write to
+        // the URL manually. hence, our workaround is to use a custom NSOpenPanel wrapper.
         .fileOpenPanel(isPresented: $isFolderPickerShown) { openPanel in
             openPanel.canCreateDirectories = true
             openPanel.canChooseDirectories = true
@@ -57,14 +58,14 @@ struct RemoveTimecodeTrackView: View {
         .fileDialogConfirmationLabel("Export")
         #endif
     }
-    
+
     private func handleResult(_ result: Result<URL, Error>) async {
         do {
             let folderURL = try result.get()
-            
+
             isExportProgressShown = true
             defer { isExportProgressShown = false }
-            
+
             await model.export(
                 action: .removeTimecodeTrack,
                 toFolder: folderURL,

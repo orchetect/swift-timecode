@@ -1,200 +1,193 @@
 //
 //  Timecode Real Time Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Numerics
 import SwiftTimecodeCore // do NOT import as @testable in this file
 import Testing
 
-@Suite struct Timecode_Source_RealTime_Tests {
+@Suite
+struct Timecode_Source_RealTime_Tests {
     // MARK: - Pre-computed constants
-    
+
     // confirmed correct in PT and Cubase
     let secInTC10Days_ShrunkFrameRates = 864_864.000
     let secInTC10Days_BaseFrameRates = 864_000.000
     let secInTC10Days_DropFrameRates = 863_999.136
-    let secInTC10Days_30DF = 86_313.6 * 10
-    
+    let secInTC10Days_30DF = 86313.6 * 10
+
     // MARK: - Tests
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_init_RealTimeValue_Exactly(frameRate: TimecodeFrameRate) async throws {
+    func timecode_init_RealTimeValue_Exactly(frameRate: TimecodeFrameRate) throws {
         let tc = try Timecode(
             .realTime(seconds: 2),
             at: frameRate
         )
-        
+
         // don't imperatively check each result, just make sure that a value was set;
         // setter logic is unit-tested elsewhere, we just want to check the Timecode.init interface here.
         #expect(tc.seconds != 0)
     }
-    
+
     @Test
-    func timecode_init_RealTimeValue_Clamping() async {
+    func timecode_init_RealTimeValue_Clamping() {
         let tc = Timecode(
             .realTime(seconds: 86400 + 3600), // 25 hours @ 24fps
             at: .fps24,
             by: .clamping
         )
-        
+
         #expect(
             tc.components
                 == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1)
         )
     }
-    
+
     @Test
-    func timecode_init_RealTimeValue_Wrapping() async {
+    func timecode_init_RealTimeValue_Wrapping() {
         let tc = Timecode(
             .realTime(seconds: 86400 + 3600), // 25 hours @ 24fps
             at: .fps24,
             by: .wrapping
         )
-        
+
         #expect(tc.components == Timecode.Components(h: 1))
     }
-    
+
     @Test
-    func timecode_init_RealTimeValue_RawValues() async {
+    func timecode_init_RealTimeValue_RawValues() {
         let tc = Timecode(
             .realTime(seconds: (86400 * 2) + 3600), // 2 days + 1 hour @ 24fps
             at: .fps24,
             by: .allowingInvalid
         )
-        
+
         #expect(tc.components == Timecode.Components(d: 2, h: 1))
     }
-    
+
     @Test
-    func timecode_init_RealTimeValue_RawValues_Negative() async {
+    func timecode_init_RealTimeValue_RawValues_Negative() {
         let tc = Timecode(
             .realTime(seconds: -(3600 + 60 + 5)),
             at: .fps24,
             by: .allowingInvalid
         )
-        
+
         // Negates only the largest non-zero component if input is negative
         #expect(tc.components == Timecode.Components(d: 00, h: -01, m: 01, s: 05, f: 00, sf: 00))
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_RealTimeValue_get(frameRate: TimecodeFrameRate) async throws {
+    func timecode_RealTimeValue_get(frameRate: TimecodeFrameRate) throws {
         // get real time
-        
+
         // set up a reasonable accuracy to account for floating-point precision/rounding
         let tolerance = 0.000000001
-        
+
         let tc = try Timecode(.components(d: 10), at: frameRate, limit: .max100Days)
-        
+
         switch frameRate {
         case .fps23_976,
-                .fps24_98,
-                .fps29_97,
-                .fps47_952,
-                .fps59_94,
-                .fps95_904,
-                .fps119_88:
-            
+             .fps24_98,
+             .fps29_97,
+             .fps47_952,
+             .fps59_94,
+             .fps95_904,
+             .fps119_88:
             #expect(tc.realTimeValue.isApproximatelyEqual(to: secInTC10Days_ShrunkFrameRates, absoluteTolerance: tolerance))
-            
+
         case .fps24,
-                .fps25,
-                .fps30,
-                .fps48,
-                .fps50,
-                .fps60,
-                .fps90,
-                .fps96,
-                .fps100,
-                .fps120:
-            
+             .fps25,
+             .fps30,
+             .fps48,
+             .fps50,
+             .fps60,
+             .fps90,
+             .fps96,
+             .fps100,
+             .fps120:
             #expect(tc.realTimeValue.isApproximatelyEqual(to: secInTC10Days_BaseFrameRates, absoluteTolerance: tolerance))
-            
+
         case .fps29_97d,
-                .fps59_94d,
-                .fps119_88d:
-            
+             .fps59_94d,
+             .fps119_88d:
             #expect(tc.realTimeValue.isApproximatelyEqual(to: secInTC10Days_DropFrameRates, absoluteTolerance: tolerance))
-            
+
         case .fps30d,
-                .fps60d,
-                .fps120d:
-            
+             .fps60d,
+             .fps120d:
             #expect(tc.realTimeValue.isApproximatelyEqual(to: secInTC10Days_30DF, absoluteTolerance: tolerance))
         }
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_RealTimeValue_set(frameRate: TimecodeFrameRate) async throws {
+    func timecode_RealTimeValue_set(frameRate: TimecodeFrameRate) throws {
         // set timecode from real time
-        
+
         let tcc = Timecode.Components(d: 10)
-        
+
         var tc = try Timecode(.components(tcc), at: frameRate, limit: .max100Days)
-        
+
         switch frameRate {
         case .fps23_976,
-                .fps24_98,
-                .fps29_97,
-                .fps47_952,
-                .fps59_94,
-                .fps95_904,
-                .fps119_88:
-            
+             .fps24_98,
+             .fps29_97,
+             .fps47_952,
+             .fps59_94,
+             .fps95_904,
+             .fps119_88:
             #expect(throws: Never.self) {
                 try tc.set(.realTime(seconds: secInTC10Days_ShrunkFrameRates))
             }
             #expect(tc.components == tcc)
-            
+
         case .fps24,
-                .fps25,
-                .fps30,
-                .fps48,
-                .fps50,
-                .fps60,
-                .fps90,
-                .fps96,
-                .fps100,
-                .fps120:
-            
+             .fps25,
+             .fps30,
+             .fps48,
+             .fps50,
+             .fps60,
+             .fps90,
+             .fps96,
+             .fps100,
+             .fps120:
             #expect(throws: Never.self) {
                 try tc.set(.realTime(seconds: secInTC10Days_BaseFrameRates))
             }
             #expect(tc.components == tcc)
-            
+
         case .fps29_97d,
-                .fps59_94d,
-                .fps119_88d:
-            
+             .fps59_94d,
+             .fps119_88d:
             #expect(throws: Never.self) {
                 try tc.set(.realTime(seconds: secInTC10Days_DropFrameRates))
             }
             #expect(tc.components == tcc)
-            
+
         case .fps30d,
-                .fps60d,
-                .fps120d:
-            
+             .fps60d,
+             .fps120d:
             #expect(throws: Never.self) {
                 try tc.set(.realTime(seconds: secInTC10Days_30DF))
             }
             #expect(tc.components == tcc)
         }
     }
-    
+
     @Test
-    func timecode_RealTimeValue_SubFrames() async throws {
+    func timecode_RealTimeValue_SubFrames() throws {
         // ensure subframes are calculated correctly
-        
+
         // test for precision and rounding issues by iterating every subframe for each frame rate
-        
+
         let subFramesBase: Timecode.SubFramesBase = .max80SubFrames
-        
+
         for subFrame in 0 ..< subFramesBase.rawValue {
             let tcc = Timecode.Components(d: 99, h: 23, sf: subFrame)
-            
+
             for item in TimecodeFrameRate.allCases {
                 var tc = try Timecode(
                     .components(tcc),
@@ -202,49 +195,49 @@ import Testing
                     base: subFramesBase,
                     limit: .max100Days
                 )
-                
+
                 // timecode to samples
-                
+
                 let realTime = tc.realTimeValue
-                
+
                 // samples to timecode
-                
+
                 #expect(throws: Never.self, "at: \(item) subframe: \(subFrame)") {
                     try tc.set(.realTime(seconds: realTime))
                 }
-                
+
                 #expect(tc.components == tcc, "at: \(item) subframe: \(subFrame)")
             }
         }
     }
-    
+
     @Test
-    func timecode_RealTimeValue_RealWorld_SubFrames() async throws {
+    func timecode_RealTimeValue_RealWorld_SubFrames() throws {
         // test against real-world values extracted from DAWs
-        
+
         // Cubase 11 XML file output (high resolution floating-point times in seconds)
-        
+
         // the timecodes in the constant variable names are the timecodes as seen in Cubase
         // the float-point number constant values are extracted from a Track Archive XML file exported from the Cubase project which outputs
         // very high precision float-point numbers in seconds to define many attributes such as the project start time, and event start
         // times and lengths on tracks which are in absolute time mode (not musical bars/beats mode which gets stored as PPQ values in the
         // XML file instead of float-point seconds)
-        
+
         // 23.976fps, 80 subframe divisor
-        
+
         //  _HH_MM_SS_FF_SF
-        
+
         // session start timecode
         let _00_49_27_15_00 = 2970.5926250000002255546860396862030029296875
-        
+
         // events: delta times from session start time
         let _00_49_29_17_00_delta = 2.0854162836310767836778268247144296765327453613281
         let _00_49_31_09_00_delta = 3.7537499627098442900319241744000464677810668945312
         let _00_49_33_21_79_delta = 6.297436893962323978257700218819081783294677734375
         let _00_49_38_01_79_delta = 10.468270548180987233877203834708780050277709960938
-        
+
         // test timecode formation from real time
-        
+
         let start = try Timecode(
             .realTime(seconds: _00_49_27_15_00),
             at: .fps23_976
@@ -253,7 +246,7 @@ import Testing
             start.components
                 == Timecode.Components(h: 00, m: 49, s: 27, f: 15, sf: 00)
         )
-        
+
         let event1 = try Timecode(
             .realTime(seconds: _00_49_27_15_00 + _00_49_29_17_00_delta),
             at: .fps23_976
@@ -262,7 +255,7 @@ import Testing
             event1.components
                 == Timecode.Components(h: 00, m: 49, s: 29, f: 17, sf: 00)
         )
-        
+
         let event2 = try Timecode(
             .realTime(seconds: _00_49_27_15_00 + _00_49_31_09_00_delta),
             at: .fps23_976
@@ -271,7 +264,7 @@ import Testing
             event2.components
                 == Timecode.Components(h: 00, m: 49, s: 31, f: 09, sf: 00)
         )
-        
+
         let event3 = try Timecode(
             .realTime(seconds: _00_49_27_15_00 + _00_49_33_21_79_delta),
             at: .fps23_976,
@@ -281,7 +274,7 @@ import Testing
             event3.components
                 == Timecode.Components(h: 00, m: 49, s: 33, f: 21, sf: 79)
         )
-        
+
         let event4 = try Timecode(
             .realTime(seconds: _00_49_27_15_00 + _00_49_38_01_79_delta),
             at: .fps23_976,
@@ -291,38 +284,38 @@ import Testing
             event4.components
                 == Timecode.Components(h: 00, m: 49, s: 38, f: 01, sf: 79)
         )
-        
+
         // test real time matching the seconds constants
         let tolerance = 0.0000005
-        
+
         // start
         #expect(
             try Timecode(.components(h: 00, m: 49, s: 27, f: 15, sf: 00), at: .fps23_976)
                 .realTimeValue
-            == _00_49_27_15_00
+                == _00_49_27_15_00
         )
-        
+
         // event1
         #expect(
             try Timecode(.components(h: 00, m: 49, s: 29, f: 17, sf: 00), at: .fps23_976)
                 .realTimeValue
                 .isApproximatelyEqual(to: _00_49_27_15_00 + _00_49_29_17_00_delta, absoluteTolerance: tolerance)
         )
-        
+
         // event2
         #expect(
             try Timecode(.components(h: 00, m: 49, s: 31, f: 09, sf: 00), at: .fps23_976)
                 .realTimeValue
                 .isApproximatelyEqual(to: _00_49_27_15_00 + _00_49_31_09_00_delta, absoluteTolerance: tolerance)
         )
-        
+
         // event3
         #expect(
             try Timecode(.components(h: 00, m: 49, s: 33, f: 21, sf: 79), at: .fps23_976, base: .max80SubFrames)
                 .realTimeValue
                 .isApproximatelyEqual(to: _00_49_27_15_00 + _00_49_33_21_79_delta, absoluteTolerance: tolerance)
         )
-        
+
         // event4
         #expect(
             try Timecode(.components(h: 00, m: 49, s: 38, f: 01, sf: 79), at: .fps23_976, base: .max80SubFrames)
@@ -330,13 +323,13 @@ import Testing
                 .isApproximatelyEqual(to: _00_49_27_15_00 + _00_49_38_01_79_delta, absoluteTolerance: tolerance)
         )
     }
-    
+
     @Test
-    func edgeCases() async throws {
+    func edgeCases() {
         // test for really large values
-        
+
         // Int max
-        
+
         // non-drop
         #expect(
             Timecode(
@@ -354,7 +347,7 @@ import Testing
             .realTimeValue
             == 0.0
         )
-        
+
         // drop
         #expect(
             Timecode(
@@ -372,9 +365,9 @@ import Testing
             .realTimeValue
             == 0.0
         )
-        
+
         // Int min
-        
+
         // non-drop
         #expect(
             Timecode(
@@ -392,7 +385,7 @@ import Testing
             .realTimeValue
             == 0.0
         )
-        
+
         // drop
         #expect(
             Timecode(

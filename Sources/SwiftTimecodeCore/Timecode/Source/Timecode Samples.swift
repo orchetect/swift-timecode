@@ -1,14 +1,14 @@
 //
 //  Timecode Samples.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Payload
 
 struct SamplesPayload {
-    public var samples: Double
-    public var sampleRate: Int
+    var samples: Double
+    var sampleRate: Int
 }
 
 // MARK: - TimecodeSource
@@ -17,7 +17,7 @@ extension SamplesPayload: _TimecodeSource {
     func set(timecode: inout Timecode) throws {
         try timecode._setTimecode(samples: samples, sampleRate: sampleRate)
     }
-    
+
     func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) {
         switch validation {
         case .clamping, .clampingComponents:
@@ -37,7 +37,7 @@ extension TimecodeSourceValue {
     public static func samples(_ samples: Int, sampleRate: Int) -> Self {
         .init(value: SamplesPayload(samples: Double(samples), sampleRate: sampleRate))
     }
-    
+
     /// Audio samples at a given sample rate.
     public static func samples(_ samples: Double, sampleRate: Int) -> Self {
         .init(value: SamplesPayload(samples: samples, sampleRate: sampleRate))
@@ -60,7 +60,7 @@ extension Timecode {
         }
         return Int(val)
     }
-    
+
     /// (Lossy)
     /// Returns the current timecode converted to a duration in audio samples
     /// at the given sample rate, with floating-point sub-sample duration.
@@ -74,7 +74,7 @@ extension Timecode {
 
 extension Timecode {
     // MARK: - Int
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples.
@@ -91,7 +91,7 @@ extension Timecode {
             sampleRate: sampleRate
         )
     }
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples.
@@ -108,7 +108,7 @@ extension Timecode {
             sampleRate: sampleRate
         )
     }
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples.
@@ -125,7 +125,7 @@ extension Timecode {
             sampleRate: sampleRate
         )
     }
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples.
@@ -142,9 +142,9 @@ extension Timecode {
             sampleRate: sampleRate
         )
     }
-    
+
     // MARK: - Double
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples, with floating-point sub-sample duration.
@@ -162,7 +162,7 @@ extension Timecode {
         )
         try _setTimecode(exactly: convertedComponents)
     }
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples, with floating-point sub-sample duration.
@@ -180,7 +180,7 @@ extension Timecode {
         )
         _setTimecode(clamping: convertedComponents)
     }
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples, with floating-point sub-sample duration.
@@ -198,7 +198,7 @@ extension Timecode {
         )
         _setTimecode(wrapping: convertedComponents)
     }
-    
+
     /// (Lossy)
     /// Sets the timecode to the nearest elapsed frame at the current frame rate
     /// from elapsed audio samples, with floating-point sub-sample duration.
@@ -216,29 +216,29 @@ extension Timecode {
         )
         _setTimecode(rawValues: convertedComponents)
     }
-    
+
     // MARK: Helper Methods
-    
+
     func components(
         fromSamples: Double,
         sampleRate: Int
     ) -> Components {
         let rtv = fromSamples / Double(sampleRate)
         var base = elapsedFrames(realTime: rtv)
-        
+
         // over-estimate so samples are just past the equivalent timecode
         // so calculations of samples back into timecode work reliably
         // otherwise, this math produces a samples value that can be a hair under
         // the actual elapsed samples that would convert back to equivalent timecode
-        
+
         let magicNumber = 0.0001
-        
+
         if rtv < 0 {
             base -= magicNumber
         } else {
             base += magicNumber
         }
-        
+
         // then derive components
         return Self.components(
             of: .init(.combined(frames: base), base: subFramesBase),

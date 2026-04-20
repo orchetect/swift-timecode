@@ -1,7 +1,7 @@
 //
 //  AVAsset Frame Rate Read.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // AVAssetReader is unavailable on watchOS so we can't support any AVAsset operations
@@ -31,14 +31,14 @@ extension AVAsset {
         // likewise, a video track does not contain start timecode/offset
         // additionally, drop-frame flag is not readable from video tracks. if present, it will only
         // be in the timecode track.
-        
+
         // use supplied drop-frame status, otherwise auto-detect and default to non-drop
         let drop = try await {
             if let drop { return drop }
             if let drop = try await isTimecodeFrameRateDropFrame { return drop }
             return false
         }()
-        
+
         // first, frame rate can be determined from minimum frame duration
         // only video tracks will contain this value. audio or timecode tracks will be zero.
         let videoTracks = try await loadTracks(withMediaType: .video)
@@ -50,7 +50,7 @@ extension AVAsset {
         {
             return tcRate
         }
-        
+
         // second, frame rate can be determined from timecode track format description
         // it seems only timecode track contains this, but perhaps only when a video track
         // is also present in the asset.
@@ -63,16 +63,16 @@ extension AVAsset {
         {
             return tcRate
         }
-        
+
         // third, frame rate can be derived from nominal frame rate.
         // determine video frame rate and attempt to convert it to timecode frame rate
         if let rate = try await videoFrameRate().timecodeFrameRate(drop: drop) {
             return rate
         }
-        
+
         throw Timecode.MediaParseError.missingOrNonStandardFrameRate
     }
-    
+
     /// If drop-frame status is embedded, returns `true` (drop) or `false` (non-drop).
     /// Returns `nil` if drop-frame status is unknown.
     /// Best practise is to default to `false` if `nil` is returned.
@@ -82,7 +82,7 @@ extension AVAsset {
             let flags = try await timecodeTracks
                 .formatDescriptionsFlatMapped()
                 .map { $0.timeCodeFlags.contains(.dropFrame) }
-            
+
             // if more than one timecode track exists, check if any contain drop-frame
             return flags.contains(true)
         }
@@ -96,16 +96,16 @@ extension AVAsset {
     /// Returns the video frame rate for each video track.
     public func videoFrameRate(interlaced: Bool? = nil) async throws -> VideoFrameRate {
         let videoTracks = try await loadTracks(withMediaType: .video)
-        
+
         // Note: only video tracks contain interlaced (field) info
-        
+
         // use supplied interlaced status, otherwise auto-detect and default to non-interlaced
         // (progressive)
         let interlaced: Bool = await {
             if let interlaced { return interlaced }
             return await isVideoInterlaced
         }()
-        
+
         // first, frame rate can be determined from minimum frame duration
         // only video tracks will contain this value. audio or timecode tracks will be zero.
         let validVideoFrameDurations = videoTracks
@@ -116,7 +116,7 @@ extension AVAsset {
         {
             return rate
         }
-        
+
         // second, frame rate can be determined from video format description
         // it seems only timecode track contains this, but perhaps only when a video track
         // is also present in the asset.
@@ -128,9 +128,9 @@ extension AVAsset {
         {
             return tcRate
         }
-        
+
         let timecodeTracks = try await loadTracks(withMediaType: .timecode)
-        
+
         // handle an edge case where an asset has timecode track(s) but no video tracks
         // it seems only timecode track contains this, but perhaps only when a video track
         // is also present in the asset.
@@ -142,7 +142,7 @@ extension AVAsset {
         {
             return tcRate
         }
-        
+
         // lastly, frame rate can be derived from nominal frame rate
         // but this is not always reliable in some cases, such as some codecs that
         // can encode video in variable frame rate format, or non-standard frame rates
@@ -152,10 +152,10 @@ extension AVAsset {
         {
             return rate
         }
-        
+
         throw Timecode.MediaParseError.missingOrNonStandardFrameRate
     }
-    
+
     /// Returns `true` if the first video track is interlaced.
     public var isVideoInterlaced: Bool {
         get async {
@@ -164,9 +164,9 @@ extension AVAsset {
             return isVideoTrackInterlaced ?? false
         }
     }
-    
+
     // MARK: - Helpers
-    
+
     /// Returns the nominal frame rate as `Float` for each video track.
     func readNominalVideoFrameRates() async -> [Float] {
         guard let videoTracks = try? await loadTracks(withMediaType: .video) else { return [] }
@@ -207,12 +207,12 @@ extension Collection where Element: AVAssetTrack {
     /// Returns `formatDescriptions` flat-mapped from all track in the collection.
     func formatDescriptionsFlatMapped() async throws -> [CMFormatDescription] {
         var formatDescriptions: [CMFormatDescription] = []
-        
+
         for track in self {
             let trackFDs = try await track.formatDescriptions
             formatDescriptions.append(contentsOf: trackFDs)
         }
-        
+
         return formatDescriptions
     }
 }

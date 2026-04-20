@@ -23,12 +23,12 @@ extension FloatingPoint where Self: FloatingPointPowerComputable {
         if decimalPlaces < 1 {
             return rounded(rule)
         }
-        
+
         let offset = Self(10).power(Self(decimalPlaces))
-        
+
         return (self * offset).rounded(rule) / offset
     }
-    
+
     /// Replaces this value by rounding it to `decimalPlaces` number of decimal places using rounding `rule`.
     ///
     /// If `decimalPlaces` <= 0, `trunc(self)` is used.

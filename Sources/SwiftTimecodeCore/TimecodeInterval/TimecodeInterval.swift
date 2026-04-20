@@ -1,7 +1,7 @@
 //
 //  TimecodeInterval.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -12,12 +12,12 @@ public struct TimecodeInterval: Equatable, Hashable {
     /// The interval's absolute distance, stripping sign negation if present.
     /// The ``isNegative`` property determines the delta direction of the interval.
     public let absoluteInterval: Timecode
-    
+
     /// The `interval` sign.
     public let sign: FloatingPointSign
-    
+
     // MARK: - Init
-    
+
     public init(
         _ interval: Timecode,
         _ sign: FloatingPointSign = .plus
@@ -29,12 +29,12 @@ public struct TimecodeInterval: Equatable, Hashable {
 
 extension TimecodeInterval {
     // MARK: - Public Properties
-        
+
     /// Returns `true` if the sign is negative.
     public var isNegative: Bool {
         sign == .minus
     }
-    
+
     /// Flattens the interval and returns it expressed as valid timecode, wrapping as necessary based on the
     /// ``Timecode/upperLimit-swift.property`` of the interval.
     ///
@@ -42,12 +42,12 @@ extension TimecodeInterval {
     public func flattened() -> Timecode {
         // since `absoluteInterval` may contain raw values that overflow valid timecode,
         // we invoke methods that can wrap it in-place by using zero timecode as an operand
-        
+
         switch sign {
         case .plus:
             absoluteInterval
                 .adding(Timecode.Components(), by: .wrapping)
-            
+
         case .minus:
             Timecode(
                 .zero,
@@ -58,9 +58,9 @@ extension TimecodeInterval {
             .subtracting(absoluteInterval.components, by: .wrapping)
         }
     }
-    
+
     // MARK: - Internal Helpers
-    
+
     /// Internal:
     /// Returns a `Timecode` value offsetting it by the interval, wrapping around lower/upper timecode limit bounds if necessary.
     func timecode(offsetting base: Timecode) -> Timecode {
@@ -75,7 +75,9 @@ extension TimecodeInterval {
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension TimecodeInterval: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension TimecodeInterval: Sendable { }
@@ -89,11 +91,11 @@ extension TimecodeInterval: CustomStringConvertible, CustomDebugStringConvertibl
         case .minus: "-\(absoluteInterval.description)"
         }
     }
-    
+
     public var debugDescription: String {
         "TimecodeInterval(\(description))"
     }
-    
+
     public var verboseDescription: String {
         "TimecodeInterval \(description) @ \(absoluteInterval.frameRate.stringValueVerbose)"
     }
@@ -106,7 +108,7 @@ extension TimecodeInterval {
     public static func positive(_ interval: Timecode) -> Self {
         .init(interval, .plus)
     }
-    
+
     /// Constructs a new `TimecodeInterval` instance with negative sign.
     public static func negative(_ interval: Timecode) -> Self {
         .init(interval, .minus)

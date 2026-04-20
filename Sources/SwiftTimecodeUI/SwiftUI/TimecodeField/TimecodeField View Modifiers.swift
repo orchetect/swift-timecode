@@ -1,13 +1,13 @@
 //
 //  TimecodeField View Modifiers.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 // MARK: - TimecodeFieldInputRejectionFeedback
 
@@ -15,7 +15,7 @@ import SwiftTimecodeCore
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldInputRejectionFeedbackViewModifier: ViewModifier {
     let feedback: TimecodeField.InputRejectionFeedback?
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldInputRejectionFeedback, feedback)
     }
@@ -42,16 +42,16 @@ extension View {
 @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 struct TimecodeFieldHighlightStyleViewModifier: ViewModifier {
     let style: AnyShapeStyle?
-    
+
     init(style: AnyShapeStyle?) {
         self.style = style
     }
-    
+
     @_disfavoredOverload
-    init<S: ShapeStyle>(style: S?) {
+    init(style: (some ShapeStyle)?) {
         self.style = style?.asAnyShapeStyle()
     }
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldHighlightStyle, style)
     }
@@ -61,21 +61,17 @@ struct TimecodeFieldHighlightStyleViewModifier: ViewModifier {
 extension View {
     /// Sets the component highlight style for ``TimecodeField`` views.
     /// By default, the application's `accentColor` is used.
-    public func timecodeFieldHighlightStyle<S: ShapeStyle>(
-        _ style: S
-    ) -> some View {
+    public func timecodeFieldHighlightStyle(_ style: some ShapeStyle) -> some View {
         modifier(TimecodeFieldHighlightStyleViewModifier(style: style))
     }
-    
+
     /// Sets the component highlight style for ``TimecodeField`` views.
     /// By default, the application's `accentColor` is used.
     @_disfavoredOverload
-    public func timecodeFieldHighlightStyle<S: ShapeStyle>(
-        _ style: S?
-    ) -> some View {
+    public func timecodeFieldHighlightStyle(_ style: (some ShapeStyle)?) -> some View {
         modifier(TimecodeFieldHighlightStyleViewModifier(style: style))
     }
-    
+
     /// Sets the component highlight style for ``TimecodeField`` views.
     /// By default, the application's `accentColor` is used.
     @_documentation(visibility: internal)
@@ -93,7 +89,7 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldInputStyleViewModifier: ViewModifier {
     let style: TimecodeField.InputStyle
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldInputStyle, style)
     }
@@ -115,7 +111,7 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldInputWrappingViewModifier: ViewModifier {
     let wrapping: TimecodeField.InputWrapping
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldInputWrapping, wrapping)
     }
@@ -137,7 +133,7 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldReturnActionViewModifier: ViewModifier {
     let format: TimecodeField.FieldAction?
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldReturnAction, format)
     }
@@ -159,7 +155,7 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldEscapeActionViewModifier: ViewModifier {
     let format: TimecodeField.FieldAction?
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldEscapeAction, format)
     }
@@ -181,7 +177,7 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldPastePolicyViewModifier: ViewModifier {
     let policy: TimecodeField.PastePolicy
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldPastePolicy, policy)
     }
@@ -203,7 +199,7 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct TimecodeFieldValidationPolicyViewModifier: ViewModifier {
     let policy: TimecodeField.ValidationPolicy
-    
+
     func body(content: Content) -> some View {
         content.environment(\.timecodeFieldValidationPolicy, policy)
     }

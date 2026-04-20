@@ -1,35 +1,35 @@
 //
 //  NSAttributedStringDemoView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct NSAttributedStringDemoView: View {
     @State var components: Timecode.Components = .random(in: .unsafeRandomRanges)
     @State var frameRate: TimecodeFrameRate = .fps24
     @State var subFramesBase: Timecode.SubFramesBase = .max80SubFrames
     @State var upperLimit: Timecode.UpperLimit = .max24Hours
-    
+
     @State private var isEnabled: Bool = true
     @State private var timecodeFormat: Timecode.StringFormat = [.showSubFrames]
     @State private var defaultStyle: DefaultStyle = .default
     @State private var separatorStyle: SeparatorStyle = .secondary
     @State private var validationStyle: ValidationStyle = .red
     @State private var subFramesStyle: SubFramesStyle = .default
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Text(AttributedString(nsAttributedString))
 //                .foregroundColor(defaultStyle.color)
                 .font(.largeTitle)
                 .disabled(!isEnabled)
-            
+
             Divider()
-            
+
             Form {
                 propertiesSection
                 settingsSection
@@ -39,32 +39,32 @@ struct NSAttributedStringDemoView: View {
         }
         .padding()
     }
-    
+
     private var nsAttributedString: NSAttributedString {
         let defaultAttributes: [NSAttributedString.Key: Any]? = if let color = defaultStyle.color {
             [.foregroundColor: color]
         } else {
             nil
         }
-        
+
         let separatorAttributes: [NSAttributedString.Key: Any]? = if let color = separatorStyle.color {
             [.foregroundColor: color]
         } else {
             nil
         }
-        
+
         let subFramesAttributes: [NSAttributedString.Key: Any]? = if let color = subFramesStyle.color {
             [.foregroundColor: color]
         } else {
             nil
         }
-        
+
         let invalidAttributes: [NSAttributedString.Key: Any]? = if let color = validationStyle.color {
             [.foregroundColor: color]
         } else {
             nil
         }
-        
+
         return NSAttributedString(
             timecode,
             format: timecodeFormat,
@@ -74,7 +74,7 @@ struct NSAttributedStringDemoView: View {
             invalidAttributes: invalidAttributes
         )
     }
-    
+
     private var propertiesSection: some View {
         TimecodePropertiesSectionView(
             frameRate: $frameRate,
@@ -82,7 +82,7 @@ struct NSAttributedStringDemoView: View {
             upperLimit: $upperLimit
         )
     }
-    
+
     private var settingsSection: some View {
         Section("Settings") {
             Picker("Default Color", selection: $defaultStyle) {
@@ -116,15 +116,15 @@ struct NSAttributedStringDemoView: View {
             }
         }
     }
-    
+
     private var timecodeSection: some View {
         GenerateRandomTimecodeSectionView { randomTimecode in
             timecode = randomTimecode
         }
     }
-    
+
     // MARK: - Proxies
-    
+
     private var timecode: Timecode {
         get {
             Timecode(
@@ -140,7 +140,7 @@ struct NSAttributedStringDemoView: View {
             timecodeProperties = newValue.properties
         }
     }
-    
+
     private var timecodeProperties: Timecode.Properties {
         get {
             Timecode.Properties(
@@ -164,9 +164,11 @@ extension NSAttributedStringDemoView {
         case `default`
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -174,8 +176,7 @@ extension NSAttributedStringDemoView {
             case .orange: "Orange"
             }
         }
-        
-        
+
         #if os(macOS)
         var color: NSColor? {
             if let _color { NSColor(_color) } else { nil }
@@ -185,7 +186,7 @@ extension NSAttributedStringDemoView {
             if let _color { UIColor(_color) } else { nil }
         }
         #endif
-        
+
         var _color: Color? {
             switch self {
             case .default: nil
@@ -194,16 +195,18 @@ extension NSAttributedStringDemoView {
             }
         }
     }
-    
+
     private enum SubFramesStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -213,7 +216,7 @@ extension NSAttributedStringDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         #if os(macOS)
         var color: NSColor? {
             if let _color { NSColor(_color) } else { nil }
@@ -223,7 +226,7 @@ extension NSAttributedStringDemoView {
             if let _color { UIColor(_color) } else { nil }
         }
         #endif
-        
+
         var _color: Color? {
             switch self {
             case .default: nil
@@ -234,16 +237,18 @@ extension NSAttributedStringDemoView {
             }
         }
     }
-    
+
     private enum SeparatorStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -253,7 +258,7 @@ extension NSAttributedStringDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         #if os(macOS)
         var color: NSColor? {
             if let _color { NSColor(_color) } else { nil }
@@ -263,7 +268,7 @@ extension NSAttributedStringDemoView {
             if let _color { UIColor(_color) } else { nil }
         }
         #endif
-        
+
         var _color: Color? {
             switch self {
             case .default: nil
@@ -274,14 +279,16 @@ extension NSAttributedStringDemoView {
             }
         }
     }
-    
+
     private enum ValidationStyle: Int, CaseIterable, Identifiable {
         case none
         case red
         case purple
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .none: "None"
@@ -289,7 +296,7 @@ extension NSAttributedStringDemoView {
             case .purple: "Purple"
             }
         }
-        
+
         #if os(macOS)
         var color: NSColor? {
             if let _color { NSColor(_color) } else { nil }
@@ -299,7 +306,7 @@ extension NSAttributedStringDemoView {
             if let _color { UIColor(_color) } else { nil }
         }
         #endif
-        
+
         var _color: Color? {
             switch self {
             case .none: nil

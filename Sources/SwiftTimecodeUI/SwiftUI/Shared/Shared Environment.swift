@@ -1,7 +1,7 @@
 //
 //  Shared Environment.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // Environment contents used by both ``TimecodeField`` and ``TimecodeText``
@@ -9,35 +9,35 @@
 
 #if canImport(SwiftUI)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 @_documentation(visibility: internal)
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension EnvironmentValues {
     // MARK: - TimecodeFormat
-    
+
     /// Sets the timecode string format for ``TimecodeField`` and ``TimecodeText`` views.
     @Entry public var timecodeFormat: Timecode.StringFormat = .default()
-    
+
     // MARK: - TimecodeSeparatorStyle
-    
+
     /// Sets the text separator style for ``TimecodeField`` and ``TimecodeText`` views.
     /// If `color` is nil, the foreground style is used.
     ///
     /// - Note: To set the default color of the component values, use `foregroundColor` or `foregroundStyle` view modifiers.
     @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     @Entry public var timecodeSeparatorStyle: AnyShapeStyle? = nil
-    
+
     // MARK: - TimecodeSubFramesStyle
-    
+
     /// Sets the subframes timecode component foreground style and text scale for ``TimecodeField`` and ``TimecodeText`` views.
     /// If `color` is nil, the foreground style is used.
     @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Entry public var timecodeSubFramesStyle: (style: AnyShapeStyle?, scale: Text.Scale) = (nil, .default)
-    
+
     // MARK: - TimecodeValidationStyle
-    
+
     /// Sets timecode component validation rendering style for ``TimecodeField`` and ``TimecodeText`` views.
     ///
     /// This foreground color will be used only for any timecode component values that are invalid based on the given
@@ -59,16 +59,16 @@ extension EnvironmentValues {
 struct TimecodePasteAction {
     typealias Action = (_ pasteResult: Result<Timecode, Error>) -> Void
     let action: Action
-    
-     enum ParseResult: Equatable, Hashable, Sendable {
+
+    enum ParseResult: Equatable, Hashable, Sendable {
         case timecode(Timecode)
         case invalid
     }
-    
+
     func callAsFunction(_ timecode: Timecode) {
         action(.success(timecode))
     }
-    
+
     #if os(macOS)
     @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
     @MainActor
@@ -78,7 +78,7 @@ struct TimecodePasteAction {
     ) async {
         await callAsFunction(itemProviders: [itemProvider], propertiesForString: timecodeProperties)
     }
-    
+
     @available(macOS 13.0, iOS 16.0, tvOS 16.0, watchOS 9.0, *)
     @MainActor
     func callAsFunction(

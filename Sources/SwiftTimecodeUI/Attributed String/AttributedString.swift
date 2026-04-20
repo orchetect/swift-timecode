@@ -1,14 +1,14 @@
 //
 //  AttributedString.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI)
 
 import Foundation
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 @available(macOS 12, iOS 15, tvOS 15, watchOS 8, *)
 extension AttributedString {
@@ -54,7 +54,7 @@ extension Timecode {
         let timecodeFormat = format
         let timecodeSeparatorStyle = separatorStyle
         let timecodeValidationStyle = validationStyle
-        
+
         let separatorModifiers: (String) -> AttributedString = {
             var str = AttributedString($0)
             if let timecodeSeparatorStyle {
@@ -62,7 +62,7 @@ extension Timecode {
             }
             return str
         }
-        
+
         let subFramesModifiers: (String) -> AttributedString = {
             var str = AttributedString($0)
             if let subFramesStyle {
@@ -70,7 +70,7 @@ extension Timecode {
             }
             return str
         }
-        
+
         let invalidModifiers: (String) -> AttributedString = {
             var str = AttributedString($0)
             if let timecodeValidationStyle {
@@ -78,7 +78,7 @@ extension Timecode {
             }
             return str
         }
-        
+
         let sepDays = separatorModifiers(" ")
         let sepMain = timecodeFormat.filenameCompatible
             ? separatorModifiers("-")
@@ -87,11 +87,11 @@ extension Timecode {
             ? separatorModifiers("-")
             : separatorModifiers(timecode.frameRate.isDrop ? ";" : ":")
         let sepSubFrames = separatorModifiers(".")
-        
+
         let invalids = timecode.invalidComponents
-        
+
         var output = AttributedString("")
-        
+
         // days
         if timecode.days != 0 || format.contains(.alwaysShowDays) {
             let daysText = "\(timecode.days)"
@@ -100,59 +100,59 @@ extension Timecode {
             } else {
                 output.append(AttributedString(daysText))
             }
-            
+
             output.append(sepDays)
         }
-        
+
         // hours
-        
+
         let hoursText = String(format: "%02ld", timecode.hours)
         if invalids.contains(.hours) {
             output.append(invalidModifiers(hoursText))
         } else {
             output.append(AttributedString(hoursText))
         }
-        
+
         output.append(sepMain)
-        
+
         // minutes
-        
+
         let minutesText = String(format: "%02ld", timecode.minutes)
         if invalids.contains(.minutes) {
             output.append(invalidModifiers(minutesText))
         } else {
             output.append(AttributedString(minutesText))
         }
-        
+
         output.append(sepMain)
-        
+
         // seconds
-        
+
         let secondsText = String(format: "%02ld", timecode.seconds)
         if invalids.contains(.seconds) {
             output.append(invalidModifiers(secondsText))
         } else {
             output.append(AttributedString(secondsText))
         }
-        
+
         output.append(sepFrames)
-        
+
         // frames
-        
+
         let framesText = String(format: "%0\(timecode.frameRate.numberOfDigits)ld", timecode.frames)
         if invalids.contains(.frames) {
             output.append(invalidModifiers(framesText))
         } else {
             output.append(AttributedString(framesText))
         }
-        
+
         // subframes
-        
+
         if timecodeFormat.showSubFrames {
             let numberOfSubFramesDigits = timecode.validRange(of: .subFrames).upperBound.numberOfDigits
-            
+
             output.append(sepSubFrames)
-            
+
             let subframesText = String(format: "%0\(numberOfSubFramesDigits)ld", timecode.subFrames)
             if invalids.contains(.subFrames) {
                 output.append(invalidModifiers(subframesText))
@@ -160,7 +160,7 @@ extension Timecode {
                 output.append(subFramesModifiers(subframesText))
             }
         }
-        
+
         return output
     }
 }

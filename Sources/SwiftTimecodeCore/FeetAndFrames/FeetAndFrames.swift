@@ -1,7 +1,7 @@
 //
 //  FeetAndFrames.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -22,7 +22,7 @@ public struct FeetAndFrames: Equatable, Hashable {
     public var frames: Int
     public var subFrames: Int
     public var subFramesBase: Timecode.SubFramesBase
-    
+
     public init(
         feet: Int,
         frames: Int,
@@ -34,7 +34,7 @@ public struct FeetAndFrames: Equatable, Hashable {
         self.subFrames = subFrames
         self.subFramesBase = subFramesBase
     }
-    
+
     /// Initialize from a Feet+Frames string value.
     /// Throws an error if the string is not formatted correctly.
     ///
@@ -44,7 +44,7 @@ public struct FeetAndFrames: Equatable, Hashable {
         subFramesBase: Timecode.SubFramesBase = .default()
     ) throws {
         let decoded = try Self.decode(feetAndFrames: string)
-        
+
         feet = decoded.feet
         frames = decoded.frames
         subFrames = decoded.subFrames
@@ -54,7 +54,9 @@ public struct FeetAndFrames: Equatable, Hashable {
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension FeetAndFrames: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension FeetAndFrames: CustomStringConvertible {
@@ -81,7 +83,7 @@ extension FeetAndFrames {
     /// Returns the total number of frames elapsed.
     public var frameCount: Timecode.FrameCount {
         let fc = frames + (feet * 16)
-        
+
         switch subFrames != 0 {
         case true:
             return .init(.split(frames: fc, subFrames: subFrames), base: subFramesBase)

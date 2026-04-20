@@ -1,14 +1,14 @@
 //
 //  AttributedString Previews.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI)
 
 import Foundation
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 // TODO: Find a way to conditionally build Previews
 // `#if DEBUG` isn't good enough because it's causing docc generation to fail.
@@ -22,7 +22,7 @@ import SwiftTimecodeCore
         by: .allowingInvalid
     )
     @Previewable @State var timecodeFormat: Timecode.StringFormat = [.showSubFrames]
-    
+
     let attributedStringDefault = AttributedString(
         timecode
     )
@@ -32,7 +32,7 @@ import SwiftTimecodeCore
         separatorStyle: .secondary,
         validationStyle: .purple
     )
-    
+
     VStack {
         Group {
             Text(attributedStringDefault)
@@ -41,14 +41,14 @@ import SwiftTimecodeCore
                 .foregroundColor(.blue)
         }
         .font(.largeTitle)
-        
+
         Button("Refresh") {
             timecode = .init(
                 .randomComponentsAndProperties(in: .unsafeRandomRanges),
                 by: .allowingInvalid
             )
         }
-        
+
         Toggle("Show SubFrames", isOn: $timecodeFormat.option(.showSubFrames))
     }
     .padding()

@@ -1,7 +1,7 @@
 //
 //  TimecodeFrameRate Conversions.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -13,6 +13,7 @@ extension TimecodeFrameRate {
     /// - Parameters:
     ///   - interlaced: Whether video frame rate is interlaced (`true`) or progressive (`false`).
     public func videoFrameRate(interlaced: Bool) -> VideoFrameRate? {
+        // swiftformat:disable consecutiveSpaces
         switch self {
         case .fps23_976:  interlaced ? nil        : .fps23_98p
         case .fps24:      interlaced ? nil        : .fps24p
@@ -38,6 +39,7 @@ extension TimecodeFrameRate {
         case .fps120:     interlaced ? nil        : .fps120p    // 120i could exist?
         case .fps120d:    interlaced ? nil        : .fps120p
         }
+        // swiftformat:enable consecutiveSpaces
     }
 }
 
@@ -64,13 +66,13 @@ extension TimecodeFrameRate {
     ) {
         let foundMatches = Self.allCases.filter(rate: rate)
         guard !foundMatches.isEmpty else { return nil }
-        
+
         guard let foundMatch = foundMatches.first(where: { $0.isDrop == drop })
         else { return nil }
-        
+
         self = foundMatch
     }
-    
+
     /// Initialize from a frame rate's frame duration expressed as a rational number (fraction).
     ///
     /// - Note: Some file formats encode video frame rate and/or time locations (timecode) in
@@ -91,10 +93,10 @@ extension TimecodeFrameRate {
     ) {
         let foundMatches = Self.allCases.filter(frameDuration: frameDuration)
         guard !foundMatches.isEmpty else { return nil }
-        
+
         guard let foundMatch = foundMatches.first(where: { $0.isDrop == drop })
         else { return nil }
-        
+
         self = foundMatch
     }
 }
@@ -124,7 +126,7 @@ extension TimecodeFrameRate {
             drop: drop
         )
     }
-    
+
     /// Initialize from a frame rate's frame duration expressed as a rational number (fraction).
     ///
     /// - Note: Many AVFoundation and Core Media objects utilize `CMTime` as a way to represent
@@ -143,7 +145,7 @@ extension TimecodeFrameRate {
             drop: drop
         )
     }
-    
+
     // NOTE: `rateCMTime` and `frameDurationCMTime` properties are implemented on `FrameRateProtocol`
 }
 #endif

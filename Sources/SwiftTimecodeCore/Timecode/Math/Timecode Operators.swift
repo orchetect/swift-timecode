@@ -1,7 +1,7 @@
 //
 //  Timecode Operators.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: - Math operators: Self, Self
@@ -18,7 +18,7 @@ extension Timecode {
             return lhs
         }
     }
-    
+
     /// a.k.a. `lhs.add(rhs, by: wrapping)`
     public static func += (lhs: inout Self, rhs: Self) {
         do {
@@ -30,7 +30,7 @@ extension Timecode {
             return
         }
     }
-    
+
     /// a.k.a. `lhs.subtracting(rhs, by: wrapping)`
     public static func - (lhs: Self, rhs: Self) -> Timecode {
         do {
@@ -42,7 +42,7 @@ extension Timecode {
             return lhs
         }
     }
-    
+
     /// a.k.a. `lhs.subtract(rhs, by: wrapping)`
     public static func -= (lhs: inout Self, rhs: Self) {
         do {
@@ -54,7 +54,7 @@ extension Timecode {
             return
         }
     }
-    
+
     /// a.k.a. `lhs.dividing(rhs)`
     public static func / (lhs: Self, rhs: Self) -> Double {
         do {
@@ -72,48 +72,48 @@ extension Timecode {
 
 extension Timecode {
     // MARK: - *
-    
+
     /// a.k.a. `lhs.multiplying(rhs, by: wrapping)`
     public static func * (lhs: Self, rhs: Double) -> Self {
         lhs.multiplying(rhs, by: .wrapping)
     }
-    
+
     /// a.k.a. `lhs.multiplying(rhs, by: wrapping)`
     public static func * (lhs: Self, rhs: some BinaryInteger) -> Self {
         lhs.multiplying(Double(rhs), by: .wrapping)
     }
-    
+
     // MARK: - *=
-    
+
     /// a.k.a. `lhs.multiply(rhs, by: wrapping)`
     public static func *= (lhs: inout Self, rhs: Double) {
         lhs.multiply(rhs, by: .wrapping)
     }
-    
+
     /// a.k.a. `lhs.multiply(rhs, by: wrapping)`
     public static func *= (lhs: inout Self, rhs: some BinaryInteger) {
         lhs.multiply(Double(rhs), by: .wrapping)
     }
-    
+
     // MARK: - /
-    
+
     /// a.k.a. `lhs.dividing(rhs, by: wrapping)`
     public static func / (lhs: Self, rhs: Double) -> Self {
         lhs.dividing(rhs, by: .wrapping)
     }
-    
+
     /// a.k.a. `lhs.dividing(rhs, by: wrapping)`
     public static func / (lhs: Self, rhs: some BinaryInteger) -> Self {
         lhs.dividing(Double(rhs), by: .wrapping)
     }
-    
+
     // MARK: - /=
-    
+
     /// a.k.a. `lhs.divide(rhs, by: wrapping)`
     public static func /= (lhs: inout Self, rhs: Double) {
         lhs.divide(rhs, by: .wrapping)
     }
-    
+
     /// a.k.a. `lhs.divide(rhs, by: wrapping)`
     public static func /= (lhs: inout Self, rhs: some BinaryInteger) {
         lhs.divide(Double(rhs), by: .wrapping)

@@ -1,15 +1,17 @@
 //
 //  OperationType.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 enum OperationType: Int, Identifiable, CaseIterable {
     case addOrReplaceTimecodeTrack
     case removeTimecodeTrack
-    
-    var id: RawValue { rawValue }
-    
+
+    var id: RawValue {
+        rawValue
+    }
+
     var title: String {
         switch self {
         case .addOrReplaceTimecodeTrack:
@@ -18,7 +20,7 @@ enum OperationType: Int, Identifiable, CaseIterable {
             "Remove"
         }
     }
-    
+
     var systemImage: String {
         switch self {
         case .addOrReplaceTimecodeTrack:

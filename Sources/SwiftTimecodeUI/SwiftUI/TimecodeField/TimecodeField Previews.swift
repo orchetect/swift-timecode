@@ -1,13 +1,13 @@
 //
 //  TimecodeField Previews.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 // TODO: Find a way to conditionally build Previews
 // `#if DEBUG` isn't good enough because it's causing docc generation to fail.
@@ -20,7 +20,7 @@ import SwiftTimecodeCore
 #Preview("HH:MM:SS:FF") {
     @Previewable let properties = Timecode.Properties(rate: .fps24)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
             .timecodeFormat([.showSubFrames])
@@ -46,7 +46,7 @@ import SwiftTimecodeCore
 #Preview("HH:MM:SS:FF:SF") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max24Hours)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
         TimecodeField(
@@ -71,7 +71,7 @@ import SwiftTimecodeCore
 #Preview("DD HH:MM:SS:FF") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max100Days)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
         TimecodeField(
@@ -96,7 +96,7 @@ import SwiftTimecodeCore
 #Preview("DD HH:MM:SS:FF:SF") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max100Days)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
         TimecodeField(
@@ -121,7 +121,7 @@ import SwiftTimecodeCore
 #Preview("Disabled") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max100Days)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
         TimecodeField(
@@ -147,7 +147,7 @@ import SwiftTimecodeCore
 #Preview("Custom Styling") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max100Days)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
             .timecodeSeparatorStyle(.green)
@@ -180,7 +180,7 @@ import SwiftTimecodeCore
 #Preview("Custom Styling Disabled") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max100Days)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
             .timecodeSeparatorStyle(.green)
@@ -212,7 +212,7 @@ import SwiftTimecodeCore
 #Preview("No Validation") {
     @Previewable let properties = Timecode.Properties(rate: .fps24, limit: .max100Days)
     @Previewable @State var components: Timecode.Components = .zero
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(components: $components)
         TimecodeField(
@@ -245,7 +245,7 @@ import SwiftTimecodeCore
         by: .allowingInvalid
     )
     @Previewable @State var tcFormat: Timecode.StringFormat = [.showSubFrames]
-    
+
     VStack(alignment: .trailing) {
         Group {
             TimecodeField(timecode: $timecode)
@@ -260,7 +260,7 @@ import SwiftTimecodeCore
         .font(.largeTitle)
         .timecodeFormat(tcFormat)
         .timecodeValidationStyle(.red)
-        
+
         Form {
             LabeledContent("Frame Rate") {
                 Button("24") { timecode.frameRate = .fps24 }
@@ -298,7 +298,7 @@ import SwiftTimecodeCore
         ),
         by: .allowingInvalid
     )
-    
+
     VStack(alignment: .trailing) {
         TimecodeField(timecode: $timecode)
         TimecodeField(timecode: $timecode)
@@ -309,7 +309,7 @@ import SwiftTimecodeCore
             .timecodeSubFramesStyle(scale: .secondary)
         TimecodeField(timecode: $timecode)
             .timecodeSubFramesStyle(.secondary, scale: .secondary)
-        
+
         LabeledContent("SubFrames Base") {
             Button("80") { timecode.subFramesBase = .max80SubFrames }
             Button("100") { timecode.subFramesBase = .max100SubFrames }

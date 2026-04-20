@@ -1,7 +1,7 @@
 //
 //  AVAsset Timecode Read.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // AVAssetReader is unavailable on watchOS so we can't support any AVAsset operations
@@ -36,7 +36,7 @@ extension AVAsset {
         .compactMap(\.first) // first element of each track
         .first // first track
     }
-    
+
     /// Returns the end timecode (start + duration).
     /// Returns an array because more than one track in an asset may contain this information.
     /// Generally using the first array element is sufficient.
@@ -55,20 +55,20 @@ extension AVAsset {
             if let frameRate { return frameRate }
             return try await timecodeFrameRate()
         }()
-        
+
         guard let start = try await startTimecode(
             at: frameRate,
             base: base,
             limit: limit
         ) else { return nil }
-        
+
         return try await start + durationTimecode(
             at: frameRate,
             base: base,
             limit: limit
         )
     }
-    
+
     /// Returns the duration expressed as timecode.
     /// Returns an array because more than one track in an asset may contain this information.
     /// Generally using the first array element is sufficient.
@@ -87,7 +87,7 @@ extension AVAsset {
             if let frameRate { return frameRate }
             return try await timecodeFrameRate()
         }()
-        
+
         return try Timecode(
             .cmTime(duration),
             at: frameRate,
@@ -95,7 +95,7 @@ extension AVAsset {
             limit: limit
         )
     }
-    
+
     /// Returns timecodes contained in the asset.
     /// Returns an array representing tracks, each an array representing timecode samples in the track.
     ///
@@ -113,10 +113,10 @@ extension AVAsset {
             if let frameRate { return frameRate }
             return try await timecodeFrameRate()
         }()
-        
+
         let samples = try await loadTracks(withMediaType: .timecode)
             .map { try $0.readTimecodeSamples(context: self) }
-        
+
         let timecodes = try samples.map {
             try $0.mapToTimecode(
                 at: frameRate,
@@ -124,12 +124,12 @@ extension AVAsset {
                 limit: limit
             )
         }
-        
+
         return timecodes
     }
-    
+
     // MARK: - Helpers
-    
+
     @_disfavoredOverload
     func readTimecodeSamples() async throws -> [[CMTimeCode]] {
         try await loadTracks(withMediaType: .timecode)

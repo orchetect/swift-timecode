@@ -1,7 +1,7 @@
 //
 //  NSAttributedString.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(AppKit)
@@ -99,13 +99,13 @@ extension Timecode {
         let sepMain = NSAttributedString(string: ":", attributes: separatorAttributes ?? defaultAttributes)
         let sepFrames = NSAttributedString(string: frameRate.isDrop ? ";" : ":", attributes: separatorAttributes ?? defaultAttributes)
         let sepSubFrames = NSAttributedString(string: ".", attributes: separatorAttributes ?? defaultAttributes)
-        
+
         let invalids = invalidComponents
-        
+
         let output = NSMutableAttributedString(string: "", attributes: defaultAttributes)
-        
+
         var piece: NSMutableAttributedString
-        
+
         // days
         if days != 0 || format.contains(.alwaysShowDays) {
             piece = NSMutableAttributedString(string: "\(days)", attributes: defaultAttributes)
@@ -115,14 +115,14 @@ extension Timecode {
                     range: NSRange(location: 0, length: piece.string.count)
                 )
             }
-            
+
             output.append(piece)
-            
+
             output.append(sepDays)
         }
-        
+
         // hours
-        
+
         piece = NSMutableAttributedString(
             string: String(format: "%02ld", hours),
             attributes: defaultAttributes
@@ -133,13 +133,13 @@ extension Timecode {
                 range: NSRange(location: 0, length: piece.string.count)
             )
         }
-        
+
         output.append(piece)
-        
+
         output.append(sepMain)
-        
+
         // minutes
-        
+
         piece = NSMutableAttributedString(
             string: String(format: "%02ld", minutes),
             attributes: defaultAttributes
@@ -150,13 +150,13 @@ extension Timecode {
                 range: NSRange(location: 0, length: piece.string.count)
             )
         }
-        
+
         output.append(piece)
-        
+
         output.append(sepMain)
-        
+
         // seconds
-        
+
         piece = NSMutableAttributedString(
             string: String(format: "%02ld", seconds),
             attributes: defaultAttributes
@@ -167,19 +167,18 @@ extension Timecode {
                 range: NSRange(location: 0, length: piece.string.count)
             )
         }
-        
+
         output.append(piece)
-        
+
         output.append(sepFrames)
-        
+
         // frames
-        
+
         piece = NSMutableAttributedString(
-            string:
-                String(
-                    format: "%0\(frameRate.numberOfDigits)ld",
-                    frames
-                ),
+            string: String(
+                format: "%0\(frameRate.numberOfDigits)ld",
+                frames
+            ),
             attributes: defaultAttributes
         )
         if let invalidAttributes, invalids.contains(.frames) {
@@ -188,22 +187,21 @@ extension Timecode {
                 range: NSRange(location: 0, length: piece.string.count)
             )
         }
-        
+
         output.append(piece)
-        
+
         // subframes
-        
+
         if format.contains(.showSubFrames) {
             let numberOfSubFramesDigits = validRange(of: .subFrames).upperBound.numberOfDigits
-            
+
             output.append(sepSubFrames)
-            
+
             piece = NSMutableAttributedString(
-                string:
-                    String(
-                        format: "%0\(numberOfSubFramesDigits)ld",
-                        subFrames
-                    ),
+                string: String(
+                    format: "%0\(numberOfSubFramesDigits)ld",
+                    subFrames
+                ),
                 attributes: defaultAttributes
             )
             if let invalidAttributes, invalids.contains(.subFrames) {
@@ -217,10 +215,10 @@ extension Timecode {
                     range: NSRange(location: 0, length: piece.string.count)
                 )
             }
-            
+
             output.append(piece)
         }
-        
+
         return output
     }
 }

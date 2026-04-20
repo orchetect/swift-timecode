@@ -1,7 +1,7 @@
 //
 //  FrameCount Value.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode.FrameCount {
@@ -9,14 +9,14 @@ extension Timecode.FrameCount {
     public enum Value {
         /// Total elapsed whole frames. Subframes = 0.
         case frames(Int)
-        
+
         /// Total elapsed whole frames, and subframes.
         case split(frames: Int, subFrames: Int)
-        
+
         /// Total elapsed frames, expressed as a `Double` where the integer portion is whole frames and the fractional portion is the
         /// subframes unit interval.
         case combined(frames: Double)
-        
+
         /// Total elapsed whole frames, and subframes expressed as a floating-point unit interval (`0.0 ..< 1.0`).
         case splitUnitInterval(frames: Int, subFramesUnitInterval: Double)
     }
@@ -28,7 +28,9 @@ extension Timecode.FrameCount.Value: Equatable, Hashable {
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension Timecode.FrameCount.Value: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension Timecode.FrameCount.Value: Sendable { }
@@ -38,13 +40,13 @@ extension Timecode.FrameCount.Value: CustomStringConvertible {
         switch self {
         case let .frames(frames):
             "\(frames) frames"
-            
+
         case let .split(frames: frames, subFrames: subFrames):
             "\(frames).\(subFrames) frames"
-            
+
         case let .combined(frames: frames):
             "\(frames) frames"
-            
+
         case let .splitUnitInterval(frames: frames, subFramesUnitInterval: subFramesUnitInterval):
             "\(Double(frames) + subFramesUnitInterval) frames"
         }
@@ -56,13 +58,13 @@ extension Timecode.FrameCount.Value: CustomDebugStringConvertible {
         switch self {
         case let .frames(frames):
             ".frames(\(frames))"
-            
+
         case let .split(frames: frames, subFrames: subFrames):
             ".split(frames: \(frames), subFrames: \(subFrames))"
-            
+
         case let .combined(frames: frames):
             ".combined(\(frames))"
-            
+
         case let .splitUnitInterval(frames: frames, subFramesUnitInterval: subFramesUnitInterval):
             ".splitUnitInterval(frames: \(frames), subFramesUnitInterval: \(subFramesUnitInterval))"
         }
@@ -75,13 +77,13 @@ extension Timecode.FrameCount.Value {
         switch self {
         case let .frames(frames):
             frames == 0
-            
+
         case let .split(frames, subFrames):
             frames == 0 && subFrames == 0
-            
+
         case let .combined(double):
             double.isZero
-            
+
         case let .splitUnitInterval(frames, subFramesUnitInterval):
             frames == 0 && subFramesUnitInterval.isZero
         }

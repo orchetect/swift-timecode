@@ -1,13 +1,13 @@
 //
 //  TimecodeText.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 // ⚠️ NOTE:
 //
@@ -61,13 +61,13 @@ public struct TimecodeText: View {
     @Environment(\.timecodeSeparatorStyle) private var timecodeSeparatorStyle
     @Environment(\.timecodeSubFramesStyle) private var timecodeSubFramesStyle
     @Environment(\.timecodeValidationStyle) private var timecodeValidationStyle
-    
+
     var timecode: Timecode
-    
+
     public init(_ timecode: Timecode) {
         self.timecode = timecode
     }
-    
+
     public var body: Text {
         timecode.text(
             format: timecodeFormat,
@@ -99,7 +99,7 @@ extension Timecode {
         let timecodeFormat = format
         let timecodeSeparatorStyle = separatorStyle
         let timecodeValidationStyle = validationStyle
-        
+
         let invalidModifiers: (String) -> Text = {
             var str = Text($0)
             if let timecodeValidationStyle {
@@ -107,7 +107,7 @@ extension Timecode {
             }
             return str
         }
-        
+
         let separatorModifiers: (String) -> Text = {
             var str = Text($0)
             if let timecodeSeparatorStyle {
@@ -115,7 +115,7 @@ extension Timecode {
             }
             return str
         }
-        
+
         let sepDays = separatorModifiers(" ")
         let sepMain = timecodeFormat.filenameCompatible
             ? separatorModifiers("-")
@@ -124,11 +124,11 @@ extension Timecode {
             ? separatorModifiers("-")
             : separatorModifiers(timecode.frameRate.isDrop ? ";" : ":")
         let sepSubFrames = separatorModifiers(".")
-        
+
         let invalids = timecode.invalidComponents
-        
+
         var output = Text("")
-        
+
         // days
         if timecode.days != 0 || format.contains(.alwaysShowDays) {
             let daysText = "\(timecode.days)"
@@ -137,70 +137,70 @@ extension Timecode {
             } else {
                 output.append(Text(daysText))
             }
-            
+
             output.append(sepDays)
         }
-        
+
         // hours
-        
+
         let hoursText = String(format: "%02ld", timecode.hours)
         if invalids.contains(.hours) {
             output.append(invalidModifiers(hoursText))
         } else {
             output.append(Text(hoursText))
         }
-        
+
         output.append(sepMain)
-        
+
         // minutes
-        
+
         let minutesText = String(format: "%02ld", timecode.minutes)
         if invalids.contains(.minutes) {
             output.append(invalidModifiers(minutesText))
         } else {
             output.append(Text(minutesText))
         }
-        
+
         output.append(sepMain)
-        
+
         // seconds
-        
+
         let secondsText = String(format: "%02ld", timecode.seconds)
         if invalids.contains(.seconds) {
             output.append(invalidModifiers(secondsText))
         } else {
             output.append(Text(secondsText))
         }
-        
+
         output.append(sepFrames)
-        
+
         // frames
-        
+
         let framesText = String(format: "%0\(timecode.frameRate.numberOfDigits)ld", timecode.frames)
         if invalids.contains(.frames) {
             output.append(invalidModifiers(framesText))
         } else {
             output.append(Text(framesText))
         }
-        
+
         // subframes
-        
+
         if timecodeFormat.showSubFrames {
             let numberOfSubFramesDigits = timecode.validRange(of: .subFrames).upperBound.numberOfDigits
-            
+
             output.append(sepSubFrames)
-            
+
             let subframesText = String(format: "%0\(numberOfSubFramesDigits)ld", timecode.subFrames)
-            
+
             let baseSubFramesText: Text = if invalids.contains(.subFrames) {
                 invalidModifiers(subframesText)
             } else {
                 Text(subframesText).conditionalForegroundStyle(subFramesStyle)
             }
-            
+
             output.append(baseSubFramesText.textScale(subFramesScale))
         }
-        
+
         return output.monospacedDigit()
     }
 }

@@ -1,35 +1,35 @@
 //
 //  AttributedStringDemoView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct AttributedStringDemoView: View {
     @State var components: Timecode.Components = .random(in: .unsafeRandomRanges)
     @State var frameRate: TimecodeFrameRate = .fps24
     @State var subFramesBase: Timecode.SubFramesBase = .max80SubFrames
     @State var upperLimit: Timecode.UpperLimit = .max24Hours
-    
+
     @State private var isEnabled: Bool = true
     @State private var timecodeFormat: Timecode.StringFormat = [.showSubFrames]
     @State private var defaultStyle: DefaultStyle = .default
     @State private var separatorStyle: SeparatorStyle = .secondary
     @State private var validationStyle: ValidationStyle = .red
     @State private var subFramesStyle: SubFramesStyle = .default
-    
+
     var body: some View {
         VStack(spacing: 20) {
             Text(attributedString)
                 .foregroundColor(defaultStyle.color)
                 .font(.largeTitle)
                 .disabled(!isEnabled)
-            
+
             Divider()
-            
+
             Form {
                 propertiesSection
                 settingsSection
@@ -39,7 +39,7 @@ struct AttributedStringDemoView: View {
         }
         .padding()
     }
-    
+
     private var attributedString: AttributedString {
         AttributedString(
             timecode,
@@ -49,7 +49,7 @@ struct AttributedStringDemoView: View {
             validationStyle: validationStyle.color
         )
     }
-    
+
     private var propertiesSection: some View {
         TimecodePropertiesSectionView(
             frameRate: $frameRate,
@@ -57,7 +57,7 @@ struct AttributedStringDemoView: View {
             upperLimit: $upperLimit
         )
     }
-    
+
     private var settingsSection: some View {
         Section("Settings") {
             Picker("Default Color", selection: $defaultStyle) {
@@ -91,15 +91,15 @@ struct AttributedStringDemoView: View {
             }
         }
     }
-    
+
     private var timecodeSection: some View {
         GenerateRandomTimecodeSectionView { randomTimecode in
             timecode = randomTimecode
         }
     }
-    
+
     // MARK: - Proxies
-    
+
     private var timecode: Timecode {
         get {
             Timecode(
@@ -115,7 +115,7 @@ struct AttributedStringDemoView: View {
             timecodeProperties = newValue.properties
         }
     }
-    
+
     private var timecodeProperties: Timecode.Properties {
         get {
             Timecode.Properties(
@@ -139,9 +139,11 @@ extension AttributedStringDemoView {
         case `default`
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -149,7 +151,7 @@ extension AttributedStringDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -158,16 +160,18 @@ extension AttributedStringDemoView {
             }
         }
     }
-    
+
     private enum SubFramesStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -177,7 +181,7 @@ extension AttributedStringDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -188,20 +192,22 @@ extension AttributedStringDemoView {
             }
         }
     }
-    
+
     private enum TextScale: String, CaseIterable, Identifiable {
         case `default`
         case secondary
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
             case .secondary: "Secondary"
             }
         }
-        
+
         var scale: Text.Scale {
             switch self {
             case .default: .default
@@ -209,16 +215,18 @@ extension AttributedStringDemoView {
             }
         }
     }
-    
+
     private enum SeparatorStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -228,7 +236,7 @@ extension AttributedStringDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -239,14 +247,16 @@ extension AttributedStringDemoView {
             }
         }
     }
-    
+
     private enum ValidationStyle: Int, CaseIterable, Identifiable {
         case none
         case red
         case purple
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .none: "None"
@@ -254,7 +264,7 @@ extension AttributedStringDemoView {
             case .purple: "Purple"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .none: nil

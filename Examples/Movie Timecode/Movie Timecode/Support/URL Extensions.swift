@@ -1,7 +1,7 @@
 //
 //  URL Extensions.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -21,7 +21,7 @@ extension URL {
         }
         #endif
     }
-    
+
     /// Reveals the file or folder in the Finder.
     /// Has no effect on non-macOS platforms.
     func revealInFinder() throws {

@@ -1,13 +1,13 @@
 //
 //  TimecodeState.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 /// Custom SwiftUI state wrapper that ensures changes are pushed to views when any Timecode component or property
 /// changes.
@@ -45,33 +45,34 @@ import SwiftTimecodeCore
 /// > wrapper that forces view updates when any `Timecode` property changes.
 @available(macOS 11, iOS 14.0, tvOS 14.0, watchOS 7.0, *)
 @MainActor
-@propertyWrapper public struct TimecodeState: DynamicProperty, Sendable {
+@propertyWrapper
+public struct TimecodeState: DynamicProperty, Sendable {
     public typealias Value = Timecode
-    
+
     @StateObject private var wrapper: Wrapper
-    
+
     public var wrappedValue: Timecode {
         get { wrapper.timecode }
         nonmutating set { wrapper.timecode = newValue }
     }
-    
+
     public init(wrappedValue: Timecode) {
         _wrapper = StateObject(wrappedValue: Wrapper(timecode: wrappedValue))
     }
-    
+
     public init(initialValue value: Timecode) {
         self.init(wrappedValue: value)
     }
-    
+
     public var projectedValue: Binding<Timecode> {
         Binding(
             get: { wrapper.timecode },
             set: { wrapper.timecode = $0 }
         )
     }
-    
+
     // public func update() { }
-    
+
     @MainActor
     private final class Wrapper: ObservableObject {
         var timecode: Timecode {
@@ -80,14 +81,14 @@ import SwiftTimecodeCore
                 guard timecode.components != newValue.components ||
                     timecode.properties != newValue.properties
                 else { return }
-                
+
                 // DispatchQueue.main.async { [objectWillChange] in
                 Task { [objectWillChange] in
                     objectWillChange.send()
                 }
             }
         }
-        
+
         init(timecode: Timecode) {
             self.timecode = timecode
         }
@@ -98,7 +99,9 @@ import SwiftTimecodeCore
 @available(*, unavailable, message: "Use @TimecodeState instead of @State.")
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension State where Value == Timecode {
-    public init(wrappedValue: Timecode) { fatalError() }
+    public init(wrappedValue: Timecode) {
+        fatalError()
+    }
 }
 
 #endif

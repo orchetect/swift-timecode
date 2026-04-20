@@ -1,41 +1,42 @@
 //
 //  Timecode FeetAndFrames Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
 import Testing
 
-@Suite struct Timecode_Source_FeetAndFrames_Tests {
+@Suite
+struct Timecode_Source_FeetAndFrames_Tests {
     @Test
-    func timecode_23_976fps_zero() throws {
+    func timecode_23_976fps_zero() {
         let ff = Timecode(.zero, at: .fps23_976).feetAndFramesValue
         #expect(ff.feet == 0)
         #expect(ff.frames == 0)
     }
-    
+
     @Test
     func timecode_23_976fps_1min() throws {
         let ff = try Timecode(.components(m: 1), at: .fps23_976).feetAndFramesValue
         #expect(ff.feet == 90)
         #expect(ff.frames == 0)
     }
-    
+
     @Test
-    func timecode_24fps_zero() throws {
+    func timecode_24fps_zero() {
         let ff = Timecode(.zero, at: .fps24).feetAndFramesValue
         #expect(ff.feet == 0)
         #expect(ff.frames == 0)
     }
-    
+
     @Test
     func timecode_24fps_1min() throws {
         let ff = try Timecode(.components(m: 1), at: .fps24).feetAndFramesValue
         #expect(ff.feet == 90)
         #expect(ff.frames == 0)
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
     func timecode_allRates_complex(frameRate: TimecodeFrameRate) throws {
         let ff = try Timecode(
@@ -43,7 +44,7 @@ import Testing
             at: frameRate
         )
         .feetAndFramesValue
-        
+
         // TimecodeFrameRate.maxTotalFrames is a good reference for groupings
         // which shows frame rates with the same frame counts over time
         switch frameRate {
@@ -87,44 +88,44 @@ import Testing
             #expect(ff.feet == 27894)
             #expect(ff.frames == 12)
         }
-        
+
         #expect(ff.subFrames == 0)
     }
-    
+
     /// Ensure subFrames are correct when set.
     @Test(arguments: TimecodeFrameRate.allCases)
     func timecode_allRates_subFrames(frameRate: TimecodeFrameRate) throws {
         let ff = try Timecode(.components(h: 1, m: 2, s: 3, f: 4, sf: 24), at: frameRate)
             .feetAndFramesValue
-        
+
         #expect(ff.subFrames == 24)
     }
-    
+
     @Test
     func edgeCases() throws {
         // test for really large values
-        
+
         #expect(throws: (any Error).self) { try FeetAndFrames("12345678912345645678+12345678912345645678") }
         #expect(throws: (any Error).self) { try FeetAndFrames("12345678912345645678+12345678912345645678.12345678912345645678") }
         #expect(throws: (any Error).self) { try FeetAndFrames("12345678912345645678+00") }
         #expect(throws: (any Error).self) { try FeetAndFrames("00+12345678912345645678") }
         #expect(throws: (any Error).self) { try FeetAndFrames("00+00.12345678912345645678") }
-        
+
         #expect(
             Timecode(
                 .components(
-                    d: 1234567891234564567,
-                    h: 1234567891234564567,
-                    m: 1234567891234564567,
-                    s: 1234567891234564567,
-                    f: 1234567891234564567,
-                    sf: 1234567891234564567
+                    d: 1_234_567_891_234_564_567,
+                    h: 1_234_567_891_234_564_567,
+                    m: 1_234_567_891_234_564_567,
+                    s: 1_234_567_891_234_564_567,
+                    f: 1_234_567_891_234_564_567,
+                    sf: 1_234_567_891_234_564_567
                 ),
                 at: .fps24,
                 by: .allowingInvalid
             )
             .feetAndFramesValue
-            == FeetAndFrames(feet: 0, frames: 0, subFrames: 1234567891234564567) // failsafe values
+            == FeetAndFrames(feet: 0, frames: 0, subFrames: 1_234_567_891_234_564_567) // failsafe values
         )
     }
 }

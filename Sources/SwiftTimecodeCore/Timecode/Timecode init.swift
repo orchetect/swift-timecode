@@ -1,14 +1,14 @@
 //
 //  Timecode init.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
 
 extension Timecode {
     // MARK: - TimecodeSource
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate.
     ///
     /// - Throws: ``ValidationError``
@@ -21,7 +21,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         try set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate and validation rule.
     public init(
         _ source: TimecodeSourceValue,
@@ -33,7 +33,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         set(source.value, by: validation)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     ///
     /// - Throws: ``ValidationError``
@@ -44,7 +44,7 @@ extension Timecode {
         self.properties = properties
         try set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     public init(
         _ source: TimecodeSourceValue,
@@ -54,9 +54,9 @@ extension Timecode {
         self.properties = properties
         set(source.value, by: validation)
     }
-    
+
     // MARK: - AsyncTimecodeSource
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate.
     ///
     /// - Throws: ``ValidationError``
@@ -70,7 +70,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         try await set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate and validation rule.
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     public init(
@@ -83,7 +83,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         await set(source.value, by: validation)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     ///
     /// - Throws: ``ValidationError``
@@ -95,7 +95,7 @@ extension Timecode {
         self.properties = properties
         try await set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     public init(
@@ -106,9 +106,9 @@ extension Timecode {
         self.properties = properties
         await set(source.value, by: validation)
     }
-    
+
     // MARK: - FormattedTimecodeSource
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate.
     ///
     /// - Throws: ``ValidationError``
@@ -121,7 +121,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         try set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate and validation rule.
     ///
     /// - Throws: ``ValidationError``
@@ -135,7 +135,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         try set(source.value, by: validation)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     ///
     /// - Throws: ``ValidationError``
@@ -146,7 +146,7 @@ extension Timecode {
         self.properties = properties
         try set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     ///
     /// - Throws: ``ValidationError``
@@ -158,9 +158,9 @@ extension Timecode {
         self.properties = properties
         try set(source.value, by: validation)
     }
-    
+
     // MARK: - RichTimecodeSource
-    
+
     /// Initialize by converting a rich time source to timecode.
     ///
     /// - Throws: ``ValidationError``
@@ -170,7 +170,7 @@ extension Timecode {
         properties = Properties(rate: .fps24) // must init to a default first
         try set(source.value)
     }
-    
+
     /// Initialize by converting a rich time source to timecode.
     public init(
         _ source: RichTimecodeSourceValue,
@@ -179,9 +179,9 @@ extension Timecode {
         properties = Properties(rate: .fps24) // must init to a default first
         set(source.value, by: validation)
     }
-    
+
     // MARK: - AsyncRichTimecodeSource
-    
+
     /// Initialize by converting a rich time source to timecode.
     ///
     /// - Throws: ``ValidationError``
@@ -192,9 +192,9 @@ extension Timecode {
         properties = Properties(rate: .fps24) // must init to a default first
         try await set(source.value)
     }
-    
+
     // MARK: - GuaranteedTimecodeSource
-    
+
     /// Initialize by converting a time source to timecode at a given frame rate.
     public init(
         _ source: GuaranteedTimecodeSourceValue,
@@ -205,7 +205,7 @@ extension Timecode {
         properties = Properties(rate: frameRate, base: base, limit: limit)
         set(source.value)
     }
-    
+
     /// Initialize by converting a time source to timecode using the given properties.
     public init(
         _ source: GuaranteedTimecodeSourceValue,
@@ -214,9 +214,9 @@ extension Timecode {
         self.properties = properties
         set(source.value)
     }
-    
+
     // MARK: - GuaranteedRichTimecodeSource
-    
+
     /// Initialize by converting a rich time source to timecode.
     public init(
         _ source: GuaranteedRichTimecodeSourceValue

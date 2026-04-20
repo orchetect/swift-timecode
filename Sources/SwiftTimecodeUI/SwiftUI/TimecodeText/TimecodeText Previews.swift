@@ -1,13 +1,13 @@
 //
 //  TimecodeText Previews.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 // TODO: Find a way to conditionally build Previews
 // `#if DEBUG` isn't good enough because it's causing docc generation to fail.
@@ -26,7 +26,7 @@ import SwiftTimecodeCore
         by: .allowingInvalid
     )
     @Previewable @State var timecodeFormat: Timecode.StringFormat = [.showSubFrames]
-    
+
     VStack {
         VStack {
             Text("\(timecode)") // no modifiers are applied, just here to test
@@ -39,7 +39,7 @@ import SwiftTimecodeCore
         .timecodeFormat(timecodeFormat)
         .timecodeSeparatorStyle(.secondary)
         .timecodeValidationStyle(.red)
-        
+
         Form {
             LabeledContent("Frame Rate") {
                 Button("24") { timecode.frameRate = .fps24 }

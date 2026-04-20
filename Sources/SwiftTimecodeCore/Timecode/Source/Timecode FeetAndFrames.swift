@@ -1,7 +1,7 @@
 //
 //  Timecode FeetAndFrames.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -12,7 +12,7 @@ extension FeetAndFrames: _TimecodeSource {
     package func set(timecode: inout Timecode) throws {
         try timecode._setTimecode(exactly: self)
     }
-    
+
     package func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) {
         switch validation {
         case .clamping, .clampingComponents:
@@ -32,7 +32,7 @@ extension TimecodeSourceValue {
     public static func feetAndFrames(_ source: FeetAndFrames) -> Self {
         .init(value: source)
     }
-    
+
     /// Feet and Frames time value.
     public static func feetAndFrames(
         feet: Int,
@@ -47,7 +47,7 @@ extension TimecodeSourceValue {
             subFramesBase: subFramesBase
         ))
     }
-    
+
     /// Feet and Frames time value.
     public static func feetAndFrames(
         _ string: some StringProtocol,
@@ -73,7 +73,7 @@ extension Timecode {
         let fc = frameCount.wholeFrames
         let feet = fc / 16
         let frames = fc % 16
-        
+
         return FeetAndFrames(
             feet: feet,
             frames: frames,
@@ -89,15 +89,15 @@ extension Timecode {
     mutating func _setTimecode(exactly feetAndFrames: FeetAndFrames) throws {
         try _setTimecode(exactly: feetAndFrames.frameCount)
     }
-    
+
     mutating func _setTimecode(clamping feetAndFrames: FeetAndFrames) {
         _setTimecode(clamping: feetAndFrames.frameCount)
     }
-    
+
     mutating func _setTimecode(wrapping feetAndFrames: FeetAndFrames) {
         _setTimecode(wrapping: feetAndFrames.frameCount)
     }
-    
+
     mutating func _setTimecode(rawValues feetAndFrames: FeetAndFrames) {
         _setTimecode(rawValues: feetAndFrames.frameCount)
     }
@@ -112,13 +112,13 @@ extension FeetAndFrames {
     /// - Throws: ``Timecode/StringParseError``
     static func decode(feetAndFrames string: some StringProtocol) throws -> (feet: Int, frames: Int, subFrames: Int) {
         let pattern = #"^([\d]+)\+([\d]+)(?:\.([\d]+))?$"#
-        
+
         let matches = string.regexMatches(captureGroupsFromPattern: pattern)
-        
+
         guard matches.count == 4 else {
             throw Timecode.StringParseError.malformed
         }
-        
+
         guard let ftString = matches[1],
               let ft = Int(ftString),
               let frString = matches[2],
@@ -126,10 +126,10 @@ extension FeetAndFrames {
         else {
             throw Timecode.StringParseError.malformed
         }
-        
+
         let feet = ft
         let frames = fr
-        
+
         // subframes are optional and may not be present
         let subFrames: Int
         if let sfrString = matches[3] {
@@ -140,7 +140,7 @@ extension FeetAndFrames {
         } else {
             subFrames = 0
         }
-        
+
         return (feet: feet, frames: frames, subFrames: subFrames)
     }
 }

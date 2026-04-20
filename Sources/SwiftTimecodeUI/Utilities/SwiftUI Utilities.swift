@@ -1,7 +1,7 @@
 //
 //  SwiftUI Utilities.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI)
@@ -15,7 +15,7 @@ extension Text {
     mutating func append(_ other: Text) {
         self = self + other
     }
-    
+
     /// Utility method to concatenate `Text` instances.
     @_disfavoredOverload
     func appending(_ other: Text) -> Text {
@@ -27,11 +27,11 @@ extension Text {
 @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
 struct ConditionalForegroundStyleViewModifier<S: ShapeStyle>: ViewModifier {
     let style: S?
-    
+
     init(style: S?) {
         self.style = style
     }
-    
+
     func body(content: Content) -> some View {
         if let style {
             content.foregroundStyle(style)
@@ -52,11 +52,11 @@ extension View {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension Text {
      /// Applies the given foreground style only if it is non-`nil` and retains the view as `Text`.
-     nonisolated func conditionalForegroundStyle<S: ShapeStyle>(_ style: S?) -> Text {
+     nonisolated func conditionalForegroundStyle(_ style: (some ShapeStyle)?) -> Text {
          if let style {
-             return foregroundStyle(style)
+             foregroundStyle(style)
          } else {
-             return self
+             self
          }
      }
 }
@@ -75,7 +75,7 @@ extension KeyEquivalent {
     ///
     /// Returns the `DEL` key by being formed using Unicode scalar 127.
     static let asciiDEL = KeyEquivalent(Character(UnicodeScalar(127)))
-    
+
     /// End of Text (ASCII 3)
     ///
     /// The keyboard number-pad `Enter` key is received as this key equivalent.

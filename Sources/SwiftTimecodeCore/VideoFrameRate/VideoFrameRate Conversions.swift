@@ -1,7 +1,7 @@
 //
 //  VideoFrameRate Conversions.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -13,6 +13,7 @@ extension VideoFrameRate {
     /// - Parameters:
     ///   - drop: Whether timecode frame rate is drop or non-drop.
     public func timecodeFrameRate(drop: Bool) -> TimecodeFrameRate? {
+        // swiftformat:disable consecutiveSpaces
         switch self {
         case .fps23_98p:  drop ? nil         : .fps23_976
         case .fps24p:     drop ? nil         : .fps24
@@ -36,10 +37,11 @@ extension VideoFrameRate {
         case .fps119_88p: drop ? .fps119_88d : .fps119_88
         case .fps120p:    drop ? nil         : .fps120
         }
+        // swiftformat:enable consecutiveSpaces
     }
-    
+
     // MARK: Raw fps
-    
+
     /// Initialize from floating-point frame rate (fps).
     ///
     /// - Parameters:
@@ -50,7 +52,7 @@ extension VideoFrameRate {
     public init?(fps: Float, interlaced: Bool = false, strict: Bool = false) {
         self.init(fps: Double(fps), interlaced: interlaced)
     }
-    
+
     /// Initialize from floating-point frame rate (fps).
     ///
     /// - Parameters:
@@ -59,7 +61,7 @@ extension VideoFrameRate {
     ///   - strict: Enforces 3 decimal places of precision if `true` otherwise 1 decimal place.
     public init?(fps: Double, interlaced: Bool = false, strict: Bool = false) {
         let decimalPlaces = strict ? 3 : 1
-        
+
         // first try truncating decimal places
         let fpsTruncated = fps.truncated(decimalPlaces: decimalPlaces)
         let truncMatches = Self.allCases.filter {
@@ -69,7 +71,7 @@ extension VideoFrameRate {
             self = firstMatch
             return
         }
-        
+
         // then try rounding decimal places to loosen up requirements
         let fpsRounded = fps.rounded(decimalPlaces: decimalPlaces)
         let roundMatches = Self.allCases.filter {
@@ -79,12 +81,12 @@ extension VideoFrameRate {
             self = firstMatch
             return
         }
-        
+
         return nil
     }
-    
+
     // MARK: Rational
-    
+
     /// Initialize from a frame rate expressed as a rational number (fraction).
     ///
     /// To get the rational numerator and denominator of a rate, query the
@@ -100,13 +102,13 @@ extension VideoFrameRate {
     ) {
         let foundMatches = Self.allCases.filter(rate: rate)
         guard !foundMatches.isEmpty else { return nil }
-        
+
         guard let foundMatch = foundMatches.first(where: { $0.isInterlaced == interlaced })
         else { return nil }
-        
+
         self = foundMatch
     }
-    
+
     /// Initialize from a frame rate's frame duration expressed as a rational number (fraction).
     ///
     /// To get the rational numerator and denominator of a rate's frame duration, query the
@@ -122,10 +124,10 @@ extension VideoFrameRate {
     ) {
         let foundMatches = Self.allCases.filter(frameDuration: frameDuration)
         guard !foundMatches.isEmpty else { return nil }
-        
+
         guard let foundMatch = foundMatches.first(where: { $0.isInterlaced == interlaced })
         else { return nil }
-        
+
         self = foundMatch
     }
 }
@@ -153,7 +155,7 @@ extension VideoFrameRate {
             interlaced: interlaced
         )
     }
-    
+
     /// Initialize from a frame rate's frame duration expressed as a rational number (fraction).
     ///
     /// - Note: Many AVFoundation and Core Media objects utilize `CMTime` as a way to represent
@@ -172,7 +174,7 @@ extension VideoFrameRate {
             interlaced: interlaced
         )
     }
-    
+
     // NOTE: `rateCMTime` and `frameDurationCMTime` properties are implemented on `FrameRateProtocol`
 }
 #endif

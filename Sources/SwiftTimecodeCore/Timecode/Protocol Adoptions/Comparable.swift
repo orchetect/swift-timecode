@@ -1,7 +1,7 @@
 //
 //  Comparable.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -10,12 +10,12 @@ extension Timecode: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         // frame rate should always be equal, even if the two timecode instances are the same elapsed real time
         guard lhs.frameRate == rhs.frameRate else { return false }
-        
+
         // ignore subframes base if subframes are zero for both timecode instances
         if lhs.subFrames != 0, rhs.subFrames != 0 {
             guard lhs.subFramesBase == rhs.subFramesBase else { return false }
         }
-        
+
         // otherwise, treat two instances as equal if their real time equates
         return lhs.realTimeValue.rounded(decimalPlaces: 9)
             == rhs.realTimeValue.rounded(decimalPlaces: 9)
@@ -78,23 +78,23 @@ extension Timecode {
     public func compare(to other: Timecode, timelineStart: Timecode? = nil) -> ComparisonResult {
         // identical timecodes can early-return
         if self == other { return .orderedSame }
-        
+
         // zero timeline start
-        
+
         guard let timelineStart, !timelineStart.isZero else {
             // standard operator compare will work if timeline start is nil or zero (both mean zero)
-            
+
             // (no need to check for equality, we already checked for .orderedSame early in the func)
             if self < other { return .orderedAscending }
             else { return .orderedDescending }
         }
-        
+
         // non-zero timeline start
-        
+
         let timelineStartFrameCount = timelineStart.frameCount.decimalValue
         var lhsFrameCount = frameCount.decimalValue
         var rhsFrameCount = other.frameCount.decimalValue
-        
+
         if lhsFrameCount >= timelineStartFrameCount {
             let lhsOneDay = Timecode(
                 .components(d: 1),
@@ -103,7 +103,8 @@ extension Timecode {
                 limit: .max100Days,
                 by: .allowingInvalid
             )
-            .frameCount.decimalValue
+            .frameCount
+            .decimalValue
             lhsFrameCount -= lhsOneDay
         }
         if rhsFrameCount >= timelineStartFrameCount {
@@ -114,10 +115,11 @@ extension Timecode {
                 limit: .max100Days,
                 by: .allowingInvalid
             )
-            .frameCount.decimalValue
+            .frameCount
+            .decimalValue
             rhsFrameCount -= rhsOneDay
         }
-        
+
         // (no need to check for equality, we already checked for .orderedSame early in the func)
         if lhsFrameCount < rhsFrameCount {
             return .orderedAscending
@@ -172,7 +174,7 @@ extension Collection<Timecode> {
         timelineStart: Timecode? = nil
     ) -> Bool {
         guard count > 1 else { return true }
-        
+
         var priorIdx = startIndex
         for idx in indices.dropFirst() {
             defer { priorIdx = idx }
@@ -188,7 +190,7 @@ extension Collection<Timecode> {
                 guard compared != .orderedAscending else { return false }
             }
         }
-        
+
         return true
     }
 }
@@ -332,9 +334,9 @@ extension MutableCollection
 public struct TimecodeSortComparator: SortComparator {
     public typealias Compared = Timecode
     public var order: SortOrder
-    
+
     public var timelineStart: Timecode?
-    
+
     public func compare(_ lhs: Timecode, _ rhs: Timecode) -> ComparisonResult {
         let result = lhs.compare(to: rhs, timelineStart: timelineStart)
         switch order {

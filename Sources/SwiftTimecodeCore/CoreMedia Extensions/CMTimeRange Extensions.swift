@@ -1,7 +1,7 @@
 //
 //  CMTimeRange Extensions.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(CoreMedia)
@@ -24,7 +24,7 @@ extension CMTimeRange {
         let properties = Timecode.Properties(rate: frameRate, base: base, limit: limit)
         return try timecodeRange(using: properties)
     }
-    
+
     /// Returns the time range as a timecode range.
     ///
     /// Throws an error if the range is invalid or if one or both of the times cannot be converted
@@ -40,12 +40,12 @@ extension CMTimeRange {
         guard start <= end else {
             throw Timecode.ValidationError.outOfBounds
         }
-        
+
         let timecodes = try [start, end]
             .map {
                 try Timecode(.cmTime($0), using: properties)
             }
-        
+
         return timecodes[0] ... timecodes[1]
     }
 }

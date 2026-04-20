@@ -1,7 +1,7 @@
 //
 //  NSItemProvider Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(UniformTypeIdentifiers) && canImport(CoreTransferable)
@@ -9,7 +9,8 @@
 @testable import SwiftTimecodeCore
 import Testing
 
-@Suite struct NSItemProviderTests {
+@Suite
+struct NSItemProviderTests {
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
     @MainActor @Test
     func testEncodeDecode() async throws {
@@ -19,24 +20,24 @@ import Testing
             limit: .max100Days
         )
         let timecode = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 05), using: properties)
-        
+
         let itemProviders = timecode.itemProviders(stringFormat: [.showSubFrames])
-        
+
         let wrongProperties = Timecode.Properties(
             rate: .fps60,
             base: .max80SubFrames,
             limit: .max24Hours
         )
-        
+
         let decoded = try await Timecode(
             from: itemProviders,
             propertiesForString: wrongProperties
         )
-        
+
         #expect(decoded.components == timecode.components)
         #expect(decoded.properties == timecode.properties)
     }
-    
+
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
     @MainActor @Test
     func testDecodeString() async throws {
@@ -46,26 +47,26 @@ import Testing
             limit: .max100Days
         )
         let timecode = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 05), using: properties)
-        
+
         let itemProvider = timecode.stringItemProvider(stringFormat: [.showSubFrames])
-        
+
         let newProperties = Timecode.Properties(
             rate: .fps60,
             base: .max80SubFrames,
             limit: .max24Hours
         )
-        
+
         // even though new properties have a 24-hour upper limit, days value is still preserved
         // since the init uses `allowingInvalid` validation rule
         let decoded = try await Timecode(
             from: itemProvider,
             propertiesForString: newProperties
         )
-        
+
         #expect(decoded.components == timecode.components)
         #expect(decoded.properties == newProperties)
     }
-    
+
     @available(iOS 16.0, macOS 13.0, tvOS 16.0, watchOS 9.0, *)
     @MainActor @Test
     func testDecodeJSON() async throws {
@@ -75,20 +76,20 @@ import Testing
             limit: .max100Days
         )
         let timecode = try Timecode(.components(d: 2, h: 1, m: 02, s: 03, f: 04, sf: 05), using: properties)
-        
+
         let itemProvider = try timecode.jsonItemProvider()
-        
+
         let wrongProperties = Timecode.Properties(
             rate: .fps60,
             base: .max80SubFrames,
             limit: .max24Hours
         )
-        
+
         let decoded = try await Timecode(
             from: itemProvider,
             propertiesForString: wrongProperties
         )
-        
+
         #expect(decoded.components == timecode.components)
         #expect(decoded.properties == timecode.properties)
     }

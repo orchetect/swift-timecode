@@ -1,7 +1,7 @@
 //
 //  TimecodeInterval Rational.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -22,12 +22,12 @@ extension TimecodeInterval {
     ) throws {
         let neg = rational.isNegative
         let absRational = rational.abs()
-        
+
         let absTimecode = try Timecode(.rational(absRational), at: frameRate, base: base, limit: limit)
-        
+
         self.init(absTimecode, neg ? .minus : .plus)
     }
-    
+
     /// Initialize from a time duration represented as a rational fraction.
     /// A negative fraction will produce a negative time interval.
     ///
@@ -41,12 +41,12 @@ extension TimecodeInterval {
     ) throws {
         let neg = rational.isNegative
         let absRational = rational.abs()
-        
+
         let absTimecode = try Timecode(.rational(absRational), using: properties)
-        
+
         self.init(absTimecode, neg ? .minus : .plus)
     }
-    
+
     /// Returns the rational fraction for the timecode interval.
     public var rationalValue: Fraction {
         isNegative
@@ -71,7 +71,7 @@ extension Fraction {
     ) throws -> TimecodeInterval {
         try TimecodeInterval(self, at: frameRate, base: base, limit: limit)
     }
-    
+
     /// Convenience function to initialize a `TimecodeInterval` instance from a time duration
     /// represented as a rational fraction.
     /// A negative fraction will produce a negative time interval.

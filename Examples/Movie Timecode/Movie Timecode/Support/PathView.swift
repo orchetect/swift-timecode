@@ -1,7 +1,7 @@
 //
 //  PathView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if os(macOS)
@@ -10,12 +10,13 @@ import AppKit
 import SwiftUI
 
 /// SwiftUI view wrapper for `NSPathControl`.
-@MainActor struct PathView: NSViewRepresentable {
-    public let url: URL?
-    public let style: NSPathControl.Style
-    public let isEditable: Bool
-    
-    public init(
+@MainActor
+struct PathView: NSViewRepresentable {
+    let url: URL?
+    let style: NSPathControl.Style
+    let isEditable: Bool
+
+    init(
         url: URL,
         style: NSPathControl.Style,
         isEditable: Bool = false
@@ -24,9 +25,9 @@ import SwiftUI
         self.style = style
         self.isEditable = isEditable
     }
-    
+
     // MARK: - NSViewRepresentable overrides
-    
+
     func makeNSView(context: NSViewRepresentableContext<PathView>) -> NSPathControl {
         let pathControl = NSPathControl()
         pathControl.target = context.coordinator
@@ -35,29 +36,30 @@ import SwiftUI
         pathControl.pathStyle = style
         pathControl.isEditable = isEditable
         pathControl.translatesAutoresizingMaskIntoConstraints = false
-        
+
         return pathControl
     }
-    
+
     func updateNSView(
         _ nsView: NSPathControl,
         context: NSViewRepresentableContext<PathView>
     ) {
         nsView.url = url
     }
-    
-    public func sizeThatFits(_ proposal: ProposedViewSize, nsView: NSPathControl, context: Context) -> CGSize? {
+
+    func sizeThatFits(_ proposal: ProposedViewSize, nsView: NSPathControl, context: Context) -> CGSize? {
         var size = nsView.sizeThatFits(NSSize(width: proposal.width ?? 1, height: proposal.height ?? 10))
         size.width = min(size.width, proposal.width ?? 1)
         size.height = min(size.height, proposal.height ?? 1)
         return size
     }
-    
+
     func makeCoordinator() -> Coordinator {
         Coordinator()
     }
-    
-    @MainActor class Coordinator: NSObject, NSPathControlDelegate {
+
+    @MainActor
+    class Coordinator: NSObject, NSPathControlDelegate {
         @objc
         func action(sender: NSPathControl) {
             // reveal file/folder in Finder

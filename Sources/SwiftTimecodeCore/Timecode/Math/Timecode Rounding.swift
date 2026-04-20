@@ -1,14 +1,14 @@
 //
 //  Timecode Rounding.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
     // MARK: - Rounding
-    
+
     // note: this comment block is identical to roundUp() but has the method name changed
-    
+
     /// Returns the timecode rounded up to the next whole component value.
     /// If all subsequently smaller component values are already 0 then no
     /// change is made of course.
@@ -36,9 +36,9 @@ extension Timecode {
         try newTC.roundUp(toNearest: component)
         return newTC
     }
-    
+
     // note: this comment block is identical to roundedUp() but has the method name changed
-    
+
     /// Round the timecode up to the next whole component value if necessary.
     /// If all subsequently smaller component values are already 0 then no
     /// change is made of course.
@@ -103,11 +103,11 @@ extension Timecode {
             break
         }
     }
-    
+
     // MARK: - Truncate Subframes
-    
+
     // note: this comment block is identical to roundDown() but has the method name changed
-    
+
     /// Returns the timecode rounded down to the given component.
     /// If all subsequently smaller component values are already 0 then no
     /// change is made of course.
@@ -133,9 +133,9 @@ extension Timecode {
         newTC.roundDown(toNearest: component)
         return newTC
     }
-    
+
     // note: this comment block is identical to roundedDown() but has the method name changed
-    
+
     /// Truncates timecode after the given component and all subsequently smaller components.
     /// If all subsequently smaller component values are already 0 then no
     /// change is made of course.

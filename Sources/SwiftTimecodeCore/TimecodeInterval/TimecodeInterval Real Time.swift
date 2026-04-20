@@ -1,7 +1,7 @@
 //
 //  TimecodeInterval Real Time.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -19,12 +19,12 @@ extension TimecodeInterval {
     ) throws {
         let neg = seconds < .zero
         let absSeconds = abs(seconds)
-        
+
         let absTimecode = try Timecode(.realTime(seconds: absSeconds), at: frameRate, base: base, limit: limit)
-        
+
         self.init(absTimecode, neg ? .minus : .plus)
     }
-    
+
     /// Initialize from a time duration in seconds.
     /// A negative value will produce a negative time interval.
     ///
@@ -35,19 +35,19 @@ extension TimecodeInterval {
     ) throws {
         let neg = seconds < .zero
         let absSeconds = abs(seconds)
-        
+
         let absTimecode = try Timecode(.realTime(seconds: absSeconds), using: properties)
-        
+
         self.init(absTimecode, neg ? .minus : .plus)
     }
-    
+
     /// Returns the interval time as real-time (wall-clock time) in seconds.
     /// Expressed as either a positive or negative number.
     public var realTimeValue: TimeInterval {
         switch sign {
         case .plus:
             absoluteInterval.realTimeValue
-            
+
         case .minus:
             -(absoluteInterval.realTimeValue)
         }
@@ -67,7 +67,7 @@ extension TimeInterval {
     ) throws -> TimecodeInterval {
         try TimecodeInterval(realTime: self, at: frameRate, base: base, limit: limit)
     }
-    
+
     /// Convenience function to initialize a `TimecodeInterval` instance from a time duration
     /// in seconds.
     /// A negative value will produce a negative time interval.

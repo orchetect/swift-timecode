@@ -1,15 +1,15 @@
 //
 //  GenerateRandomTimecodeSectionView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 struct GenerateRandomTimecodeSectionView: View {
     var onNewTimecode: (_ randomTimecode: Timecode) -> Void
-    
+
     var body: some View {
         Section("Set Timecode") {
             LabeledContent("Random Valid Timecode (HH:MM:SS:FF.SF)") {
@@ -34,16 +34,16 @@ struct GenerateRandomTimecodeSectionView: View {
             }
         }
     }
-    
+
     private func randomValid(limit: Timecode.UpperLimit) -> Timecode {
         var newTimecode: Timecode
         repeat {
             newTimecode = Timecode(.randomComponentsAndProperties)
         } while newTimecode.upperLimit != limit
-        
+
         return newTimecode
     }
-    
+
     private func randomInvalid(limit: Timecode.UpperLimit) -> Timecode {
         var newTimecode: Timecode
         repeat {

@@ -1,7 +1,7 @@
 //
 //  TimecodeFrameRate CompatibleGroup.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension TimecodeFrameRate {
@@ -26,7 +26,7 @@ extension TimecodeFrameRate {
         case ntscDrop
         case whole
         case ntscColorWallTime
-        
+
         /// Constants table of ``TimecodeFrameRate`` groups that share HH:MM:SS alignment between them.
         ///
         /// These groupings assert that amidst each group the hours, minutes, and seconds values will always be identical.
@@ -53,13 +53,13 @@ extension TimecodeFrameRate {
                 .fps95_904,
                 .fps119_88
             ],
-            
+
             .ntscDrop: [
                 .fps29_97d,
                 .fps59_94d,
                 .fps119_88d
             ],
-        
+
             .whole: [
                 .fps24,
                 .fps25,
@@ -72,7 +72,7 @@ extension TimecodeFrameRate {
                 .fps100,
                 .fps120
             ],
-        
+
             .ntscColorWallTime: [
                 .fps30d,
                 .fps60d,
@@ -88,19 +88,19 @@ extension TimecodeFrameRate.CompatibleGroup: CustomStringConvertible {
     public var description: String {
         stringValue
     }
-    
+
     /// Returns human-readable group string.
     public var stringValue: String {
         switch self {
         case .ntscColor:
             "NTSC Color"
-            
+
         case .ntscDrop:
             "NTSC Drop-Frame"
-            
+
         case .whole:
             "Whole"
-            
+
         case .ntscColorWallTime:
             "NTSC Color Wall Time"
         }
@@ -111,23 +111,23 @@ extension TimecodeFrameRate {
     /// Returns the frame rate's ``CompatibleGroup`` categorization.
     public var compatibleGroup: CompatibleGroup {
         // Force-unwrap here will never crash because the unit tests ensure the table contains all TimecodeFrameRate cases.
-        
+
         Self.CompatibleGroup.table
             .lazy
             .first(where: { $0.value.contains(self) })!
             .key
     }
-    
+
     /// Returns the members of the frame rate's ``CompatibleGroup`` categorization.
     public var compatibleGroupRates: [Self] {
         // Force-unwrap here will never crash because the unit tests ensure the table contains all TimecodeFrameRate cases.
-        
+
         Self.CompatibleGroup.table
             .lazy
             .first(where: { $0.value.contains(self) })!
             .value
     }
-    
+
     /// Returns true if the source ``TimecodeFrameRate`` shares a compatible grouping with the passed `other` frame rate.
     ///
     /// These groupings assert that amidst each group the hours, minutes, and seconds values will always be identical.

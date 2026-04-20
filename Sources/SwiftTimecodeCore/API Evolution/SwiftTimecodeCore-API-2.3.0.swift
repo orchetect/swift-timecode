@@ -1,7 +1,7 @@
 //
 //  SwiftTimecodeCore-API-2.3.0.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -20,7 +20,7 @@ extension Timecode {
     ) async throws {
         try await self.init(from: itemProvider, propertiesForString: propertiesForTimecodeString)
     }
-    
+
     @available(*, deprecated, renamed: "init(from:propertiesForString:)")
     @MainActor
     public init(

@@ -1,7 +1,7 @@
 //
 //  Timecode String.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -12,7 +12,7 @@ extension String: _FormattedTimecodeSource {
     package func set(timecode: inout Timecode) throws {
         try timecode._setTimecode(exactly: self)
     }
-    
+
     package func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) throws {
         switch validation {
         case .clamping:
@@ -56,7 +56,7 @@ extension FormattedTimecodeSourceValue {
     public static func string(_ timecodeString: String) -> Self {
         .init(value: timecodeString)
     }
-    
+
     /// Timecode string.
     ///
     /// Valid formats for 24-hour:
@@ -90,7 +90,7 @@ extension FormattedTimecodeSourceValue {
 
 extension Timecode {
     // MARK: stringValue
-    
+
     /// Returns the timecode's string representation.
     public func stringValue(
         format: StringFormat = .default()
@@ -99,22 +99,22 @@ extension Timecode {
         let sepMain = ":"
         let sepFrames = frameRate.isDrop ? ";" : ":"
         let sepSubFrames = "."
-        
+
         var output = ""
-        
+
         let showDays = format.contains(.alwaysShowDays) || days != 0
         output += "\(showDays ? "\(days)\(sepDays)" : "")"
         output += "\(String(format: "%02ld", hours))\(sepMain)"
         output += "\(String(format: "%02ld", minutes))\(sepMain)"
         output += "\(String(format: "%02ld", seconds))\(sepFrames)"
         output += "\(String(format: "%0\(frameRate.numberOfDigits)ld", frames))"
-        
+
         if format.showSubFrames {
             let numberOfSubFramesDigits = validRange(of: .subFrames).upperBound.numberOfDigits
-            
+
             output += "\(sepSubFrames)\(String(format: "%0\(numberOfSubFramesDigits)ld", subFrames))"
         }
-        
+
         if format.contains(.filenameCompatible) {
             return output
                 .replacingOccurrences(of: ":", with: "-")
@@ -124,7 +124,7 @@ extension Timecode {
             return output
         }
     }
-    
+
     /// Returns a more verbose output of the timecode's string representation including frame rate information.
     /// ie: "`01:00:00:00.00 @ 24 fps`"
     public var stringValueVerbose: String {
@@ -145,7 +145,7 @@ extension Timecode {
         let decoded = try Timecode.decode(timecode: string)
         try _setTimecode(exactly: decoded)
     }
-    
+
     /// Set timecode from a timecode string, clamping to valid timecode if necessary. An error is thrown if the string is malformed and
     /// cannot be reasonably parsed.
     ///
@@ -156,7 +156,7 @@ extension Timecode {
         let tcVals = try Timecode.decode(timecode: string)
         _setTimecode(clamping: tcVals)
     }
-    
+
     /// Set timecode from a timecode string, clamping individual values if necessary. Individual values which are out-of-bounds will be
     /// clamped to minimum or maximum possible values. An error is thrown if the string is malformed and cannot be reasonably parsed.
     ///
@@ -169,7 +169,7 @@ extension Timecode {
         let tcVals = try Timecode.decode(timecode: string)
         _setTimecode(clampingComponents: tcVals)
     }
-    
+
     /// Set timecode from a string. Values which are out-of-bounds will be clamped to minimum or maximum possible values. An error is thrown
     /// if the string is malformed and cannot be reasonably parsed.
     ///
@@ -180,7 +180,7 @@ extension Timecode {
         let tcVals = try Timecode.decode(timecode: string)
         _setTimecode(wrapping: tcVals)
     }
-    
+
     /// Set timecode from a string, treating components as raw values. Timecode values will not be validated or rejected if they overflow.
     /// An error is thrown if the string is malformed and cannot be reasonably parsed.
     ///
@@ -225,32 +225,32 @@ extension Timecode {
     /// - Throws: ``StringParseError``
     package static func decode(timecode string: some StringProtocol) throws -> Components {
         let pattern = #"^(\d+)??[\:;\s]??(\d+)[\:;](\d+)[\:;](\d+)[\:\;](\d+)[\.]??(\d+)??$"#
-        
+
         let matches = string
             .regexMatches(captureGroupsFromPattern: pattern)
             .dropFirst()
-        
+
         // attempt to convert strings to integers, preserving indexes and preserving nils
         // essentially converting [String?] to [Int?]
         // note: don't use compactMap here
-        
+
         let ints = matches.map { $0 == nil ? nil : Int($0!) }
-        
+
         // basic check - ensure there's at least 4 values but no more than 6
-        
+
         let nonNilCount = ints.reduce(0) { $1 != nil ? $0 + 1 : $0 }
-        
+
         guard (4 ... 6).contains(nonNilCount)
         else { throw StringParseError.malformed }
-        
+
         // return components
-        
+
         return Components(
-            d:  ints[0] ?? 0,
-            h:  ints[1] ?? 0,
-            m:  ints[2] ?? 0,
-            s:  ints[3] ?? 0,
-            f:  ints[4] ?? 0,
+            d: ints[0] ?? 0,
+            h: ints[1] ?? 0,
+            m: ints[2] ?? 0,
+            s: ints[3] ?? 0,
+            f: ints[4] ?? 0,
             sf: ints[5] ?? 0
         )
     }

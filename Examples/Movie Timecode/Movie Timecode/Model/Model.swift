@@ -1,14 +1,15 @@
 //
 //  Model.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 @preconcurrency import AVFoundation
 import Observation
 import SwiftTimecode
 
-@Observable @MainActor final class Model {
+@Observable @MainActor
+final class Model {
     private(set) var movie: Movie?
     var error: ModelError?
 }
@@ -22,7 +23,7 @@ extension Model {
             Task {
                 movie?.url?.stopAccessingSecurityScopedResource()
                 movie = nil // forces views to update
-                
+
                 guard url.startAccessingSecurityScopedResource() else {
                     error = .permissionError
                     return
@@ -34,13 +35,13 @@ extension Model {
             error = .fileImportError(err)
         }
     }
-    
+
     /// Updates cached values in the model.
     func updateMetadata(newMovie: AVMovie) async {
         let frameRate = try? await newMovie.timecodeFrameRate()
         async let timecodeStart = try? newMovie.startTimecode()
         async let timecodeTracks = (try? newMovie.loadTracks(withMediaType: .timecode)) ?? []
-        
+
         movie = await Movie(
             avMovie: newMovie,
             frameRate: frameRate,
@@ -56,54 +57,54 @@ extension Model {
     var movieURL: URL? {
         movie?.avMovie.url
     }
-    
+
     var movieFileName: String? {
         movie?.avMovie.url?.lastPathComponent
     }
-    
+
     var movieContainingFolder: URL? {
         movie?.avMovie.url?.deletingLastPathComponent()
     }
-    
+
     var movieFrameRate: TimecodeFrameRate? {
         movie?.frameRate
     }
-    
+
     var movieFrameRateString: String {
         guard movie != nil else { return "-" }
         guard let movieFrameRate else { return "Could not detect." }
         return movieFrameRate.stringValueVerbose
     }
-    
+
     var movieStartTimecode: Timecode? {
         movie?.timecodeStart
     }
-    
+
     var movieStartTimecodeString: String {
         guard movie != nil else { return "-" }
         guard let movieStartTimecode else { return "Missing or invalid." }
         return movieStartTimecode.stringValue(format: [.showSubFrames])
     }
-    
+
     var containsTimecodeTrack: Bool? {
         movie?.containsTimecodeTrack
     }
-    
+
     var containsTimecodeTrackString: String {
         guard movie != nil else { return "-" }
         guard let containsTimecodeTrack else { return "-" }
         return containsTimecodeTrack ? "Yes" : "No"
     }
-    
+
     func defaultExportFileName(disambiguation: String? = nil) -> String {
         let base = movieURL?.deletingPathExtension().lastPathComponent ?? "Movie"
         let suffix = "-Exported"
         let disamb = (disambiguation != nil ? "-" : "") + (disambiguation ?? "")
         let ext = UTType.quickTimeMovie.preferredFilenameExtension ?? "mov"
-        
+
         return base + suffix + disamb + "." + ext
     }
-    
+
     /// Forms a file URL ensuring it is unique and does not exist.
     func uniqueExportURL(folder folderURL: URL) -> URL? {
         do {
@@ -113,35 +114,35 @@ extension Model {
         } catch let err {
             error = .exportError(err)
         }
-        
+
         return nil
     }
-    
+
     /// Forms a file URL ensuring it is unique and does not exist.
     private func _uniqueExportURL(folder folderURL: URL) throws -> URL {
         var isDirectory: ObjCBool = false
         let isExists = FileManager.default.fileExists(atPath: folderURL.path(percentEncoded: false), isDirectory: &isDirectory)
-        
+
         guard isExists else {
             throw ModelError.pathDoesNotExist
         }
-        
+
         guard isDirectory.boolValue else {
             throw ModelError.pathIsNotFolder
         }
-        
+
         var fileURL = folderURL.appending(component: defaultExportFileName())
-        
+
         // disambiguate if file exists
         var index = 1
         while FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) {
             fileURL = folderURL.appending(component: defaultExportFileName(disambiguation: "\(index)"))
             index += 1
         }
-        
+
         return fileURL
     }
-    
+
     var defaultFolder: URL {
         #if os(macOS)
         movieContainingFolder ?? URL.desktopDirectory
@@ -149,7 +150,7 @@ extension Model {
         URL.documentsDirectory
         #endif
     }
-    
+
     var defaultTimecode: Timecode {
         Timecode(.zero, at: movieFrameRate ?? .fps24)
     }
@@ -165,14 +166,14 @@ extension Model {
     ) async {
         guard let fileURL = uniqueExportURL(folder: folderURL) else { return }
         print("Exporting to \(fileURL.path)")
-        
+
         await export(
             action: action,
             to: fileURL,
             revealInFinderOnCompletion: revealInFinderOnCompletion
         )
     }
-    
+
     func export(
         action: Movie.ExportAction,
         to url: URL,
@@ -182,13 +183,13 @@ extension Model {
             guard let movie else {
                 throw ModelError.noMovieLoaded
             }
-            
+
             try await movie.export(
                 action: action,
                 to: url,
                 revealInFinderOnCompletion: revealInFinderOnCompletion
             )
-            
+
         } catch let err as ModelError {
             error = err
         } catch let err {

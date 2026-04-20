@@ -1,7 +1,7 @@
 //
 //  Timecode Rational.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -12,7 +12,7 @@ extension Fraction: _TimecodeSource {
     package func set(timecode: inout Timecode) throws {
         try timecode._setTimecode(exactly: self)
     }
-    
+
     package func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) {
         switch validation {
         case .clamping, .clampingComponents:
@@ -32,7 +32,7 @@ extension TimecodeSourceValue {
     public static func rational(_ source: Fraction) -> Self {
         .init(value: source)
     }
-    
+
     /// Numerical fraction containing a numerator and a denominator.
     public static func rational(_ numerator: Int, _ denominator: Int) -> Self {
         .init(value: Fraction(numerator, denominator))
@@ -52,7 +52,7 @@ extension Timecode {
         let frFrac = frameRate.frameDuration
         let n = frFrac.numerator * frameCount.subFrameCount
         let d = frFrac.denominator * subFramesBase.rawValue
-        
+
         return Fraction(n, d).reduced()
     }
 }
@@ -74,7 +74,7 @@ extension Timecode {
         let frameCount = floatingFrameCount(of: rational)
         try _setTimecode(exactly: .combined(frames: frameCount))
     }
-    
+
     /// Sets the timecode from elapsed time expressed as a rational fraction.
     ///
     /// Clamps to valid timecode.
@@ -87,7 +87,7 @@ extension Timecode {
         let frameCount = frameCount(of: rational)
         _setTimecode(clamping: .frames(frameCount))
     }
-    
+
     /// Sets the timecode from elapsed time expressed as a rational fraction.
     ///
     /// Wraps timecode if necessary.
@@ -100,7 +100,7 @@ extension Timecode {
         let frameCount = frameCount(of: rational)
         _setTimecode(wrapping: .frames(frameCount))
     }
-    
+
     /// Sets the timecode from elapsed time expressed as a rational fraction.
     ///
     /// Allows for invalid raw values (in this case, unbounded Days component).
@@ -113,9 +113,9 @@ extension Timecode {
         let frameCount = frameCount(of: rational)
         _setTimecode(rawValues: .frames(frameCount))
     }
-    
+
     // MARK: Helper Methods
-    
+
     /// Internal:
     /// Returns frame count of the rational fraction at current frame rate.
     /// Truncates subframes if present.
@@ -125,7 +125,7 @@ extension Timecode {
             (rational.denominator * frFrac.numerator)
         return frameCount
     }
-    
+
     /// Internal:
     /// Returns frame count of the rational fraction at current frame rate.
     /// Preserves subframes as floating-point potion of a frame.

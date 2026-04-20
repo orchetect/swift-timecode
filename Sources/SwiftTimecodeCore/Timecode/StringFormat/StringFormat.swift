@@ -1,7 +1,7 @@
 //
 //  StringFormat.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
@@ -27,7 +27,7 @@ extension Timecode.StringFormat {
             else { remove(.alwaysShowDays) }
         }
     }
-    
+
     /// Get or set ``Timecode/StringFormatOption/showSubFrames`` state.
     public var showSubFrames: Bool {
         get {
@@ -38,7 +38,7 @@ extension Timecode.StringFormat {
             else { remove(.showSubFrames) }
         }
     }
-    
+
     /// Get or set ``Timecode/StringFormatOption/filenameCompatible`` state.
     public var filenameCompatible: Bool {
         get {

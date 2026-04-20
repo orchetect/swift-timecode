@@ -1,7 +1,7 @@
 //
 //  Fraction CMTime.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(CoreMedia)
@@ -19,10 +19,10 @@ extension Fraction {
             self.init(0, 1)
             return
         }
-        
+
         self.init(Int(cmTime.value), Int(cmTime.timescale))
     }
-    
+
     /// Returns the fraction as a new `CMTime` instance.
     @_disfavoredOverload
     public var cmTimeValue: CMTime {
@@ -38,7 +38,7 @@ extension CMTime {
             timescale: CMTimeScale(fraction.denominator)
         )
     }
-    
+
     /// Returns the fraction as a new ``Fraction`` instance.
     @_disfavoredOverload
     public var fractionValue: Fraction {

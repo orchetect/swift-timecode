@@ -7,7 +7,11 @@ let package = Package(
     name: "swift-timecode",
     defaultLocalization: "en",
     platforms: [
-        .macOS(.v10_13), .iOS(.v12), .tvOS(.v12), .watchOS(.v4), .visionOS(.v1)
+        .macOS(.v10_13),
+        .iOS(.v12),
+        .tvOS(.v12),
+        .watchOS(.v4),
+        .visionOS(.v1)
     ],
     products: [
         .library(name: "SwiftTimecode", targets: ["SwiftTimecode"]),
@@ -32,9 +36,9 @@ let package = Package(
             dependencies: [
                 "SwiftTimecodeCore",
                 .product(name: "Numerics", package: "swift-numerics"),
-                .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+                .product(name: "TestingExtensions", package: "swift-testing-extensions")
             ]
-        ),
+        )
     ]
 )
 
@@ -47,7 +51,8 @@ package.products += [
 ]
 
 package.targets.first(where: { $0.name == "SwiftTimecode" })?.dependencies += [
-    "SwiftTimecodeAV", "SwiftTimecodeUI"
+    "SwiftTimecodeAV",
+    "SwiftTimecodeUI"
 ]
 
 package.targets += [
@@ -66,7 +71,7 @@ package.targets += [
         name: "SwiftTimecodeAVTests",
         dependencies: [
             "SwiftTimecodeAV",
-            .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+            .product(name: "TestingExtensions", package: "swift-testing-extensions")
         ],
         resources: [.copy("TestResource/Media Files")]
     ),
@@ -74,7 +79,7 @@ package.targets += [
         name: "SwiftTimecodeUITests",
         dependencies: [
             "SwiftTimecodeUI",
-            .product(name: "TestingExtensions", package: "swift-testing-extensions"),
+            .product(name: "TestingExtensions", package: "swift-testing-extensions")
         ],
         linkerSettings: [
             .linkedFramework("SwiftUI", .when(platforms: [.macOS, .macCatalyst, .iOS, .tvOS, .watchOS, .visionOS]))

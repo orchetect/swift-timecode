@@ -1,7 +1,7 @@
 //
 //  ComponentRanges.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
@@ -13,7 +13,7 @@ extension Timecode {
         public var seconds: ClosedRange<Int>
         public var frames: ClosedRange<Int>
         public var subFrames: ClosedRange<Int>
-        
+
         public init(
             days: ClosedRange<Int>,
             hours: ClosedRange<Int>,

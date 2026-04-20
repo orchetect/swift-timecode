@@ -1,7 +1,7 @@
 //
 //  AVAssetTrack Timecode Read.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // AVAssetReader is unavailable on watchOS so we can't support any AVAsset operations
@@ -33,18 +33,18 @@ extension AVAssetTrack {
         else {
             throw Timecode.MediaParseError.missingOrNonStandardFrameRate
         }
-        
+
         let range = try await timecodeRange(
             at: frameRate,
             limit: limit,
             base: base
         )
-        
+
         return range.upperBound - range.lowerBound
     }
-    
+
     // MARK: - Helpers
-    
+
     // Note:
     // This shouldn't be public because it's not terribly useful and might be misleading.
     // For example, if used on a timecode track ("tmcd"), this will often return a range
@@ -70,14 +70,14 @@ extension AVAssetTrack {
         else {
             throw Timecode.MediaParseError.missingOrNonStandardFrameRate
         }
-        
+
         return try timeRange.timecodeRange(
             at: frameRate,
             base: base,
             limit: limit
         )
     }
-    
+
     /// Returns the start frame number from a timecode track.
     /// Returns `nil` if the track is not a timecode track.
     func readTimecodeSamples(
@@ -89,7 +89,7 @@ extension AVAssetTrack {
         guard assetReader.startReading() else {
             throw Timecode.MediaParseError.internalError
         }
-        
+
         // QuickTime timecode track is either 4 or 8 bytes long (UInt32 or UInt64)
         // representing the frame number
         var samples: [CMTimeCode] = []
@@ -97,10 +97,10 @@ extension AVAssetTrack {
             let bufferSamples = try? Self._readTimecodeSamples(sampleBuffer: sampleBuffer)
             samples.append(contentsOf: bufferSamples ?? [])
         }
-        
+
         return samples
     }
-    
+
     private static func _readTimecodeSamples(sampleBuffer: CMSampleBuffer) throws -> [CMTimeCode] {
         // FYI: on macOS 10.15/iOS 13 and later, you can use
         // sampleBuffer.formatDescription instead of CMSampleBufferGetFormatDescription
@@ -111,17 +111,17 @@ extension AVAssetTrack {
             // and only some times will contain the data we need
             return []
         }
-        
+
         guard sampleBuffer.totalSampleSize > 0 else {
             return []
         }
-        
+
         // on macOS 10.15/iOS 13 and later, you can use
         // formatDescription.mediaSubType instead of CMFormatDescriptionGetMediaSubType
         let type = formatDescription.mediaSubType
-        
+
         var offset = 0
-        
+
         switch type {
         case .timeCode32: // kCMTimeCodeFormatType_TimeCode32
             var samples: [CMTimeCode32] = []
@@ -130,7 +130,7 @@ extension AVAssetTrack {
                 offset += CMTimeCode32.byteLength
             }
             return samples
-            
+
         case .timeCode64: // kCMTimeCodeFormatType_TimeCode64
             var samples: [CMTimeCode64] = []
             while let tc = _readTimecode64Sample(blockBuffer: blockBuffer, offset: offset) {
@@ -138,13 +138,13 @@ extension AVAssetTrack {
                 offset += CMTimeCode64.byteLength
             }
             return samples
-            
+
         default:
             // TODO: this may happen if Counter mode is used, in which case it should be parsed
             throw Timecode.MediaParseError.unknownTimecode
         }
     }
-    
+
     /// Timecode32 is a single number representing the frame number.
     private static func _readTimecode32Sample(
         blockBuffer: CMBlockBuffer,
@@ -152,7 +152,7 @@ extension AVAssetTrack {
     ) -> CMTimeCode32? {
         var rawData: UnsafeMutablePointer<CChar>? // CChar == Int8
         var length = 0
-        
+
         let status = CMBlockBufferGetDataPointer(
             blockBuffer,
             atOffset: offset,
@@ -160,9 +160,9 @@ extension AVAssetTrack {
             totalLengthOut: nil,
             dataPointerOut: &rawData
         )
-        
+
         guard status == kCMBlockBufferNoErr else { return nil }
-        
+
         guard length >= MemoryLayout<UInt32>.size,
               let frame = rawData?.withMemoryRebound(
                   to: UInt32.self,
@@ -170,10 +170,10 @@ extension AVAssetTrack {
                   { CFSwapInt32BigToHost($0.pointee) }
               )
         else { return nil }
-        
+
         return CMTimeCode32(frameNumber: frame)
     }
-    
+
     /// Timecode64 is big-endian SInt64 encoding 4 x 16-bit integers for h, m, s, f.
     private static func _readTimecode64Sample(
         blockBuffer: CMBlockBuffer,
@@ -181,7 +181,7 @@ extension AVAssetTrack {
     ) -> CMTimeCode64? {
         var rawData: UnsafeMutablePointer<CChar>? // CChar == Int8
         var length = 0
-        
+
         let status = CMBlockBufferGetDataPointer(
             blockBuffer,
             atOffset: offset,
@@ -189,9 +189,9 @@ extension AVAssetTrack {
             totalLengthOut: nil,
             dataPointerOut: &rawData
         )
-        
+
         guard status == kCMBlockBufferNoErr else { return nil }
-        
+
         guard length >= MemoryLayout<UInt64>.size,
               let rawValue = rawData?.withMemoryRebound(
                   to: UInt64.self,
@@ -199,7 +199,7 @@ extension AVAssetTrack {
                   { CFSwapInt64BigToHost($0.pointee) }
               )
         else { return nil }
-        
+
         return CMTimeCode64(uInt64: rawValue)
     }
 }

@@ -1,15 +1,16 @@
 //
 //  TimecodeFrameRate Properties Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 @testable import SwiftTimecodeCore
 import Testing
 
-@Suite struct TimecodeFrameRate_Properties_Tests {
+@Suite
+struct TimecodeFrameRate_Properties_Tests {
     @Test
-    func properties() async {
+    func properties() {
         // spot-check that properties behave as expected
 
         let frameRate: TimecodeFrameRate = .fps30
@@ -89,7 +90,7 @@ import Testing
     }
 
     @Test
-    func initStringValue() async {
+    func initStringValue() {
         #expect(TimecodeFrameRate(stringValue: "23.976") == .fps23_976)
         #expect(TimecodeFrameRate(stringValue: "29.97d") == .fps29_97d)
 

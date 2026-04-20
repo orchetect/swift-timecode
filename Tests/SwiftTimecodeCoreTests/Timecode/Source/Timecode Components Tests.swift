@@ -1,35 +1,36 @@
 //
 //  Timecode Components Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
 import Testing
 
-@Suite struct Timecode_Source_Components_Tests {
+@Suite
+struct Timecode_Source_Components_Tests {
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_init_Components_Exactly_Zero(frameRate: TimecodeFrameRate) async throws {
+    func timecode_init_Components_Exactly_Zero(frameRate: TimecodeFrameRate) throws {
         let tc = try Timecode(
             .components(d: 0, h: 0, m: 0, s: 0, f: 0),
             at: frameRate
         )
-        
+
         #expect(tc.components == .zero)
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_init_Components_Exactly(frameRate: TimecodeFrameRate) async throws {
+    func timecode_init_Components_Exactly(frameRate: TimecodeFrameRate) throws {
         let tc = try Timecode(
             .components(d: 0, h: 1, m: 2, s: 3, f: 4),
             at: frameRate
         )
-        
+
         #expect(tc.components == Timecode.Components(d: 0, h: 1, m: 2, s: 3, f: 4))
     }
 
     @Test
-    func timecode_init_Components_Clamping() async {
+    func timecode_init_Components_Clamping() {
         let tc = Timecode(
             .components(h: 25),
             at: .fps24,
@@ -43,7 +44,7 @@ import Testing
     }
 
     @Test
-    func timecode_init_Components_ClampingEach() async {
+    func timecode_init_Components_ClampingEach() {
         let tc = Timecode(
             .components(h: 25),
             at: .fps24,
@@ -57,29 +58,29 @@ import Testing
     }
 
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_init_Components_Wrapping(frameRate: TimecodeFrameRate) async {
+    func timecode_init_Components_Wrapping(frameRate: TimecodeFrameRate) {
         let tc = Timecode(
             .components(h: 25),
             at: frameRate,
             by: .wrapping
         )
-        
+
         #expect(tc.components == Timecode.Components(h: 1))
     }
-    
+
     @Test(arguments: TimecodeFrameRate.allCases)
-    func timecode_init_Components_RawValues(frameRate: TimecodeFrameRate) async {
+    func timecode_init_Components_RawValues(frameRate: TimecodeFrameRate) {
         let tc = Timecode(
             .components(d: 99, h: 99, m: 99, s: 99, f: 99, sf: 99),
             at: frameRate,
             by: .allowingInvalid
         )
-        
+
         #expect(tc.components == Timecode.Components(d: 99, h: 99, m: 99, s: 99, f: 99, sf: 99))
     }
 
     @Test
-    func timecode_components_24Hours() async {
+    func timecode_components_24Hours() {
         // default
 
         var tc = Timecode(.zero, at: .fps30)
@@ -94,7 +95,7 @@ import Testing
     }
 
     @Test
-    func timecode_components_100Days() async {
+    func timecode_components_100Days() {
         // default
 
         var tc = Timecode(.zero, at: .fps30, limit: .max100Days)
@@ -120,7 +121,7 @@ import Testing
     }
 
     @Test
-    func setTimecodeClamping() async {
+    func setTimecodeClamping() {
         // this is not meant to test the underlying logic, simply that set() produces the intended outcome
 
         var tc = Timecode(.zero, at: .fps30, base: .max80SubFrames)
@@ -131,7 +132,7 @@ import Testing
     }
 
     @Test
-    func setTimecodeClampingEach() async {
+    func setTimecodeClampingEach() {
         // this is not meant to test the underlying logic, simply that set() produces the intended outcome
 
         var tc = Timecode(.zero, at: .fps30, base: .max80SubFrames)
@@ -142,7 +143,7 @@ import Testing
     }
 
     @Test
-    func setTimecodeWrapping() async {
+    func setTimecodeWrapping() {
         // this is not meant to test the underlying logic, simply that set() produces the intended outcome
 
         var tc = Timecode(.zero, at: .fps30)

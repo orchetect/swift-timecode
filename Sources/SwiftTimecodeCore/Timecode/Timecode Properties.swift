@@ -1,7 +1,7 @@
 //
 //  Timecode Properties.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -18,7 +18,7 @@ extension Timecode {
         ///
         /// Setting this value directly does not trigger any validation.
         public var frameRate: TimecodeFrameRate
-        
+
         /// Subframes base (divisor).
         ///
         /// The number of subframes that make up a single frame.
@@ -29,14 +29,14 @@ extension Timecode {
         ///
         /// - Note: Setting this value directly does not trigger any validation.
         public var subFramesBase: SubFramesBase
-        
+
         /// Timecode maximum upper bound.
         ///
         /// This also affects how timecode values wrap when adding or clamping.
         ///
         /// - Note: Setting this value directly does not trigger any validation.
         public var upperLimit: UpperLimit
-        
+
         /// ``Timecode`` properties.
         public init(
             rate: TimecodeFrameRate,

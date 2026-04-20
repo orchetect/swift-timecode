@@ -1,19 +1,19 @@
 //
 //  TimecodeFieldDemoView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct TimecodeFieldDemoView: View {
     @State var components: Timecode.Components = .random(in: .unsafeRandomRanges)
     @State var frameRate: TimecodeFrameRate = .fps24
     @State var subFramesBase: Timecode.SubFramesBase = .max80SubFrames
     @State var upperLimit: Timecode.UpperLimit = .max24Hours
-    
+
     @State private var isEnabled: Bool = true
     @State private var timecodeFormat: Timecode.StringFormat = [.showSubFrames]
     @State private var defaultStyle: DefaultStyle = .default
@@ -26,9 +26,9 @@ struct TimecodeFieldDemoView: View {
     @State private var inputWrapping: TimecodeField.InputWrapping = .noWrap
     @State private var validationPolicy: TimecodeField.ValidationPolicy = .enforceValid
     @State private var inputRejectionFeedback: InputRejectionFeedbackStyle = .beepAndShake
-    
+
     @FocusState private var isEditing: Bool
-    
+
     var body: some View {
         VStack(spacing: 20) {
             TimecodeField(
@@ -53,9 +53,9 @@ struct TimecodeFieldDemoView: View {
             .font(.largeTitle)
             .disabled(!isEnabled)
             .focused($isEditing)
-            
+
             Divider()
-            
+
             Form {
                 propertiesSection
                 appearanceSection
@@ -65,7 +65,7 @@ struct TimecodeFieldDemoView: View {
             .formStyle(.grouped)
         }
         .padding()
-        
+
         #if os(iOS)
         .toolbar {
             ToolbarItemGroup(placement: .confirmationAction) {
@@ -76,7 +76,7 @@ struct TimecodeFieldDemoView: View {
         }
         #endif
     }
-    
+
     private var propertiesSection: some View {
         TimecodePropertiesSectionView(
             frameRate: $frameRate,
@@ -84,7 +84,7 @@ struct TimecodeFieldDemoView: View {
             upperLimit: $upperLimit
         )
     }
-    
+
     private var appearanceSection: some View {
         Section("Appearance") {
             Picker("Default Color", selection: $defaultStyle) {
@@ -119,7 +119,7 @@ struct TimecodeFieldDemoView: View {
             }
         }
     }
-    
+
     private var inputBehaviorSection: some View {
         Section("Input Behavior") {
             Picker("Input Style", selection: $inputStyle) {
@@ -154,7 +154,7 @@ struct TimecodeFieldDemoView: View {
             }
         }
     }
-    
+
     private var infoSection: some View {
         Section("Hardware Keyboard Guide") {
             Grid(alignment: .topLeading, verticalSpacing: 10) {
@@ -177,7 +177,9 @@ struct TimecodeFieldDemoView: View {
                         Image(systemName: "plus")
                         Image(systemName: "minus")
                     }
-                    Text("Plus and minus keys (on the number row or number pad) can be used to increment or decrement the highlighted timecode components.")
+                    Text(
+                        "Plus and minus keys (on the number row or number pad) can be used to increment or decrement the highlighted timecode components."
+                    )
                 }
                 GridRow {
                     Text("`.` or `:` or `;`")
@@ -190,7 +192,7 @@ struct TimecodeFieldDemoView: View {
             }
         }
     }
-    
+
     private var timecode: Timecode {
         Timecode(
             .components(components),
@@ -209,9 +211,11 @@ extension TimecodeFieldDemoView {
         case `default`
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -219,7 +223,7 @@ extension TimecodeFieldDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -228,16 +232,18 @@ extension TimecodeFieldDemoView {
             }
         }
     }
-    
+
     private enum SubFramesStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -247,7 +253,7 @@ extension TimecodeFieldDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -258,20 +264,22 @@ extension TimecodeFieldDemoView {
             }
         }
     }
-    
+
     private enum TextScale: String, CaseIterable, Identifiable {
         case `default`
         case secondary
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
             case .secondary: "Secondary"
             }
         }
-        
+
         var scale: Text.Scale {
             switch self {
             case .default: .default
@@ -279,16 +287,18 @@ extension TimecodeFieldDemoView {
             }
         }
     }
-    
+
     private enum SeparatorStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -298,7 +308,7 @@ extension TimecodeFieldDemoView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -309,14 +319,16 @@ extension TimecodeFieldDemoView {
             }
         }
     }
-    
+
     private enum HighlightStyle: Int, CaseIterable, Identifiable {
         case `default`
         case secondary
         case blue
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default (Accent)"
@@ -324,7 +336,7 @@ extension TimecodeFieldDemoView {
             case .blue: "Blue"
             }
         }
-        
+
         var style: AnyShapeStyle? {
             switch self {
             case .default: AnyShapeStyle(.tint)
@@ -333,14 +345,16 @@ extension TimecodeFieldDemoView {
             }
         }
     }
-    
+
     private enum ValidationStyle: Int, CaseIterable, Identifiable {
         case none
         case red
         case purple
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .none: "None"
@@ -348,7 +362,7 @@ extension TimecodeFieldDemoView {
             case .purple: "Purple"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .none: nil
@@ -357,18 +371,20 @@ extension TimecodeFieldDemoView {
             }
         }
     }
-    
+
     private enum InputRejectionFeedbackStyle: Int, CaseIterable, Identifiable {
         case none
         case beep
         case beepAndShake
         case beepAndPulse
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
-            case .none: 
+            case .none:
                 "None"
             case .beep:
                 #if os(macOS)
@@ -390,7 +406,7 @@ extension TimecodeFieldDemoView {
                 #endif
             }
         }
-        
+
         var feedback: TimecodeField.InputRejectionFeedback? {
             switch self {
             case .none: nil

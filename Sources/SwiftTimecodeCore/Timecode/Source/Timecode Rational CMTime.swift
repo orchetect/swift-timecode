@@ -1,7 +1,7 @@
 //
 //  Timecode Rational CMTime.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(CoreMedia)
@@ -27,7 +27,7 @@ extension CMTime: _TimecodeSource {
     package func set(timecode: inout Timecode) throws {
         try timecode._setTimecode(exactly: self)
     }
-    
+
     package func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) {
         switch validation {
         case .clamping, .clampingComponents:
@@ -84,7 +84,7 @@ extension Timecode {
         let fraction = Fraction(Int(exactly.value), Int(exactly.timescale))
         try _setTimecode(exactly: fraction)
     }
-    
+
     /// Instance from elapsed time `CMTime`.
     ///
     /// Clamps to valid timecode.
@@ -95,7 +95,7 @@ extension Timecode {
         let fraction = Fraction(Int(cmTime.value), Int(cmTime.timescale))
         _setTimecode(clamping: fraction)
     }
-    
+
     /// Instance from elapsed time `CMTime`.
     ///
     /// Wraps timecode if necessary.
@@ -106,7 +106,7 @@ extension Timecode {
         let fraction = Fraction(Int(cmTime.value), Int(cmTime.timescale))
         _setTimecode(wrapping: fraction)
     }
-    
+
     /// Instance from elapsed time `CMTime`.
     ///
     /// Allows for invalid raw values (in this case, unbounded Days component).

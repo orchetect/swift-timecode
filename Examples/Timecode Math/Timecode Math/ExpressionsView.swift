@@ -1,16 +1,16 @@
 //
 //  ExpressionsView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct ExpressionsView: View {
     let frameRate: TimecodeFrameRate
-    
+
     var body: some View {
         Group {
             TimecodeMathExpressionView(
@@ -18,19 +18,19 @@ struct ExpressionsView: View {
                 lhs: Timecode(.components(h: 1), at: frameRate, by: .allowingInvalid),
                 rhs: Timecode(.components(m: 20), at: frameRate, by: .allowingInvalid)
             )
-            
+
             TimecodeMathExpressionView(
                 operation: .subtract,
                 lhs: Timecode(.components(h: 1), at: frameRate, by: .allowingInvalid),
                 rhs: Timecode(.components(m: 20), at: frameRate, by: .allowingInvalid)
             )
-            
+
             DoubleMathExpressionView(
                 operation: .multiply,
                 lhs: Timecode(.components(h: 1), at: frameRate, by: .allowingInvalid),
                 rhs: 2.5
             )
-            
+
             DoubleMathExpressionView(
                 operation: .divide,
                 lhs: Timecode(.components(h: 1), at: frameRate, by: .allowingInvalid),

@@ -1,14 +1,15 @@
 //
 //  URL.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
 
 extension URL {
     package init(temporaryFileWithData data: Data) throws {
-        let url = FileManager.default.temporaryDirectoryCompat
+        let url = FileManager.default
+            .temporaryDirectoryCompat
             .appendingPathComponent(UUID().uuidString)
         try data.write(to: url)
         self = url

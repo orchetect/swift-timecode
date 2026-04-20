@@ -1,7 +1,7 @@
 //
 //  StringFormatOption.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
@@ -13,19 +13,21 @@ extension Timecode {
         ///
         /// By passing this option, days are always included even if the value is zero.
         case alwaysShowDays
-        
+
         /// Determines whether subframes are included.
         ///
         /// This does not disable subframes from being stored or calculated, only whether it is present in the string.
         case showSubFrames
-        
+
         /// Substitutes illegal characters for filename-compatible characters.
         case filenameCompatible
     }
 }
 
 extension Timecode.StringFormatOption: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension Timecode.StringFormatOption: Sendable { }
@@ -36,7 +38,7 @@ extension Timecode.StringFormatOption: Codable {
         case showSubFrames
         case filenameCompatible
     }
-    
+
     public init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let getString = try container.decode(String.self)
@@ -49,7 +51,7 @@ extension Timecode.StringFormatOption: Codable {
                 )
             )
         }
-        
+
         switch keyFromString {
         case .alwaysShowDays:
             self = .alwaysShowDays
@@ -59,10 +61,10 @@ extension Timecode.StringFormatOption: Codable {
             self = .filenameCompatible
         }
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
-        
+
         switch self {
         case .alwaysShowDays:
             try container.encode(CodingKeys.alwaysShowDays.rawValue)

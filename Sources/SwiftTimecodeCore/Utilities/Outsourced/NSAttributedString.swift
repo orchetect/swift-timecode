@@ -10,9 +10,9 @@
 /// ----------------------------------------------
 
 #if canImport(Darwin)
-import struct Foundation.NSRange
 import class Foundation.NSAttributedString
 import class Foundation.NSMutableAttributedString
+import struct Foundation.NSRange
 
 #if os(macOS)
 import class AppKit.NSMutableParagraphStyle
@@ -28,18 +28,18 @@ extension NSAttributedString {
     package func addingAttribute(alignment: NSTextAlignment) -> NSAttributedString {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = alignment
-        
+
         guard let copy = mutableCopy() as? NSMutableAttributedString
         else {
             print("Could not create mutable NSAttributedString copy.")
             return self
         }
-        
+
         copy.addAttributes(
             [.paragraphStyle: paragraph],
             range: NSRange(location: 0, length: length)
         )
-        
+
         return copy
     }
 }
@@ -50,7 +50,7 @@ extension NSMutableAttributedString {
     package func addAttribute(alignment: NSTextAlignment) {
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = alignment
-        
+
         addAttributes(
             [.paragraphStyle: paragraph],
             range: NSRange(location: 0, length: length)

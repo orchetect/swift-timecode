@@ -1,7 +1,7 @@
 //
 //  Timecode set.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -15,19 +15,19 @@ extension Timecode {
     public mutating func set(_ source: TimecodeSourceValue) throws {
         try set(source.value)
     }
-    
+
     /// Set timecode by converting from a time source.
     public mutating func set(_ source: TimecodeSourceValue, by validation: ValidationRule) {
         set(source.value, by: validation)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     ///
     /// - Throws: ``ValidationError``
     public func setting(_ source: TimecodeSourceValue) throws -> Timecode {
         try setting(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     public func setting(_ source: TimecodeSourceValue, by validation: ValidationRule) -> Timecode {
         setting(source.value, by: validation)
@@ -39,18 +39,18 @@ extension Timecode {
     mutating func set(_ source: _TimecodeSource) throws {
         try source.set(timecode: &self)
     }
-    
+
     mutating func set(_ source: _TimecodeSource, by validation: ValidationRule) {
         source.set(timecode: &self, by: validation)
     }
-    
+
     /// - Throws: ``ValidationError``
     func setting(_ value: _TimecodeSource) throws -> Timecode {
         var copy = self
         try copy.set(value)
         return copy
     }
-    
+
     func setting(_ value: _TimecodeSource, by validation: ValidationRule) -> Timecode {
         var copy = self
         copy.set(value, by: validation)
@@ -68,13 +68,13 @@ extension Timecode {
     public mutating func set(_ source: AsyncTimecodeSourceValue) async throws {
         try await set(source.value)
     }
-    
+
     /// Set timecode by converting from a time source.
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     public mutating func set(_ source: AsyncTimecodeSourceValue, by validation: ValidationRule) async {
         await set(source.value, by: validation)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     ///
     /// - Throws: ``ValidationError``
@@ -82,7 +82,7 @@ extension Timecode {
     public func setting(_ source: AsyncTimecodeSourceValue) async throws -> Timecode {
         try await setting(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     public func setting(_ source: AsyncTimecodeSourceValue, by validation: ValidationRule) async -> Timecode {
@@ -96,12 +96,12 @@ extension Timecode {
     mutating func set(_ source: _AsyncTimecodeSource) async throws {
         try await source.set(timecode: &self)
     }
-    
+
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     mutating func set(_ source: _AsyncTimecodeSource, by validation: ValidationRule) async {
         await source.set(timecode: &self, by: validation)
     }
-    
+
     /// - Throws: ``ValidationError``
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     func setting(_ value: _AsyncTimecodeSource) async throws -> Timecode {
@@ -109,7 +109,7 @@ extension Timecode {
         try await copy.set(value)
         return copy
     }
-    
+
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     func setting(_ value: _AsyncTimecodeSource, by validation: ValidationRule) async -> Timecode {
         var copy = self
@@ -127,19 +127,19 @@ extension Timecode {
     public mutating func set(_ source: FormattedTimecodeSourceValue) throws {
         try set(source.value)
     }
-    
+
     /// Set timecode by converting from a time source.
     public mutating func set(_ source: FormattedTimecodeSourceValue, by validation: ValidationRule) throws {
         try set(source.value, by: validation)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     ///
     /// - Throws: ``ValidationError``
     public func setting(_ source: FormattedTimecodeSourceValue) throws -> Timecode {
         try setting(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     public func setting(_ source: FormattedTimecodeSourceValue, by validation: ValidationRule) throws -> Timecode {
         try setting(source.value, by: validation)
@@ -151,18 +151,18 @@ extension Timecode {
     mutating func set(_ source: _FormattedTimecodeSource) throws {
         try source.set(timecode: &self)
     }
-    
+
     mutating func set(_ source: _FormattedTimecodeSource, by validation: ValidationRule) throws {
         try source.set(timecode: &self, by: validation)
     }
-    
+
     /// - Throws: ``ValidationError``
     func setting(_ source: _FormattedTimecodeSource) throws -> Timecode {
         var copy = self
         try copy.set(source)
         return copy
     }
-    
+
     func setting(_ source: _FormattedTimecodeSource, by validation: ValidationRule) throws -> Timecode {
         var copy = self
         try copy.set(source, by: validation)
@@ -181,7 +181,7 @@ extension Timecode {
     ) throws {
         try set(source.value)
     }
-    
+
     /// Set timecode by converting from a time source.
     public mutating func set(
         _ source: RichTimecodeSourceValue,
@@ -189,7 +189,7 @@ extension Timecode {
     ) {
         set(source.value, by: validation)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     ///
     /// - Throws: ``ValidationError``
@@ -198,7 +198,7 @@ extension Timecode {
     ) throws -> Timecode {
         try setting(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     ///
     /// - Throws: ``ValidationError``
@@ -217,14 +217,14 @@ extension Timecode {
     ) throws {
         properties = try source.set(timecode: &self)
     }
-    
+
     mutating func set(
         _ source: _RichTimecodeSource,
         by validation: ValidationRule
     ) {
         properties = source.set(timecode: &self, by: validation)
     }
-    
+
     /// - Throws: ``ValidationError``
     func setting(
         _ source: _RichTimecodeSource
@@ -233,7 +233,7 @@ extension Timecode {
         try copy.set(source)
         return copy
     }
-    
+
     func setting(
         _ source: _RichTimecodeSource,
         by validation: ValidationRule
@@ -256,7 +256,7 @@ extension Timecode {
     ) async throws {
         try await set(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     ///
     /// - Throws: ``ValidationError``
@@ -276,7 +276,7 @@ extension Timecode {
     ) async throws {
         properties = try await source.set(timecode: &self)
     }
-    
+
     /// - Throws: ``ValidationError``
     @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
     func setting(
@@ -297,7 +297,7 @@ extension Timecode {
     ) {
         set(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     public func setting(
         _ source: GuaranteedTimecodeSourceValue
@@ -312,7 +312,7 @@ extension Timecode {
     ) {
         source.set(timecode: &self)
     }
-    
+
     func setting(
         _ source: _GuaranteedTimecodeSource
     ) -> Timecode {
@@ -331,7 +331,7 @@ extension Timecode {
     ) -> Properties {
         set(source.value)
     }
-    
+
     /// Returns a copy of this instance, setting its timecode by converting from a time source.
     public func setting(
         _ source: GuaranteedRichTimecodeSourceValue
@@ -346,7 +346,7 @@ extension Timecode {
     ) -> Properties {
         source.set(timecode: &self)
     }
-    
+
     func setting(
         _ source: _GuaranteedRichTimecodeSource
     ) -> Timecode {

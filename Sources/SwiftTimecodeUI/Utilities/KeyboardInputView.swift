@@ -1,7 +1,7 @@
 //
 //  KeyboardInputView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && (os(iOS) || os(tvOS) || os(visionOS))
@@ -13,11 +13,11 @@ import SwiftUI
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 struct KeyboardInputView: View {
     var onKeyPress: (_ keyEquivalent: KeyEquivalent) -> Void
-    
+
     @State private var text = neutralText
-    
+
     private static let neutralText = " "
-    
+
     var body: some View {
         TextField("", text: $text)
             .textFieldStyle(.plain)
@@ -37,22 +37,22 @@ struct KeyboardInputView: View {
                     reset()
                     return
                 }
-                
+
                 // avoid catching the default string
                 guard text != Self.neutralText else { return }
-                
+
                 // otherwise new printable character will be added at end of string
                 guard let char = text.last else { return }
-                
+
                 // reset to neutral string
                 Task { reset() }
-                
+
                 // not a universal solution, but it works for the keys we care about
                 let keyEquivalent = KeyEquivalent(char)
                 onKeyPress(keyEquivalent)
             }
     }
-    
+
     private func reset() {
         text = Self.neutralText
     }

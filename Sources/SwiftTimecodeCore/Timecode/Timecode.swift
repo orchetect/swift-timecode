@@ -1,7 +1,7 @@
 //
 //  Timecode.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 /// Value type representing SMPTE/EBU timecode.
@@ -14,12 +14,12 @@
 /// - Many more features are detailed in the documentation
 public struct Timecode {
     // MARK: - Components
-    
+
     /// Numerical timecode components.
     /// (This components store makes it convenient to port around timecode component values agnostic
     /// of frame rate or other properties to other Timecode initializers or methods.)
     public var components: Components = .zero
-    
+
     /// Timecode days component.
     ///
     /// Valid only if ``upperLimit-swift.property`` is set to `.max100Days`.
@@ -29,7 +29,7 @@ public struct Timecode {
         get { components.days }
         set { components.days = newValue }
     }
-    
+
     /// Timecode hours component.
     ///
     /// Valid range: 0 ... 23.
@@ -39,7 +39,7 @@ public struct Timecode {
         get { components.hours }
         set { components.hours = newValue }
     }
-    
+
     /// Timecode minutes component.
     ///
     /// Valid range: 0 ... 59.
@@ -49,7 +49,7 @@ public struct Timecode {
         get { components.minutes }
         set { components.minutes = newValue }
     }
-    
+
     /// Timecode seconds component.
     ///
     /// Valid range: 0 ... 59.
@@ -59,7 +59,7 @@ public struct Timecode {
         get { components.seconds }
         set { components.seconds = newValue }
     }
-    
+
     /// Timecode frames component.
     ///
     /// Valid range is dependent on the `frameRate` property.
@@ -69,7 +69,7 @@ public struct Timecode {
         get { components.frames }
         set { components.frames = newValue }
     }
-    
+
     /// Timecode subframes component.
     /// Represents a subdivision of the current frame.
     ///
@@ -84,14 +84,14 @@ public struct Timecode {
         get { components.subFrames }
         set { components.subFrames = newValue }
     }
-    
+
     // MARK: - Properties
-    
+
     /// Timecode properties.
     /// (This property store makes it convenient to port around relevant timecode attributes to
     /// other Timecode initializers or methods.)
     public var properties: Properties
-    
+
     /// Frame rate.
     ///
     /// - Note: Several properties are available on the frame rate that is selected, including its
@@ -102,7 +102,7 @@ public struct Timecode {
         get { properties.frameRate }
         set { properties.frameRate = newValue }
     }
-    
+
     /// Subframes base (divisor).
     ///
     /// The number of subframes that make up a single frame.
@@ -116,7 +116,7 @@ public struct Timecode {
         get { properties.subFramesBase }
         set { properties.subFramesBase = newValue }
     }
-    
+
     /// Timecode maximum upper bound.
     ///
     /// This also affects how timecode values wrap when adding or clamping.
@@ -126,7 +126,7 @@ public struct Timecode {
         get { properties.upperLimit }
         set { properties.upperLimit = newValue }
     }
-    
+
     // Just to disable synthesized init
     private init() {
         assertionFailure("This init should not be used. It only exists to suppress the synthesized init.")

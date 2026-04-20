@@ -1,16 +1,16 @@
 //
 //  ContentView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct ContentView: View {
     @State private var sideBarItem: SideBarItem?
-    
+
     var body: some View {
         NavigationSplitView {
             List(SideBarItem.allCases, selection: $sideBarItem) { item in
@@ -32,15 +32,17 @@ struct ContentView: View {
             #endif
         }
     }
-    
+
     enum SideBarItem: Int, CaseIterable, Identifiable {
         case timecodeField
         case timecodeText
         case attributedString
         case nsAttributedString
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var label: some View {
             switch self {
             case .timecodeField:

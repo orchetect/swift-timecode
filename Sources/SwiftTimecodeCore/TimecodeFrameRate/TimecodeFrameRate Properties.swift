@@ -1,8 +1,10 @@
 //
 //  TimecodeFrameRate Properties.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
+
+// swiftformat:disable consecutiveSpaces
 
 // MARK: stringValue
 
@@ -35,7 +37,7 @@ extension TimecodeFrameRate {
         case .fps120d:    "120d"
         }
     }
-    
+
     /// Returns human-readable frame rate string in long form.
     public var stringValueVerbose: String {
         switch self {
@@ -64,7 +66,7 @@ extension TimecodeFrameRate {
         case .fps120d:    "120 fps drop"
         }
     }
-    
+
     /// Initializes from the human-readable ``stringValue`` string. Case-sensitive.
     public init?(stringValue: String) {
         if let findMatch = Self.allCases
@@ -120,7 +122,7 @@ extension TimecodeFrameRate {
         case .fps120d:    Fraction(120,     1)
         }
     }
-    
+
     /// Returns the duration of 1 frame as a rational number (fraction).
     ///
     /// - Note: Drop frame is not embeddable in a fraction. If the frame rate is a timecode
@@ -133,61 +135,61 @@ extension TimecodeFrameRate {
         switch self {
         case .fps23_976:  Fraction(1001, 24000)
         case .fps24:      Fraction(100,  2400)
-        case .fps24_98:   Fraction(1001, 25000) // TODO: inferred
+        case .fps24_98:   Fraction(1001, 25000)   // TODO: inferred
         case .fps25:      Fraction(100,  2500)
         case .fps29_97:   Fraction(1001, 30000)
         case .fps29_97d:  Fraction(1001, 30000)
         case .fps30:      Fraction(100,  3000)
-        case .fps30d:     Fraction(100,  3000) // TODO: needs checking
-        case .fps47_952:  Fraction(1001, 48000) // TODO: inferred
+        case .fps30d:     Fraction(100,  3000)    // TODO: needs checking
+        case .fps47_952:  Fraction(1001, 48000)   // TODO: inferred
         case .fps48:      Fraction(100,  4800)
         case .fps50:      Fraction(100,  5000)
-        case .fps59_94:   Fraction(1001, 60000) // TODO: inferred
-        case .fps59_94d:  Fraction(1001, 60000) // TODO: inferred
+        case .fps59_94:   Fraction(1001, 60000)   // TODO: inferred
+        case .fps59_94d:  Fraction(1001, 60000)   // TODO: inferred
         case .fps60:      Fraction(100,  6000)
-        case .fps60d:     Fraction(100,  6000) // TODO: needs checking
+        case .fps60d:     Fraction(100,  6000)    // TODO: needs checking
         case .fps90:      Fraction(100,  9000)
-        case .fps95_904:  Fraction(1001, 96000) // TODO: inferred
-        case .fps96:      Fraction(100,  9600) // TODO: inferred
+        case .fps95_904:  Fraction(1001, 96000)   // TODO: inferred
+        case .fps96:      Fraction(100,  9600)    // TODO: inferred
         case .fps100:     Fraction(100,  10000)
-        case .fps119_88:  Fraction(1001, 120000) // TODO: inferred
-        case .fps119_88d: Fraction(1001, 120000) // TODO: inferred
+        case .fps119_88:  Fraction(1001, 120_000) // TODO: inferred
+        case .fps119_88d: Fraction(1001, 120_000) // TODO: inferred
         case .fps120:     Fraction(100,  12000)
-        case .fps120d:    Fraction(100,  12000) // TODO: needs checking
+        case .fps120d:    Fraction(100,  12000)   // TODO: needs checking
         }
     }
-    
+
     /// Alternate frame durations used, such as QuickTime timecode track.
     /// Some encoders errantly encode frame rate fractions,
     /// so we can fall back to these values as secondary checks.
     public var alternateFrameDuration: Fraction? {
         switch self {
-        case .fps23_976:  Fraction(1000, 23976) // seen in the wild
+        case .fps23_976:  Fraction(1000, 23976)   // seen in the wild
         case .fps24:      nil
-        case .fps24_98:   Fraction(1000, 24980) // TODO: inferred
+        case .fps24_98:   Fraction(1000, 24980)   // TODO: inferred
         case .fps25:      nil
-        case .fps29_97:   Fraction(1000, 29970) // seen in the wild
-        case .fps29_97d:  Fraction(1000, 29970) // seen in the wild
+        case .fps29_97:   Fraction(1000, 29970)   // seen in the wild
+        case .fps29_97d:  Fraction(1000, 29970)   // seen in the wild
         case .fps30:      nil
-        case .fps30d:     nil // TODO: needs checking
-        case .fps47_952:  Fraction(1000, 47952) // TODO: inferred
+        case .fps30d:     nil                     // TODO: needs checking
+        case .fps47_952:  Fraction(1000, 47952)   // TODO: inferred
         case .fps48:      nil
         case .fps50:      nil
-        case .fps59_94:   Fraction(1000, 59940) // TODO: inferred
-        case .fps59_94d:  Fraction(1000, 59940) // TODO: inferred
+        case .fps59_94:   Fraction(1000, 59940)   // TODO: inferred
+        case .fps59_94d:  Fraction(1000, 59940)   // TODO: inferred
         case .fps60:      nil
-        case .fps60d:     nil // TODO: needs checking
+        case .fps60d:     nil                     // TODO: needs checking
         case .fps90:      nil
-        case .fps95_904:  Fraction(1000, 95904) // TODO: inferred
+        case .fps95_904:  Fraction(1000, 95904)   // TODO: inferred
         case .fps96:      nil
         case .fps100:     nil
-        case .fps119_88:  Fraction(1000, 119880) // TODO: inferred
-        case .fps119_88d: Fraction(1000, 119880) // TODO: inferred
+        case .fps119_88:  Fraction(1000, 119_880) // TODO: inferred
+        case .fps119_88d: Fraction(1000, 119_880) // TODO: inferred
         case .fps120:     nil
-        case .fps120d:    nil // TODO: needs checking
+        case .fps120d:    nil                     // TODO: needs checking
         }
     }
-    
+
     /// Returns `true` if frame rate is drop.
     public var isDrop: Bool {
         switch self {
@@ -216,7 +218,7 @@ extension TimecodeFrameRate {
         case .fps120d:    true
         }
     }
-    
+
     /// Returns the number of digits required for frames within the timecode string.
     ///
     /// ie: 24 or 30 fps would return `2`, but 120 fps would return `3`.
@@ -241,23 +243,21 @@ extension TimecodeFrameRate {
              .fps95_904,
              .fps96,
              .fps100:
-            
             2
-            
+
         case .fps119_88,
              .fps119_88d,
              .fps120,
              .fps120d:
-            
             3
         }
     }
-    
+
     /// Max frame number displayable before seconds roll over.
     public var maxFrameNumberDisplayable: Int {
         maxFrames - 1
     }
-    
+
     /// Returns max total frames from 0 to and including rolling over to `extent`.
     public func maxTotalFrames(in extent: Timecode.UpperLimit) -> Int {
         switch extent {
@@ -287,18 +287,18 @@ extension TimecodeFrameRate {
             case .fps120:     10_368_000 // @ 24hours
             case .fps120d:    10_357_632 // @ 24hours
             }
-            
+
         case .max100Days:
             maxTotalFrames(in: .max24Hours) * extent.maxDays
         }
     }
-    
+
     /// Returns max elapsed frames possible before rolling over to 0.
     /// (Number of frames from 0 to `extent` minus one frame).
     public func maxTotalFramesExpressible(in extent: Timecode.UpperLimit) -> Int {
         maxTotalFrames(in: extent) - 1
     }
-    
+
     /// Returns max total subframes from 0 to and including rolling over to `extent`.
     public func maxTotalSubFrames(
         in extent: Timecode.UpperLimit,
@@ -306,7 +306,7 @@ extension TimecodeFrameRate {
     ) -> Int {
         maxTotalFrames(in: extent) * base.rawValue
     }
-    
+
     /// Returns max elapsed subframes possible before rolling over to 0.
     /// (Number of subframes from 0 to `extent` minus one subframe).
     public func maxSubFrameCountExpressible(
@@ -349,7 +349,7 @@ extension TimecodeFrameRate {
         case .fps120d:    120
         }
     }
-    
+
     /// Internal use.
     /// Constant used when calculating total frame count, audio samples, etc.
     package var frameRateForElapsedFramesCalculation: Double {
@@ -379,7 +379,7 @@ extension TimecodeFrameRate {
         case .fps120d:    119.88
         }
     }
-    
+
     /// Internal use.
     /// Constant used in real time conversion, SMF export, etc.
     package var frameRateForRealTimeCalculation: Double {
@@ -409,7 +409,7 @@ extension TimecodeFrameRate {
         case .fps120d:    120.0
         }
     }
-    
+
     /// Internal use.
     package var framesDroppedPerMinute: Double {
         switch self {
@@ -436,7 +436,6 @@ extension TimecodeFrameRate {
              .fps100,
              .fps119_88,
              .fps120:
-            
             // this value is not actually used
             // this is only here so that when adding frame rates to the framework, the compiler will throw an error to remind you to add the
             // enum case here

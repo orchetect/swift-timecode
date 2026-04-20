@@ -1,7 +1,7 @@
 //
 //  AVMutableMovie Extensions.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import AVFoundation
@@ -17,10 +17,10 @@ extension AVMutableMovie {
         for track in tracks {
             removeTrack(track)
         }
-        
+
         return self
     }
-    
+
     func export(to url: URL) async throws {
         guard let exportSession = AVAssetExportSession(
             asset: self,
@@ -28,7 +28,7 @@ extension AVMutableMovie {
         ) else {
             throw ModelError.exportError(nil)
         }
-        
+
         try await exportSession.export(to: url, as: .mov)
     }
 }

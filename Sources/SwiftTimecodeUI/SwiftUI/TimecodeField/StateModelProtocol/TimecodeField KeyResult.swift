@@ -1,13 +1,13 @@
 //
 //  TimecodeField KeyResult.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 @available(macOS 14.0, iOS 17.0, watchOS 10.0, tvOS 17.0, *)
 extension TimecodeField {
@@ -15,7 +15,7 @@ extension TimecodeField {
         let result: Result
         let updateFocus: FocusResult?
         let rejection: TimecodeField.InputRejectionFeedback.Reason?
-        
+
         init(
             _ result: Result,
             _ updateFocus: FocusResult? = nil,
@@ -25,13 +25,13 @@ extension TimecodeField {
             self.updateFocus = updateFocus
             self.rejection = rejection
         }
-        
+
         enum Result: String, Sendable, CaseIterable {
             case handled
             case ignored
             case performEscapeAction // defer to action handler's KeyPress.Result return value
             case performReturnAction // defer to action handler's KeyPress.Result return value
-            
+
             init(_ keyPressResult: KeyPress.Result) {
                 switch keyPressResult {
                 case .handled:
@@ -44,7 +44,7 @@ extension TimecodeField {
                 }
             }
         }
-        
+
         enum FocusResult: String, Equatable, Hashable, Sendable, CaseIterable {
             case focusPreviousComponent
             case focusNextComponent

@@ -1,24 +1,33 @@
 //
 //  TimecodeField ComponentView ViewModel.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.ComponentView {
-    @Observable class ViewModel {
+    @Observable
+    class ViewModel {
         let component: Timecode.Component
-        
+
         var timecodeProperties: Timecode.Properties
-        var frameRate: TimecodeFrameRate { timecodeProperties.frameRate }
-        var subFramesBase: Timecode.SubFramesBase { timecodeProperties.subFramesBase }
-        var upperLimit: Timecode.UpperLimit { timecodeProperties.upperLimit }
-        
+        var frameRate: TimecodeFrameRate {
+            timecodeProperties.frameRate
+        }
+
+        var subFramesBase: Timecode.SubFramesBase {
+            timecodeProperties.subFramesBase
+        }
+
+        var upperLimit: Timecode.UpperLimit {
+            timecodeProperties.upperLimit
+        }
+
         init(
             component: Timecode.Component,
             initialTimecodeProperties timecodeProperties: Timecode.Properties
@@ -26,7 +35,7 @@ extension TimecodeField.ComponentView {
             self.component = component
             self.timecodeProperties = timecodeProperties
         }
-        
+
         func invisibleComponents(
             timecodeFormat: Timecode.StringFormat
         ) -> Set<Timecode.Component> {
@@ -37,7 +46,7 @@ extension TimecodeField.ComponentView {
             if !timecodeFormat.contains(.showSubFrames) { invisibles.insert(.subFrames) }
             return invisibles
         }
-        
+
         func firstVisibleComponent(
             timecodeFormat: Timecode.StringFormat
         ) -> Timecode.Component {
@@ -46,7 +55,7 @@ extension TimecodeField.ComponentView {
             )
             return Timecode.Component.first(excluding: invisibleComponents)
         }
-        
+
         func previousComponent(
             timecodeFormat: Timecode.StringFormat,
             wrap: TimecodeField.InputWrapping
@@ -61,7 +70,7 @@ extension TimecodeField.ComponentView {
             )
             return newComponent
         }
-        
+
         func nextComponent(
             timecodeFormat: Timecode.StringFormat,
             wrap: TimecodeField.InputWrapping
@@ -76,16 +85,16 @@ extension TimecodeField.ComponentView {
             )
             return newComponent
         }
-        
+
         // MARK: Static Methods
-        
+
         static func isDaysVisible(
             format: Timecode.StringFormat,
             limit: Timecode.UpperLimit
         ) -> Bool {
             limit == .max100Days || format.contains(.alwaysShowDays)
         }
-        
+
         static func isSubFramesVisible(format: Timecode.StringFormat) -> Bool {
             format.contains(.showSubFrames)
         }

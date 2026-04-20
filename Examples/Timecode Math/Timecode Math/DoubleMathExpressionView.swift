@@ -1,27 +1,27 @@
 //
 //  DoubleMathExpressionView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct DoubleMathExpressionView: View {
     var operation: MathOperation
     @TimecodeState var lhs: Timecode
     @State var rhs: Double
-    
+
     @TimecodeState private var result: Timecode
-    
+
     init(operation: MathOperation, lhs: Timecode, rhs: Double) {
         self.operation = operation
         self.rhs = rhs
         self.lhs = lhs
         result = operation.result(lhs: lhs, rhs: rhs)
     }
-    
+
     var body: some View {
         LabeledContent("") {
             Grid(alignment: .trailing) {
@@ -39,7 +39,9 @@ struct DoubleMathExpressionView: View {
                         .labelsHidden()
                 }
                 GridRow {
-                    Rectangle().fill(.primary).frame(height: 2)
+                    Rectangle()
+                        .fill(.primary)
+                        .frame(height: 2)
                         .gridCellColumns(2)
                         .gridCellUnsizedAxes([.horizontal, .vertical])
                 }
@@ -51,7 +53,7 @@ struct DoubleMathExpressionView: View {
                 }
             }
         }
-        
+
         .onChange(of: rhs, initial: true) { _, _ in
             result = operation.result(lhs: lhs, rhs: rhs)
         }
@@ -65,7 +67,7 @@ extension DoubleMathExpressionView {
     enum MathOperation {
         case multiply
         case divide
-        
+
         var image: Image {
             switch self {
             case .multiply:
@@ -74,7 +76,7 @@ extension DoubleMathExpressionView {
                 Image(systemName: "divide")
             }
         }
-        
+
         func result(lhs: Timecode, rhs: Double) -> Timecode {
             switch self {
             case .multiply:

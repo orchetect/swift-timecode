@@ -1,7 +1,7 @@
 //
 //  Errors.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -11,7 +11,7 @@ extension Timecode {
         case invalid
         case outOfBounds
     }
-    
+
     public enum StringParseError: Error {
         case malformed
     }

@@ -38,12 +38,12 @@ extension Decimal {
         var initialDecimal = self
         var roundedDecimal = Decimal()
         let decimalPlaces = max(0, decimalPlaces)
-        
+
         NSDecimalRound(&roundedDecimal, &initialDecimal, decimalPlaces, rule)
-        
+
         return roundedDecimal
     }
-    
+
     /// Replaces this value by rounding it to `decimalPlaces` number of decimal places using rounding `rule`.
     @_disfavoredOverload
     package mutating func round(
@@ -52,26 +52,26 @@ extension Decimal {
     ) {
         self = rounded(rule, decimalPlaces: decimalPlaces)
     }
-    
+
     /// Replaces this value by truncating it to `decimalPlaces` number of decimal places.
     @_disfavoredOverload
     package mutating func truncate(decimalPlaces: Int) {
         self = truncated(decimalPlaces: decimalPlaces)
     }
-    
+
     /// Truncates decimal places to `decimalPlaces` number of decimal places.
     @_disfavoredOverload
     package func truncated(decimalPlaces: Int) -> Self {
         var initialDecimal = self
         var roundedDecimal = Decimal()
         let decimalPlaces = max(0, decimalPlaces)
-        
+
         if self > 0 {
             NSDecimalRound(&roundedDecimal, &initialDecimal, decimalPlaces, .down)
         } else {
             NSDecimalRound(&roundedDecimal, &initialDecimal, decimalPlaces, .up)
         }
-        
+
         return roundedDecimal
     }
 }
@@ -85,7 +85,7 @@ extension Decimal {
         let fraction = self - (integral * rhs)
         return fraction
     }
-    
+
     /// Similar to `Int.quotientAndRemainder(dividingBy:)` from the standard Swift library.
     @_disfavoredOverload
     package func quotientAndRemainder(dividingBy rhs: Self) -> (quotient: Self, remainder: Self) {
@@ -94,7 +94,7 @@ extension Decimal {
         let fraction = self - (integral * rhs)
         return (quotient: integral, remainder: fraction)
     }
-    
+
     /// Returns both integral part and fractional part.
     ///
     /// - Note: This method is more computationally efficient than calling both `.integral` and .`fraction` properties separately unless you
@@ -105,13 +105,13 @@ extension Decimal {
         let fraction = self - integral
         return (integral: integral, fraction: fraction)
     }
-    
+
     /// Returns the integral part (digits before the decimal point)
     @_disfavoredOverload
     package var integral: Self {
         integralAndFraction.integral
     }
-    
+
     /// Returns the fractional part (digits after the decimal point)
     ///
     /// Note: this can result in a non-trivial loss of precision for the fractional part.
@@ -129,11 +129,11 @@ extension Decimal {
         // not sure if some locales will localize the number differently than expected.
         // on English systems the `significand` string interpolation produces
         // a string of digits with no thousands separators or other characters.
-        
+
         if abs(self) <= 1 { return 0 }
         return "\(abs(significand))".count + exponent
     }
-    
+
     /// **OTCore:**
     /// Returns the number of digit places of the ``fraction`` portion (right of the decimal).
     package var fractionDigitPlaces: Int {

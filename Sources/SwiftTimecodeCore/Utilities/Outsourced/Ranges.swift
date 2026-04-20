@@ -22,7 +22,7 @@ extension Comparable {
     package func clamped(to limits: ClosedRange<Self>) -> Self {
         min(max(self, limits.lowerBound), limits.upperBound)
     }
-    
+
     // ie: 5.clamped(to: 300...)
     // ie: 5.0.clamped(to: 300.00...)
     // ie: "a".clamped(to: "b"...)
@@ -31,7 +31,7 @@ extension Comparable {
     package func clamped(to limits: PartialRangeFrom<Self>) -> Self {
         max(self, limits.lowerBound)
     }
-    
+
     // ie: 400.clamped(to: ...300)
     // ie: 400.0.clamped(to: ...300.0)
     // ie: "k".clamped(to: ..."h")
@@ -40,7 +40,7 @@ extension Comparable {
     package func clamped(to limits: PartialRangeThrough<Self>) -> Self {
         min(self, limits.upperBound)
     }
-    
+
     // ie: 5.0.clamped(to: 7.0..<10.0)
     // not a good idea to implement this -- floating point numbers don't make sense in a ..< type range
     // because would the max of 7.0..<10.0 be 9.999999999...? It can't be 10.0.

@@ -1,7 +1,7 @@
 //
 //  OpenPanelView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if os(macOS)
@@ -15,37 +15,37 @@ import SwiftUI
 ///
 /// Updated 2026-Apr-8
 struct OpenPanelView<Content: View>: View {
-    @Binding public var isPresented: Bool
-    public let setup: ((_ panel: NSOpenPanel) -> Void)?
-    public let completion: (_ urls: [URL]?) -> Void
-    public let content: Content
-    
+    @Binding var isPresented: Bool
+    let setup: ((_ panel: NSOpenPanel) -> Void)?
+    let completion: (_ urls: [URL]?) -> Void
+    let content: Content
+
     @State private var panel: NSOpenPanel?
-    
-    public var body: some View {
+
+    var body: some View {
         content
             .onChange(of: isPresented, initial: true) { oldValue, newValue in
                 Task { await newValue ? present() : close() }
             }
     }
-    
+
     private func present() async {
         let newPanel = NSOpenPanel()
         setup?(newPanel)
         panel = newPanel
-        
+
         var selectedURLs: [URL]?
-        
+
         isPresented = true
         if newPanel.runModal() == .OK {
             selectedURLs = newPanel.urls
         }
-        
+
         completion(selectedURLs)
         panel = nil
         isPresented = false
     }
-    
+
     private func close() async {
         panel?.cancelOperation(nil)
         panel = nil
@@ -85,17 +85,17 @@ extension NSOpenPanel {
         canChooseDirectories = allowFiles
         canChooseFiles = allowFiles
     }
-    
+
     /// Presents the dialog modally asynchronously and calls a completion handler upon the user closing the dialog.
     func present(
         completion: (_ urls: [URL]?) -> Void
     ) {
         var selectedURLs: [URL]?
-        
+
         if runModal() == .OK {
             selectedURLs = urls
         }
-        
+
         completion(selectedURLs)
     }
 }

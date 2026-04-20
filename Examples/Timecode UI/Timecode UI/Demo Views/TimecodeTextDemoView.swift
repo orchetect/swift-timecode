@@ -1,12 +1,12 @@
 //
 //  TimecodeTextDemoView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecode
 import SwiftTimecodeUI
+import SwiftUI
 
 struct TimecodeTextDemoView: View {
     var body: some View {
@@ -17,7 +17,7 @@ struct TimecodeTextDemoView: View {
                 TimecodeTextView()
                 TimecodeTextView()
             }
-            
+
             info
                 .padding([.bottom])
         }
@@ -25,7 +25,7 @@ struct TimecodeTextDemoView: View {
         TimecodeTextView()
         #endif
     }
-    
+
     private var info: some View {
         Form {
             Section("Info") {
@@ -45,7 +45,9 @@ struct TimecodeTextDemoView: View {
                     }
                     GridRow {
                         Image(systemName: "lightbulb.fill")
-                        Text("Note that to allow drag & drop or copy & paste, your app must export Timecode's UT Type by adding it to the Info.plist. See swift-timecode documentation for more details.")
+                        Text(
+                            "Note that to allow drag & drop or copy & paste, your app must export Timecode's UT Type by adding it to the Info.plist. See swift-timecode documentation for more details."
+                        )
                     }
                 }
             }
@@ -60,7 +62,7 @@ struct TimecodeTextView: View {
     @State var frameRate: TimecodeFrameRate = .fps24
     @State var subFramesBase: Timecode.SubFramesBase = .max80SubFrames
     @State var upperLimit: Timecode.UpperLimit = .max24Hours
-    
+
     @State private var isEnabled: Bool = true
     @State private var timecodeFormat: Timecode.StringFormat = [.showSubFrames]
     @State private var defaultStyle: DefaultStyle = .default
@@ -68,7 +70,7 @@ struct TimecodeTextView: View {
     @State private var validationStyle: ValidationStyle = .red
     @State private var subFramesStyle: SubFramesStyle = .default
     @State private var subFramesScale: TextScale = .default
-    
+
     var body: some View {
         VStack(spacing: 20) {
             TimecodeText(timecode)
@@ -80,7 +82,7 @@ struct TimecodeTextView: View {
                 .font(.largeTitle)
                 .disabled(!isEnabled)
                 .focusable(isEnabled) // allows selection for Cmd+C (copy) / Cmd+P (paste)
-                
+
                 #if os(macOS)
                 .copyable([timecode])
                 .pasteDestination(for: Timecode.self) { items in
@@ -91,16 +93,16 @@ struct TimecodeTextView: View {
                     timecode = item
                 }
                 #endif
-                
+
                 .draggable(timecode)
                 .dropDestination(for: Timecode.self) { items, location in
                     guard let item = items.first else { return false }
                     timecode = item
                     return true
                 }
-            
+
             Divider()
-            
+
             Form {
                 propertiesSection
                 settingsSection
@@ -110,7 +112,7 @@ struct TimecodeTextView: View {
         }
         .padding()
     }
-    
+
     private var propertiesSection: some View {
         TimecodePropertiesSectionView(
             frameRate: $frameRate,
@@ -118,7 +120,7 @@ struct TimecodeTextView: View {
             upperLimit: $upperLimit
         )
     }
-    
+
     private var settingsSection: some View {
         Section("Settings") {
             Picker("Default Color", selection: $defaultStyle) {
@@ -157,15 +159,15 @@ struct TimecodeTextView: View {
             }
         }
     }
-    
+
     private var timecodeSection: some View {
         GenerateRandomTimecodeSectionView { randomTimecode in
             timecode = randomTimecode
         }
     }
-    
+
     // MARK: - Proxies
-    
+
     private var timecode: Timecode {
         get {
             Timecode(
@@ -181,7 +183,7 @@ struct TimecodeTextView: View {
             timecodeProperties = newValue.properties
         }
     }
-    
+
     private var timecodeProperties: Timecode.Properties {
         get {
             Timecode.Properties(
@@ -205,9 +207,11 @@ extension TimecodeTextView {
         case `default`
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -215,7 +219,7 @@ extension TimecodeTextView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -224,16 +228,18 @@ extension TimecodeTextView {
             }
         }
     }
-    
+
     private enum SubFramesStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -243,7 +249,7 @@ extension TimecodeTextView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -254,20 +260,22 @@ extension TimecodeTextView {
             }
         }
     }
-    
+
     private enum TextScale: String, CaseIterable, Identifiable {
         case `default`
         case secondary
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
             case .secondary: "Secondary"
             }
         }
-        
+
         var scale: Text.Scale {
             switch self {
             case .default: .default
@@ -275,16 +283,18 @@ extension TimecodeTextView {
             }
         }
     }
-    
+
     private enum SeparatorStyle: Int, CaseIterable, Identifiable {
         case `default`
         case primary
         case secondary
         case blue
         case orange
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .default: "Default"
@@ -294,7 +304,7 @@ extension TimecodeTextView {
             case .orange: "Orange"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .default: nil
@@ -305,14 +315,16 @@ extension TimecodeTextView {
             }
         }
     }
-    
+
     private enum ValidationStyle: Int, CaseIterable, Identifiable {
         case none
         case red
         case purple
-        
-        var id: RawValue { rawValue }
-        
+
+        var id: RawValue {
+            rawValue
+        }
+
         var name: String {
             switch self {
             case .none: "None"
@@ -320,7 +332,7 @@ extension TimecodeTextView {
             case .purple: "Purple"
             }
         }
-        
+
         var color: Color? {
             switch self {
             case .none: nil

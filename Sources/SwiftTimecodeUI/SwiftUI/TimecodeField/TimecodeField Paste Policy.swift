@@ -1,18 +1,18 @@
 //
 //  TimecodeField Paste Policy.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField {
     // MARK: - Internal Method (Called internally by TimecodeField)
-    
+
     /// Determines whether timecode pasted from the pasteboard by the user is appropriate to accept in the current
     /// field context.
     ///
@@ -40,7 +40,7 @@ extension TimecodeField {
         guard let pastedTimecode = try? pasteResult.get() else {
             return nil
         }
-        
+
         return validate(
             pastedTimecode: pastedTimecode,
             localTimecodeProperties: localTimecodeProperties,
@@ -49,9 +49,9 @@ extension TimecodeField {
             inputStyle: inputStyle
         )
     }
-    
+
     // MARK: - Public Utility Method
-    
+
     /// Determines whether timecode pasted from the pasteboard by the user is appropriate to accept in the current
     /// field context.
     ///
@@ -83,7 +83,7 @@ extension TimecodeField {
         inputStyle: InputStyle = .autoAdvance
     ) -> Timecode? {
         var pastedTimecode = pastedTimecode
-        
+
         switch pastePolicy {
         case .preserveLocalProperties:
             // ensure that the newly pasted timecode is compatible with local properties.
@@ -91,7 +91,7 @@ extension TimecodeField {
             else {
                 return nil
             }
-            
+
             switch validationPolicy {
             case .allowInvalid:
                 // other properties (subframes base, upper limit) can be ignored at this stage.
@@ -105,17 +105,18 @@ extension TimecodeField {
                 }
                 pastedTimecode = transplantedTimecode
             }
-            
+
         case .allowNewProperties:
             // indiscriminately accept new timecode's properties.
             // at this stage we don't care if the timecode is valid or not.
             break
+
         case .discardProperties:
             // ensure Timecode instance has identical local properties.
             // at this stage we don't care if the timecode is valid or not.
             pastedTimecode.properties = localTimecodeProperties
         }
-        
+
         return _validate(
             pastedTimecode: pastedTimecode,
             localTimecodeProperties: localTimecodeProperties,
@@ -124,9 +125,9 @@ extension TimecodeField {
             inputStyle: inputStyle
         )
     }
-    
+
     // MARK: - Private Chaining Handler
-    
+
     nonisolated private static func _validate(
         pastedTimecode: Timecode,
         localTimecodeProperties: Timecode.Properties,
@@ -143,7 +144,7 @@ extension TimecodeField {
                 return nil
             }
         }
-        
+
         var timecodeProperties = localTimecodeProperties
         switch pastePolicy {
         case .allowNewProperties:
@@ -153,7 +154,7 @@ extension TimecodeField {
         case .preserveLocalProperties:
             break
         }
-        
+
         // validate against input style
         switch inputStyle {
         case .autoAdvance, .continuousWithinComponent:
@@ -168,10 +169,10 @@ extension TimecodeField {
         case .unbounded:
             break
         }
-        
+
         return pastedTimecode
     }
-    
+
     public enum PasteValidationResult: Equatable, Hashable, Sendable {
         /// The input timecode passed validation and is allowed to be pasted.
         ///
@@ -182,12 +183,12 @@ extension TimecodeField {
         /// > supplied to the ``TimecodeField/validate(pastedTimecode:localTimecodeProperties:pastePolicy:validationPolicy:inputStyle:)``
         /// > method.
         case allowed(_ newTimecode: Timecode)
-        
+
         /// The pasted timecode failed validation based on the supplied policies.
         case rejected(
             _ rejectedUserAction: InputRejectionFeedback.UserAction
         )
     }
 }
-    
+
 #endif

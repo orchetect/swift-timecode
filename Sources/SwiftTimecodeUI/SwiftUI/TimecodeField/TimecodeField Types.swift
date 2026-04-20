@@ -1,13 +1,13 @@
 //
 //  TimecodeField Types.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 // MARK: - FieldAction
 
@@ -22,11 +22,11 @@ extension TimecodeField {
         /// Removes focus from the timecode field.
         /// Passes the key event through the receiver chain and does not capture it.
         case endEditing
-        
+
         /// Advances the focus to the next timecode component.
         /// Passes the key event through the receiver chain and does not capture it.
         case focusNextComponent
-        
+
         /// Resets component focus to the specified component.
         /// If `nil`, focus is reset to the first visible component.
         /// Captures the key event and does not pass it through to the receiver chain.
@@ -36,7 +36,9 @@ extension TimecodeField {
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.FieldAction: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: RawValue {
+        rawValue
+    }
 }
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
@@ -48,7 +50,7 @@ extension TimecodeField.FieldAction: CaseIterable {
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.FieldAction: RawRepresentable {
     public typealias RawValue = String
-    
+
     public init?(rawValue: String) {
         guard let match = Self.allCases.first(where: { $0.rawValue == rawValue })
         else {
@@ -56,7 +58,7 @@ extension TimecodeField.FieldAction: RawRepresentable {
         }
         self = match
     }
-    
+
     public var rawValue: String {
         switch self {
         case .endEditing:
@@ -87,14 +89,14 @@ extension TimecodeField {
         /// All components will auto-advance except subframes will not auto-advance back around to the first timecode
         /// component.
         case autoAdvance
-        
+
         /// Numeric entry remains continuous within the currently-focused timecode component.
         ///
         /// Digit places will populate normally until all available digit places are occupied for the currently-focused
         /// timecode component, after which the most-significant digit will be discarded to accommodate the newly
         /// entered digit.
         case continuousWithinComponent
-        
+
         /// Unbounded timecode component values are allowed.
         /// Entry will accept arbitrarily large numbers for all timecode components.
         ///
@@ -105,7 +107,9 @@ extension TimecodeField {
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.InputStyle: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: RawValue {
+        rawValue
+    }
 }
 
 // MARK: - InputWrapping
@@ -128,7 +132,7 @@ extension TimecodeField {
         /// - use the Delete (backspace) key twice to delete the contents of the component and then move focus to the
         ///   previous component, repeating as desired
         case noWrap
-        
+
         /// When the timecode field advances focus to the next timecode component, the focus should wrap around to the
         /// first visible timecode component when advancing focus from the last visible timecode component.
         ///
@@ -139,7 +143,9 @@ extension TimecodeField {
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.InputWrapping: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: RawValue {
+        rawValue
+    }
 }
 
 // MARK: - PastePolicy
@@ -151,8 +157,9 @@ extension TimecodeField {
         /// Only allow pasted timecode that matches local properties can conform to local properties.
         /// Validation policy set by ``SwiftUICore/View/timecodeFieldValidationPolicy(_:)`` is still also applied.
         case preserveLocalProperties
-        
-        // /// Only allow pasted timecode that strictly complies with the validation rules, converting from different frame rate if necessary.
+
+        // /// Only allow pasted timecode that strictly complies with the validation rules, converting from different frame rate if
+        // /necessary.
         // ///
         // /// This may result in the timecode component values themselves changing, but the timecode will be converted to the
         // /// corresponding timecode in the local frame rate such that it equals the same real wall-clock elapsed time.
@@ -161,7 +168,7 @@ extension TimecodeField {
         // /// - In the event rich timecode is pasted that includes properties (frame rate, subframes base, upper limit), the
         // ///   timecode will be converted to the local properties.
         // case convertIfNeeded
-        
+
         /// Allow pasted timecode to overwrite local timecode properties if it contains properties.
         /// Validation policy set by ``SwiftUICore/View/timecodeFieldValidationPolicy(_:)`` is still also applied.
         ///
@@ -172,7 +179,7 @@ extension TimecodeField {
         ///   context is maintained. However, if local context needs to remain stable, it is recommended to use
         ///   ``preserveLocalProperties`` instead.
         case allowNewProperties
-        
+
         /// Pasted timecode will paste component values only, discarding the pasted timecode properties, if any.
         ///
         /// > Note:
@@ -188,7 +195,9 @@ extension TimecodeField {
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.PastePolicy: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: RawValue {
+        rawValue
+    }
 }
 
 // MARK: - RejectedInputFeedback
@@ -205,11 +214,11 @@ extension TimecodeField {
     public enum InputRejectionFeedback: Sendable {
         /// Error feedback is based on invalid input based on the field's validation rule.
         case validationBased(animation: RejectionAnimation? = .shake)
-        
+
         /// Error feedback is based on invalid input based on the field's validation rule as well as all undefined keys.
         /// Use this if you know that none of the field's parent views
         case validationBasedAndUndefinedKeys(animation: RejectionAnimation? = .shake)
-        
+
         /// Custom error feedback closure.
         ///
         /// Note that this closure is only called in the event of rejected input due to violation of the timecode
@@ -226,30 +235,28 @@ extension TimecodeField.InputRejectionFeedback {
     /// Note that this closure is only called in the event of rejected input due to violation of the timecode
     /// field's validation rule or if the user presses a key that is not designated to be handled by the timecode
     /// field.
-    public typealias CustomInputRejectionFeedback = @Sendable (
-        _ rejectedUserAction: UserAction
-    ) -> Void
-    
+    public typealias CustomInputRejectionFeedback = @Sendable (_ rejectedUserAction: UserAction) -> Void
+
     public enum UserAction: Equatable, Hashable, Sendable {
         /// User keyboard input was rejected.
         case keyRejected(component: Timecode.Component, key: KeyEquivalent, reason: Reason)
-        
+
         /// User pasted pasteboard contents but it was rejected.
         case pasteRejected
     }
-    
+
     public enum Reason: String, Equatable, Hashable, Sendable, CaseIterable {
         /// Rejected because accepting the key would have violated the validation policy.
         case invalid
-        
+
         /// Rejected because the key is not defined by the timecode field.
         case undefinedKey
     }
-    
+
     public enum RejectionAnimation: String, Equatable, Hashable, Sendable, CaseIterable {
         case shake
         case pulse
-        
+
         /// Returns the best default for the current platform.
         static let platformDefault: Self = {
             #if os(macOS)
@@ -259,7 +266,7 @@ extension TimecodeField.InputRejectionFeedback {
             #endif
         }()
     }
-    
+
     /// Returns `true` if the case specifies the feedback should be animated.
     /// The ``custom(action:)`` case always returns `nil`.
     var rejectionAnimation: RejectionAnimation? {
@@ -272,7 +279,7 @@ extension TimecodeField.InputRejectionFeedback {
             nil
         }
     }
-    
+
     /// Returns the best default for the current platform.
     static let platformDefault: Self = .validationBased(animation: .platformDefault)
 }
@@ -290,7 +297,7 @@ extension TimecodeField {
         ///
         /// This is useful for testing purposes or non-standard timecode entry.
         case allowInvalid
-        
+
         /// Strictly enforce valid timecode component values at the given frame rate, subframes base, and upper limit
         /// properties.
         /// Invalid component values are rejected during user input and will revert to a valid value.
@@ -305,7 +312,9 @@ extension TimecodeField {
 
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
 extension TimecodeField.ValidationPolicy: Identifiable {
-    public var id: RawValue { rawValue }
+    public var id: RawValue {
+        rawValue
+    }
 }
 
 #endif

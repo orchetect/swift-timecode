@@ -1,1042 +1,1043 @@
 //
 //  Timecode Math Public Tests.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import SwiftTimecodeCore // do NOT import as @testable in this file
 import Testing
 
-@Suite struct Timecode_Math_Public_Tests {
+@Suite
+struct Timecode_Math_Public_Tests {
     @Test
-    func addTimecode() async throws {
+    func addTimecode() throws {
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
-        
+
         let tc1 = try Timecode(
             .components(h: 01, m: 02, s: 03, f: 04),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(tc1)
         #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
-        
+
         try tc.add(tc1)
         #expect(tc.components == Timecode.Components(h: 02, m: 04, s: 06, f: 08))
     }
-    
+
     @Test
-    func addTimecodeByClamping() async throws {
+    func addTimecodeByClamping() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 15, m: 02, s: 03, f: 04),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(tc1, by: .clamping)
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
-    
+
     @Test
-    func addTimecodeByWrapping() async throws {
+    func addTimecodeByWrapping() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 15, m: 02, s: 03, f: 04),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(tc1, by: .wrapping)
         #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
-        
+
         try tc.add(tc1, by: .wrapping)
         #expect(tc.components == Timecode.Components(h: 16, m: 04, s: 06, f: 08))
     }
-    
+
     @Test
-    func addDifferingFrameRates() async throws {
+    func addDifferingFrameRates() throws {
         var tc = try Timecode(.components(h: 1), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
-        
+
         try tc.add(tc1)
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 03, f: 15))
     }
-    
+
     @Test
-    func addingTimecode() async throws {
+    func addingTimecode() throws {
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
-        
+
         let tc1 = try Timecode(
             .components(h: 01, m: 02, s: 03, f: 04),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc = try tc.adding(tc1)
         #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
-        
+
         tc = try tc.adding(tc1)
         #expect(tc.components == Timecode.Components(h: 02, m: 04, s: 06, f: 08))
     }
-    
+
     @Test
-    func addingTimecodeByClamping() async throws {
+    func addingTimecodeByClamping() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 15, m: 02, s: 03, f: 04),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.adding(tc1, by: .clamping)
         #expect(tc2.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
-    
+
     @Test
-    func addingTimecodeByWrapping() async throws {
+    func addingTimecodeByWrapping() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 15, m: 02, s: 03, f: 04),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.adding(tc1, by: .wrapping)
         #expect(tc2.components == Timecode.Components(h: 01, m: 02, s: 03, f: 04))
-        
+
         let tc3 = try tc2.adding(tc1, by: .wrapping)
         #expect(tc3.components == Timecode.Components(h: 16, m: 04, s: 06, f: 08))
     }
-    
+
     @Test
-    func addingDifferingFrameRates() async throws {
+    func addingDifferingFrameRates() throws {
         let tc = try Timecode(.components(h: 1), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
-        
+
         let tc2 = try tc.adding(tc1)
         #expect(tc2.components == Timecode.Components(h: 02, m: 00, s: 03, f: 15))
     }
-    
+
     @Test
-    func subtractTimecode() async throws {
+    func subtractTimecode() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 01),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(tc1)
         #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
-        
+
         try tc.subtract(tc1)
         #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
-    
+
     @Test
-    func subtractTimecodeByClamping() async throws {
+    func subtractTimecodeByClamping() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 06, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(tc1, by: .clamping)
         #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         try tc.subtract(tc1, by: .clamping)
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
-    
+
     @Test
-    func subtractTimecodeByWrapping() async throws {
+    func subtractTimecodeByWrapping() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 06, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(tc1, by: .wrapping)
         #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         try tc.subtract(tc1, by: .wrapping)
         #expect(tc.components == Timecode.Components(h: 22, m: 00, s: 00, f: 00))
     }
-    
+
     @Test
-    func subtractDifferingFrameRates() async throws {
+    func subtractDifferingFrameRates() throws {
         var tc = try Timecode(.components(h: 2), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
-        
+
         try tc.subtract(tc1)
         #expect(tc.components == Timecode.Components(h: 00, m: 59, s: 56, f: 10))
     }
-    
+
     @Test
-    func subtractingTimecode() async throws {
+    func subtractingTimecode() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 01),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.subtracting(tc1)
         #expect(tc2.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
-        
+
         let tc3 = try tc2.subtracting(tc1)
         #expect(tc3.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
-    
+
     @Test
-    func subtractingTimecodeByClamping() async throws {
+    func subtractingTimecodeByClamping() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 06, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.subtracting(tc1, by: .clamping)
         #expect(tc2.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         let tc3 = try tc2.subtracting(tc1, by: .clamping)
         #expect(tc3.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
-    
+
     @Test
-    func subtractingTimecodeByWrapping() async throws {
+    func subtractingTimecodeByWrapping() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc1 = try Timecode(
             .components(h: 06, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.subtracting(tc1, by: .wrapping)
         #expect(tc2.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         let tc3 = try tc2.subtracting(tc1, by: .wrapping)
         #expect(tc3.components == Timecode.Components(h: 22, m: 00, s: 00, f: 00))
     }
-    
+
     @Test
-    func subtractingDifferingFrameRates() async throws {
+    func subtractingDifferingFrameRates() throws {
         let tc = try Timecode(.components(h: 2), at: .fps25)
         let tc1 = try Timecode(.components(h: 1), at: .fps29_97) // 1:00:03:15 @ 25fps
-        
+
         let tc2 = try tc.subtracting(tc1)
         #expect(tc2.components == Timecode.Components(h: 00, m: 59, s: 56, f: 10))
     }
-    
+
     @Test
-    func addTimecodeSourceValue() async throws {
+    func addTimecodeSourceValue() throws {
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
-        
+
         try tc.add(.components(h: 1))
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
-        
+
         try tc.add(.string("01:00:00:00"))
         #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
     }
-    
+
     /// Just test one of the validation rules to make sure they work.
     @Test
-    func addTimecodeSourceValueByClamping() async throws {
+    func addTimecodeSourceValueByClamping() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(.components(h: 10), by: .clamping)
         #expect(tc.components == Timecode.Components(h: 20, m: 00, s: 00, f: 00))
-        
+
         try tc.add(.string("10:00:00:00"), by: .clamping)
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
-    
+
     @Test
-    func addingTimecodeSourceValue() async throws {
+    func addingTimecodeSourceValue() throws {
         let tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
-        
+
         let tc2 = try tc.adding(.components(h: 1))
         #expect(tc2.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
-        
+
         let tc3 = try tc2.adding(.string("01:00:00:00"))
         #expect(tc3.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
     }
-    
+
     /// Just test one of the validation rules to make sure they work.
     @Test
-    func addingTimecodeSourceValueByClamping() async throws {
+    func addingTimecodeSourceValueByClamping() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.adding(.components(h: 10), by: .clamping)
         #expect(tc2.components == Timecode.Components(h: 20, m: 00, s: 00, f: 00))
-        
+
         let tc3 = try tc2.adding(.string("10:00:00:00"), by: .clamping)
         #expect(tc3.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 99))
     }
-    
+
     @Test
-    func subtractTimecodeSourceValue() async throws {
+    func subtractTimecodeSourceValue() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(.components(f: 1))
         #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
-        
+
         try tc.subtract(.string("00:00:00:01"))
         #expect(tc.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
-    
+
     /// Just test one of the validation rules to make sure they work.
     @Test
-    func subtractTimecodeSourceValueByClamping() async throws {
+    func subtractTimecodeSourceValueByClamping() throws {
         var tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(.components(h: 6), by: .clamping)
         #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         try tc.subtract(.string("06:00:00:00"), by: .clamping)
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
-    
+
     @Test
-    func subtractingTimecodeSourceValue() async throws {
+    func subtractingTimecodeSourceValue() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.subtracting(.components(f: 1))
         #expect(tc2.components == Timecode.Components(h: 09, m: 59, s: 59, f: 23))
-        
+
         let tc3 = try tc2.subtracting(.string("00:00:00:01"))
         #expect(tc3.components == Timecode.Components(h: 09, m: 59, s: 59, f: 22))
     }
-    
+
     /// Just test one of the validation rules to make sure they work.
     @Test
-    func subtractingTimecodeSourceValueByClamping() async throws {
+    func subtractingTimecodeSourceValueByClamping() throws {
         let tc = try Timecode(
             .components(h: 10, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try tc.subtracting(.components(h: 06), by: .clamping)
         #expect(tc2.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         let tc3 = try tc2.subtracting(.string("06:00:00:00"), by: .clamping)
         #expect(tc3.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
     }
-    
+
     @Test
-    func add_and_Subtract_Components_Methods() async throws {
+    func add_and_Subtract_Components_Methods() throws {
         // .add / .subtract methods
-        
+
         var tc = Timecode(.zero, at: .fps23_976, limit: .max24Hours)
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 23))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 23))
-        
+
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 01))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(h: 01, m: 15, s: 30, f: 10))
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 15, s: 30, f: 10))
-        
+
         try tc.add(Timecode.Components(h: 01, m: 15, s: 30, f: 10))
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 31, s: 00, f: 20))
-        
+
         #expect(throws: (any Error).self) { try tc.add(Timecode.Components(h: 23, m: 15, s: 30, f: 10)) }
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 31, s: 00, f: 20)) // unchanged value
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         #expect(throws: (any Error).self) { try tc.subtract(Timecode.Components(h: 02, m: 31, s: 00, f: 20)) }
-        
+
         tc = try Timecode(
             .components(h: 23, m: 59, s: 59, f: 23),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(Timecode.Components(h: 23, m: 59, s: 59, f: 23))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 23, m: 59, s: 59, f: 23),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         #expect(throws: (any Error).self) { try tc.subtract(Timecode.Components(h: 23, m: 59, s: 59, f: 24)) } // 1 frame too many
-        
+
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23)) // unchanged value
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(f: 24)) // roll up to 1 sec
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(s: 60)) // roll up to 1 min
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 01, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(m: 60)) // roll up to 1 hr
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(d: 0, h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max100Days
         )
-        
+
         try tc.add(Timecode.Components(h: 24)) // roll up to 1 day
-        
+
         #expect(tc.components == Timecode.Components(d: 01, h: 00, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 2_073_599))
-        
+
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23))
-        
+
         tc = try Timecode(
             .components(h: 23, m: 59, s: 59, f: 23),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.subtract(Timecode.Components(h: 00, m: 00, s: 00, f: 2_073_599))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
-        
+
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 200))
-        
+
         try tc.subtract(Timecode.Components(h: 00, m: 00, s: 00, f: 199))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 01))
-        
+
         // clamping
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             base: .max80SubFrames,
             limit: .max24Hours
         )
-        
+
         tc.add(Timecode.Components(h: 25), by: .clamping)
-        
+
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: 79))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.subtract(Timecode.Components(h: 4), by: .clamping)
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
-        
+
         // wrapping
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.add(Timecode.Components(h: 25), by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.add(Timecode.Components(f: -1), by: .wrapping) // add negative number
-        
+
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.subtract(Timecode.Components(h: 4), by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 20, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.subtract(Timecode.Components(h: -4), by: .wrapping) // subtract negative number
-        
+
         #expect(tc.components == Timecode.Components(h: 04, m: 00, s: 00, f: 00))
-        
+
         // drop rates
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 29))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 29))
-        
+
         try tc.add(Timecode.Components(h: 00, m: 00, s: 00, f: 01))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(m: 60)) // roll up to 1 hr
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
-        
+
         try tc = Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         try tc.add(Timecode.Components(f: 30)) // roll up to 1 sec
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 01, f: 00))
-        
+
         try tc = Timecode(
             .components(h: 00, m: 00, s: 59, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         // roll up to 1 sec and 2 frames (2 dropped frames every minute except every 10th minute)
         try tc.add(Timecode.Components(f: 30))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 01, s: 00, f: 02))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 01, s: 00, f: 02),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         // roll up to 1 sec and 2 frames (2 dropped frames every minute except every 10th minute)
         try tc.add(Timecode.Components(m: 01))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 02, s: 00, f: 02))
-        
+
         try tc.add(Timecode.Components(m: 08))
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 10, s: 00, f: 00))
     }
-    
+
     @Test
-    func adding_Components_Methods() async throws {
+    func adding_Components_Methods() throws {
         // .adding()
-        
+
         let tc = try Timecode(
             .components(h: 00, m: 10, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         // exactly
         #expect(
             try tc.adding(Timecode.Components(h: 1)).components
                 == Timecode.Components(h: 1, m: 10, s: 00, f: 00)
         )
-        
+
         #expect(
             tc.adding(Timecode.Components(h: 26), by: .wrapping).components
                 == Timecode.Components(h: 2, m: 10, s: 00, f: 00)
         )
-        
+
         #expect(
             tc.adding(Timecode.Components(h: 26), by: .clamping).components
                 == Timecode.Components(h: 23, m: 59, s: 59, f: 29, sf: tc.subFramesBase.rawValue - 1)
         )
     }
-    
+
     @Test
-    func subtracting_Components_Methods() async throws {
+    func subtracting_Components_Methods() throws {
         // .subtracting()
-        
+
         let tc = try Timecode(
             .components(h: 00, m: 10, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         // exactly
         #expect(
             try tc.subtracting(Timecode.Components(m: 5)).components
                 == Timecode.Components(h: 0, m: 05, s: 00, f: 02) // remember, we're using drop rate!
         )
     }
-    
+
     @Test
-    func multiply_and_Divide() async throws {
+    func multiply_and_Divide() throws {
         // .multiply / .divide methods
-        
+
         var tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
         try tc.multiply(2)
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         try tc.multiply(2.5)
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 30, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         try tc.multiply(2)
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         try tc.multiply(2.5)
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 30, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps29_97d,
             limit: .max24Hours
         )
-        
+
         #expect(throws: (any Error).self) { try tc.multiply(25) }
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00)) // unchanged
-        
+
         // clamping
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.multiply(25.0, by: .clamping)
-        
+
         #expect(tc.components == Timecode.Components(h: 23, m: 59, s: 59, f: 23, sf: tc.subFramesBase.rawValue - 1))
-        
+
         tc = try Timecode(
             .components(h: 00, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.divide(4, by: .clamping)
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 00, s: 00, f: 00))
-        
+
         // wrapping - multiply
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.multiply(25.0, by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.multiply(2, by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 02, m: 00, s: 00, f: 00)) // normal, no wrap
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.multiply(25, by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 00, s: 00, f: 00)) // wraps
-        
+
         // wrapping - divide
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.divide(-2, by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 23, m: 30, s: 00, f: 00))
-        
+
         tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.divide(2, by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 00, m: 30, s: 00, f: 00)) // normal, no wrap
-        
+
         tc = try Timecode(
             .components(h: 12, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.divide(-2, by: .wrapping)
-        
+
         #expect(tc.components == Timecode.Components(h: 18, m: 00, s: 00, f: 00)) // wraps
     }
-    
+
     @Test
-    func multiplying() async throws {
+    func multiplying() throws {
         // .multiplying()
-        
+
         let tc = try Timecode(
             .components(h: 04, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         // exactly
         #expect(
             try tc.multiplying(2).components
                 == Timecode.Components(h: 08, m: 00, s: 00, f: 00)
         )
     }
-    
+
     @Test
-    func dividing() async throws {
+    func dividing() throws {
         // .dividing()
-        
+
         let tc = try Timecode(
             .components(h: 04, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         // exactly
         #expect(
             try tc.dividing(2).components
                 == Timecode.Components(h: 02, m: 00, s: 00, f: 00)
         )
     }
-    
+
     @Test
-    func offset() async throws {
+    func offset() throws {
         var tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let intervalTC = try Timecode(
             .components(h: 00, m: 01, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         tc.offset(by: .init(intervalTC, .plus))
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 01, s: 00, f: 00))
-        
+
         tc.offset(by: .init(intervalTC, .plus))
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 02, s: 00, f: 00))
-        
+
         tc.offset(by: .init(intervalTC, .minus))
-        
+
         #expect(tc.components == Timecode.Components(h: 01, m: 01, s: 00, f: 00))
     }
-    
+
     @Test
-    func offsetting() async throws {
+    func offsetting() throws {
         let tc = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let intervalTC = try Timecode(
             .components(h: 00, m: 01, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         #expect(
             tc
                 .offsetting(by: .init(intervalTC, .plus))
                 .components
-                ==  Timecode.Components(h: 01, m: 01, s: 00, f: 00)
+                == Timecode.Components(h: 01, m: 01, s: 00, f: 00)
         )
     }
-    
+
     @Test
-    func intervalTo() async throws {
+    func intervalTo() throws {
         let tc1 = try Timecode(
             .components(h: 01, m: 00, s: 00, f: 00),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         let tc2 = try Timecode(
             .components(h: 01, m: 04, s: 37, f: 15),
             at: .fps23_976,
             limit: .max24Hours
         )
-        
+
         // positive
-        
+
         var interval = tc1.interval(to: tc2)
-        
+
         #expect(!interval.isNegative)
         #expect(
             try interval.flattened()
-            == Timecode(
-                .components(h: 00, m: 04, s: 37, f: 15),
-                at: .fps23_976,
-                limit: .max24Hours
-            )
+                == Timecode(
+                    .components(h: 00, m: 04, s: 37, f: 15),
+                    at: .fps23_976,
+                    limit: .max24Hours
+                )
         )
 
         // negative
-        
+
         interval = tc2.interval(to: tc1)
-        
+
         #expect(interval.isNegative) // 23:55:22:09
         #expect(
             try interval.absoluteInterval
-            == Timecode(
-                .components(h: 00, m: 04, s: 37, f: 15),
-                at: .fps23_976,
-                limit: .max24Hours
-            )
+                == Timecode(
+                    .components(h: 00, m: 04, s: 37, f: 15),
+                    at: .fps23_976,
+                    limit: .max24Hours
+                )
         )
         #expect(
             try interval.flattened()
-            == Timecode(
-                .components(h: 23, m: 55, s: 22, f: 09),
-                at: .fps23_976,
-                limit: .max24Hours
-            )
+                == Timecode(
+                    .components(h: 23, m: 55, s: 22, f: 09),
+                    at: .fps23_976,
+                    limit: .max24Hours
+                )
         )
-        
+
         // edge cases
-        
+
         let tc3 = try Timecode(
             .components(d: 1, h: 03, m: 04, s: 37, f: 15),
             at: .fps23_976,
             limit: .max100Days
         )
-        
+
         // positive, > 24 hours delta
-        
+
         interval = tc1.interval(to: tc3)
-        
+
         #expect(!interval.isNegative)
         #expect(
             try interval.absoluteInterval
-            == Timecode(
-                .components(d: 1, h: 02, m: 04, s: 37, f: 15),
-                at: .fps23_976,
-                limit: .max100Days
-            )
+                == Timecode(
+                    .components(d: 1, h: 02, m: 04, s: 37, f: 15),
+                    at: .fps23_976,
+                    limit: .max100Days
+                )
         )
         #expect(
             try interval.flattened()
-            == Timecode(
-                .components(h: 02, m: 04, s: 37, f: 15),
-                at: .fps23_976,
-                limit: .max24Hours
-            )
+                == Timecode(
+                    .components(h: 02, m: 04, s: 37, f: 15),
+                    at: .fps23_976,
+                    limit: .max24Hours
+                )
         )
-        
+
         // negative, > 24 hours delta, 100 days limit
-        
+
         interval = tc3.interval(to: tc1)
-        
+
         #expect(interval.isNegative)
         #expect(
             try interval.absoluteInterval
-            == Timecode(
-                .components(d: 1, h: 02, m: 04, s: 37, f: 15),
-                at: .fps23_976,
-                limit: .max100Days
-            )
+                == Timecode(
+                    .components(d: 1, h: 02, m: 04, s: 37, f: 15),
+                    at: .fps23_976,
+                    limit: .max100Days
+                )
         )
         #expect(
             interval.flattened()
-            == Timecode(
-                .components(d: 98, h: 21, m: 55, s: 22, f: 09),
-                at: .fps23_976,
-                limit: .max100Days,
-                by: .allowingInvalid
-            )
+                == Timecode(
+                    .components(d: 98, h: 21, m: 55, s: 22, f: 09),
+                    at: .fps23_976,
+                    limit: .max100Days,
+                    by: .allowingInvalid
+                )
         )
     }
-    
+
     @Test
-    func timecodeInterval() async throws {
+    func timecodeInterval() throws {
         let interval = try Timecode(
             .components(h: 02, m: 04, s: 37, f: 15),
             at: .fps24
         ).asInterval(.minus)
-        
+
         #expect(
             interval.flattened().components
                 == Timecode.Components(h: 21, m: 55, s: 22, f: 9)

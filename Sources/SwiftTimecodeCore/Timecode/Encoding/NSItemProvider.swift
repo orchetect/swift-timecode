@@ -1,7 +1,7 @@
 //
 //  NSItemProvider.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(UniformTypeIdentifiers) && canImport(CoreTransferable)
@@ -42,7 +42,7 @@ extension Timecode {
             propertiesForString: propertiesForString
         )
     }
-    
+
     /// Decode the content of a `NSItemProvider` collection as a new ``Timecode`` instance.
     ///
     /// Attempts to decode the item provider that contains the richest data.
@@ -76,9 +76,9 @@ extension Timecode {
         // Which means technically there will only ever be one item provider in the array, and it could either be Timecode data
         // or a plain-text timecode string. But never both.
         // In any case, we'll iterate through the array just in case as a failsafe.
-        
+
         // 1. first try Codable decode from data
-        
+
         if let provider = itemProviders.first(where: {
             $0.hasItemConformingToTypeIdentifier(UTType.timecode.identifier)
         }),
@@ -87,7 +87,7 @@ extension Timecode {
             self = timecode
             return
         }
-        
+
         // 2. then try plain-text string
         if let provider = itemProviders.first(where: {
             $0.hasItemConformingToTypeIdentifier(Self.textUTType.identifier)
@@ -98,11 +98,11 @@ extension Timecode {
             self = timecode
             return
         }
-        
+
         // 3. otherwise call completion with nothing
         throw CocoaError(.coderValueNotFound)
     }
-    
+
     /// Generates item providers for copying the ``Timecode`` instance to the pasteboard.
     ///
     /// This method generates two item providers:
@@ -126,19 +126,19 @@ extension Timecode {
     ///   and a JSON-encoded (lossless) item provider.
     public func itemProviders(stringFormat: StringFormat = .default()) -> [NSItemProvider] {
         var providers: [NSItemProvider] = []
-        
+
         // Codable data (lossless)
         if let jsonProvider = try? jsonItemProvider() {
             providers.append(jsonProvider)
         }
-        
+
         // String (lossy)
         let strProvider = stringItemProvider(stringFormat: stringFormat)
         providers.append(strProvider)
-        
+
         return providers
     }
-    
+
     /// Internal:
     /// Returns a String item provider containing a plain-text timecode string (lossy).
     func stringItemProvider(stringFormat: StringFormat = .default()) -> NSItemProvider {
@@ -146,7 +146,7 @@ extension Timecode {
         let provider = NSItemProvider(object: text as NSString)
         return provider
     }
-    
+
     /// Internal:
     /// Returns a JSON item provider containing a plain-text timecode string (lossy).
     func jsonItemProvider() throws -> NSItemProvider {
@@ -165,9 +165,7 @@ extension NSItemProvider {
     /// - Note: This discards the `Progress` instance that the internal method normally returns.
     ///         If access to this is required, use the original `loadTransferable` method directly instead.
     @MainActor
-    fileprivate func _loadTransferable<T>(
-        type transferableType: T.Type
-    ) async throws -> T where T: Transferable, T: Sendable {
+    fileprivate func _loadTransferable<T: Transferable & Sendable>(type transferableType: T.Type) async throws -> T {
         let result = await withCheckedContinuation { continuation in
             // discard the returned Progress instance
             _ = loadTransferable(type: transferableType) { result in

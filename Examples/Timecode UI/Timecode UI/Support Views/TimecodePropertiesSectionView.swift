@@ -1,17 +1,17 @@
 //
 //  TimecodePropertiesSectionView.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 struct TimecodePropertiesSectionView: View {
     @Binding var frameRate: TimecodeFrameRate
     @Binding var subFramesBase: Timecode.SubFramesBase
     @Binding var upperLimit: Timecode.UpperLimit
-    
+
     var body: some View {
         Section("Timecode Properties") {
             Picker("Frame Rate", selection: $frameRate) {

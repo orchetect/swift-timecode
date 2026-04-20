@@ -1,7 +1,7 @@
 //
 //  Utilities.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI) && !os(watchOS)
@@ -21,12 +21,12 @@ extension KeyEquivalent {
     static let num7 = Self("7")
     static let num8 = Self("8")
     static let num9 = Self("9")
-    
+
     static let period = Self(".")
     static let comma = Self(",")
     static let colon = Self(":")
     static let semicolon = Self(";")
-    
+
     static let a = Self("A")
 }
 

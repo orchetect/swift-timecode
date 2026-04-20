@@ -32,7 +32,7 @@ extension FloatingPoint {
         Musl.ceil(self)
         #endif
     }
-    
+
     /// Same as `floor()`
     /// (Functional convenience method)
     @_disfavoredOverload
@@ -90,7 +90,7 @@ extension FloatingPoint where Self: FloatingPointPowerComputable {
     package mutating func truncate(decimalPlaces: Int) {
         self = truncated(decimalPlaces: decimalPlaces)
     }
-    
+
     /// Truncates decimal places to `decimalPlaces` number of decimal places.
     ///
     /// If `decimalPlaces <= 0`, then `trunc(self)` is returned.
@@ -99,7 +99,7 @@ extension FloatingPoint where Self: FloatingPointPowerComputable {
         if decimalPlaces < 1 {
             return trunc(self)
         }
-        
+
         let offset = Self(10).power(Self(decimalPlaces))
         return trunc(self * offset) / offset
     }
@@ -114,7 +114,7 @@ extension FloatingPoint {
         let fraction = self - (integral * rhs)
         return (quotient: integral, remainder: fraction)
     }
-    
+
     /// Returns both integral part and fractional part.
     ///
     /// - Note: This method is more computationally efficient than calling both `.integral` and .`fraction` properties separately unless you
@@ -127,13 +127,13 @@ extension FloatingPoint {
         let fraction = self - integral
         return (integral: integral, fraction: fraction)
     }
-    
+
     /// Returns the integral part (digits before the decimal point)
     @_disfavoredOverload
     package var integral: Self {
         integralAndFraction.integral
     }
-    
+
     /// Returns the fractional part (digits after the decimal point)
     ///
     /// - Note: this method can result in a non-trivial loss of precision for the fractional part.

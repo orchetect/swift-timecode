@@ -1,7 +1,7 @@
 //
 //  AVAsset Timecode Write.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // AVAssetReader is unavailable on watchOS so we can't support any AVAsset operations
@@ -37,12 +37,12 @@ extension AVMutableMovie {
         // temporary asset and use AVAssetWriter.
         // AVMutableMovie does not provide enough API to author all aspects
         // of a timecode track.
-        
+
         let duration: Timecode = try await {
             if let duration { return duration }
             return try await durationTimecode()
         }()
-        
+
         let newAsset = try AVMutableMovie(
             timecodeTrackStart: startTimecode,
             duration: duration,
@@ -53,32 +53,32 @@ extension AVMutableMovie {
         else {
             throw Timecode.MediaWriteError.internalError
         }
-        
+
         // copy new track
         let mutableTracks = addMutableTracksCopyingSettings(from: [newTimecodeTrack])
         guard let targetTrack = mutableTracks.first else {
             throw Timecode.MediaWriteError.internalError
         }
-        
+
         // we have to provide on-disk data storage
         targetTrack.mediaDataStorage = try .init(data: Data())
-        
+
         try targetTrack.insertTimeRange(
             newTimecodeTrack.timeRange,
             of: newTimecodeTrack,
             at: .zero,
             copySampleData: true
         )
-        
+
         // associate with all video tracks
         let videoTracks = try? await loadTracks(withMediaType: .video)
         videoTracks?.forEach {
             $0.addTrackAssociation(to: targetTrack, type: .timecode)
         }
-        
+
         return targetTrack
     }
-    
+
     /// Removes timecode track(s) if any exist, and adds a new timecode track containing one sample
     /// (start timecode)
     /// The frame rate is derived from the `timecode` supplied.
@@ -93,12 +93,12 @@ extension AVMutableMovie {
         // remove existing timecode tracks
         let existingTimecodeTracks = try await loadTracks(withMediaType: .timecode)
         existingTimecodeTracks.forEach { removeTrack($0) }
-        
+
         let duration: Timecode = try await {
             if let duration { return duration }
             return try await durationTimecode(at: startTimecode.frameRate)
         }()
-        
+
         return try await addTimecodeTrack(
             startTimecode: startTimecode,
             duration: duration,
@@ -106,7 +106,7 @@ extension AVMutableMovie {
             fileType: outputFileType
         )
     }
-    
+
     /// Internal helper.
     /// Returns the format description of the first timecode track.
     private func _getTimecodeFormatDescription() async throws -> CMTimeCodeFormatDescription? {
@@ -115,7 +115,7 @@ extension AVMutableMovie {
             .formatDescriptions
             .first as CMTimeCodeFormatDescription? // just a typealias
     }
-    
+
     /// Internal helper:
     /// Creates a new asset with a timecode track containing one sample (start timecode).
     convenience init(
@@ -124,7 +124,8 @@ extension AVMutableMovie {
         extensions: CMFormatDescription.Extensions? = nil,
         fileType outputFileType: AVFileType
     ) throws {
-        let url = FileManager.default.temporaryDirectory
+        let url = FileManager.default
+            .temporaryDirectory
             .appendingPathComponent(UUID().uuidString)
         let writer = try AVAssetWriter(url: url, fileType: outputFileType)
         let input = AVAssetWriterInput(mediaType: .timecode, outputSettings: nil)
@@ -132,10 +133,10 @@ extension AVMutableMovie {
         writer.add(input)
         guard writer.startWriting() else { throw Timecode.MediaWriteError.internalError }
         writer.startSession(atSourceTime: .zero)
-        
+
         // prep data
         var frames = UInt32(timecodeTrackStart.frameCount.wholeFrames).bigEndian
-        
+
         // write data
         let blockBuffer = try CMBlockBuffer(length: MemoryLayout<UInt32>.size)
         // it's easier to fill empty bytes and then replace them,
@@ -145,7 +146,7 @@ extension AVMutableMovie {
             // try blockBuffer.append(buffer: framesPtr) // dealloc crash
             try blockBuffer.replaceDataBytes(with: framesPtr)
         }
-        
+
         let sampleBuffer = try CMSampleBuffer(
             dataBuffer: blockBuffer,
             formatDescription: timecodeTrackStart.cmFormatDescription(extensions: extensions),
@@ -156,7 +157,7 @@ extension AVMutableMovie {
         try sampleBuffer.makeDataReady() // needed? doesn't seem to hurt
         input.append(sampleBuffer)
         input.markAsFinished()
-        
+
         // finish
         writer.endSession(atSourceTime: duration.cmTimeValue)
         let g = DispatchGroup()
@@ -165,7 +166,7 @@ extension AVMutableMovie {
             g.leave()
         }
         g.wait()
-        
+
         // init set with data written to disk
         self.init(url: url)
     }
@@ -193,7 +194,7 @@ extension Timecode {
             extensions: extensions
         )
     }
-    
+
     /// Internal:
     /// Assembles timecode flags for use in `CMFormatDescription`
     private var _cmFormatDescriptionTimeCodeFlags: CMFormatDescription.TimeCode.Flag {

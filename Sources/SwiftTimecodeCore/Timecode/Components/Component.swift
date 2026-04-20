@@ -1,7 +1,7 @@
 //
 //  Component.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension Timecode {
@@ -24,7 +24,9 @@ extension Timecode.Component: Comparable {
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension Timecode.Component: Identifiable {
-    public var id: Self { self }
+    public var id: Self {
+        self
+    }
 }
 
 extension Timecode.Component: Sendable { }
@@ -38,14 +40,14 @@ extension Timecode.Component {
         precondition(!components.isEmpty)
         return components.first!
     }
-    
+
     /// Returns the last timecode component in sequence.
     public static func last(excluding: Set<Self> = []) -> Self {
         let components = allCases.filter { !excluding.contains($0) }
         precondition(!components.isEmpty)
         return components.last!
     }
-    
+
     /// Returns the next timecode component in sequence.
     ///
     /// - Parameters:
@@ -54,22 +56,22 @@ extension Timecode.Component {
     ///     first component.
     public func next(excluding: Set<Self> = [], wrap: Bool = true) -> Self {
         let components = Self.allCases.filter { !excluding.contains($0) }
-        
+
         precondition(!components.isEmpty)
-        
+
         guard let index = components.firstIndex(of: self) else {
             return components.first!
         }
-        
+
         let offsetIndex = index.advanced(by: 1)
-        
+
         if components.indices.contains(offsetIndex) {
             return components[offsetIndex]
         } else {
             return wrap ? components.first! : components[index]
         }
     }
-    
+
     /// Returns the previous timecode component in sequence.
     ///
     /// - Parameters:
@@ -78,15 +80,15 @@ extension Timecode.Component {
     ///     last component.
     public func previous(excluding: Set<Self> = [], wrap: Bool = true) -> Self {
         let components = Self.allCases.filter { !excluding.contains($0) }
-        
+
         precondition(!components.isEmpty)
-        
+
         guard let index = components.firstIndex(of: self) else {
             return components.last!
         }
-        
+
         let offsetIndex = index.advanced(by: -1)
-        
+
         if components.indices.contains(offsetIndex) {
             return components[offsetIndex]
         } else {
@@ -113,7 +115,7 @@ extension Timecode.Component {
         case .subFrames: base.numberOfDigits
         }
     }
-    
+
     /// Returns the name of the component as a lowerCamelCase string (identical to case name).
     public var nameLowerCamelCase: String {
         switch self {
@@ -125,7 +127,7 @@ extension Timecode.Component {
         case .subFrames: "subFrames"
         }
     }
-    
+
     /// Returns the name of the component as a capitalized string.
     public var nameCapitalized: String {
         switch self {
@@ -137,7 +139,7 @@ extension Timecode.Component {
         case .subFrames: "SubFrames"
         }
     }
-    
+
     /// Returns the name of the component as a lowercase string.
     public var nameLowercased: String {
         switch self {

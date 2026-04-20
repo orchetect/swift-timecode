@@ -1,7 +1,7 @@
 //
 //  Fraction.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 import Foundation
@@ -12,40 +12,40 @@ import Foundation
 public struct Fraction {
     public let numerator: Int
     public let denominator: Int
-    
+
     private let _isReduced: Bool?
-    
+
     /// Returns `true` if the fraction is reduced to its simplest form and can not be reduced any
     /// further.
     public var isReduced: Bool {
         if let _isReduced, _isReduced { return _isReduced }
         let reduced = reduced()
-        
+
         return isIdentical(to: reduced)
     }
-    
+
     /// Returns `true` if one operand of the fraction is negative.
     public var isNegative: Bool {
         let n = numerator.signum() == -1
         let d = denominator.signum() == -1
         return (n && !d) || (!n && d)
     }
-    
+
     /// Returns `true` if the evaluation of the fraction results in a whole integer with
     /// no fractional component (trailing decimal digits).
     public var isWholeInteger: Bool {
         doubleValue.fraction.isZero
     }
-    
+
     // MARK: - Init
-    
+
     /// Initialize with literal values.
     public init(_ numerator: Int, _ denominator: Int) {
         self.numerator = numerator
         self.denominator = denominator
         _isReduced = nil
     }
-    
+
     /// Initialize by reducing and normalizing the fraction.
     public init(reducing numerator: Int, _ denominator: Int) {
         let reduced = reduce(n: numerator, d: denominator)
@@ -53,7 +53,7 @@ public struct Fraction {
         self.denominator = reduced.d
         _isReduced = true
     }
-    
+
     /// Initialize by converting a floating-point number to a given precision (number of decimal
     /// places).
     ///
@@ -64,33 +64,33 @@ public struct Fraction {
     ) {
         self = double.rational(precision: decimalPrecision)
     }
-    
+
     /// Internal: Initialize with literal values and force the reduced flag.
     init(_ numerator: Int, _ denominator: Int, isReduced: Bool?) {
         self.numerator = numerator
         self.denominator = denominator
         _isReduced = isReduced
     }
-    
+
     // MARK: - Conversions
-    
+
     /// Returns the evaluated fraction as a `Double`.
     public var doubleValue: Double {
         Double(numerator) / Double(denominator)
     }
-    
+
     /// Returns the evaluated fraction as a `Float`.
     public var floatValue: Float {
         // converting Double to float produces greater precision than
         // performing the division using Float
         Float(doubleValue)
     }
-    
+
     /// Returns the evaluated fraction as a `Decimal`.
     public var decimalValue: Decimal {
         Decimal(numerator) / Decimal(denominator)
     }
-    
+
     /// Returns the fraction as a human-readable string.
     /// ie: "1/2"
     public var stringValue: String {
@@ -103,15 +103,15 @@ extension Fraction: Equatable {
     public static func == (lhs: Self, rhs: Self) -> Bool {
         lhs.isEqual(to: rhs)
     }
-    
+
     /// Returns `true` if both fractions are mathematically equal (can reduce to the same values).
     public func isEqual(to other: Self) -> Bool {
         let lhsReduced = reduced()
         let rhsReduced = other.reduced()
-        
+
         return lhsReduced.isIdentical(to: rhsReduced)
     }
-    
+
     /// Returns `true` if both fractions contain identical numerators and identical denominators.
     public func isIdentical(to other: Self) -> Bool {
         numerator == other.numerator
@@ -134,7 +134,9 @@ extension Fraction: Comparable {
 
 @available(macOS 10.15, macCatalyst 13, iOS 11, tvOS 11, watchOS 6, *)
 extension Fraction: Identifiable {
-    public var id: String { stringValue }
+    public var id: String {
+        stringValue
+    }
 }
 
 extension Fraction: Sendable { }
@@ -162,14 +164,14 @@ extension Fraction {
         let norm = normalized()
         return isNegative ? norm.negated() : norm
     }
-    
+
     /// Returns a new instance reduced to its simplest form.
     /// This also normalizes signs.
     public func reduced() -> Self {
         if _isReduced == true { return self }
         return Fraction(reducing: numerator, denominator)
     }
-    
+
     /// Returns a new instance normalized.
     /// Fractions with two negative signs are normalized to two positive signs.
     /// Fractions with negative denominator are normalized to negative numerator and positive denominator.
@@ -177,14 +179,14 @@ extension Fraction {
         let result = normalize(n: numerator, d: denominator)
         return Fraction(result.n, result.d)
     }
-    
+
     /// Negates the fraction.
     public mutating func negate() {
         var n = numerator
         n.negate()
         self = Self(n, denominator)
     }
-    
+
     /// Returns a new instance negated.
     public func negated() -> Self {
         var n = self
@@ -200,34 +202,34 @@ extension Fraction {
         if lhs.denominator == rhs.denominator {
             return Fraction(reducing: lhs.numerator + rhs.numerator, lhs.denominator)
         }
-        
+
         let lcm = leastCommonMultiple(lhs: lhs.denominator, rhs: rhs.denominator)
-        
+
         let num = (lhs.numerator * lcm.lhsMultiplier) + (rhs.numerator * lcm.rhsMultiplier)
         return Fraction(reducing: num, lcm.denominator)
     }
-    
+
     public static func - (lhs: Self, rhs: Self) -> Self {
         if lhs.denominator == rhs.denominator {
             return Fraction(reducing: lhs.numerator - rhs.numerator, lhs.denominator)
         }
-        
+
         let lcm = leastCommonMultiple(lhs: lhs.denominator, rhs: rhs.denominator)
-        
+
         let num = (lhs.numerator * lcm.lhsMultiplier) - (rhs.numerator * lcm.rhsMultiplier)
         return Fraction(reducing: num, lcm.denominator)
     }
-    
+
     public static func * (lhs: Self, rhs: Self) -> Self {
         Fraction(reducing: lhs.numerator * rhs.numerator, lhs.denominator * rhs.denominator)
     }
-    
+
     public static func / (lhs: Self, rhs: Self) -> Self {
         // Check for division by zero scenario
         guard rhs.numerator != 0 else {
             fatalError("Division by zero.")
         }
-        
+
         // Multiply lhs by the reciprocal of rhs
         return Fraction(reducing: lhs.numerator * rhs.denominator, lhs.denominator * rhs.numerator)
     }
@@ -247,16 +249,16 @@ extension Double {
     ) -> Fraction {
         let isNegative = self < 0.0
         let absSelf = abs(self)
-        
+
         // clamp exponent to avoid overflow crashes
         // Int.max = 9.22... x 10^18
         let maxExponent = precision.clamped(to: 0 ... max(19 - integralDigitPlaces, 0))
         let pad = Int(truncating: pow(10, maxExponent) as NSNumber)
         let nFloat = absSelf * Double(pad)
-        
+
         let n = Int(truncating: nFloat as NSNumber)
         let d = pad
-        
+
         return Fraction(reducing: isNegative ? -n : n, d)
     }
 }
@@ -289,7 +291,7 @@ extension Fraction {
                 return
             }
         }
-        
+
         // test for fraction
         let fracMatches = fcpxmlString
             .regexMatches(captureGroupsFromPattern: #"^([-]){0,1}([\d]+)\/([\d]+)s$"#)
@@ -306,7 +308,7 @@ extension Fraction {
         }
         return nil
     }
-    
+
     /// Returns the string value using time value encoding for Final Cut Pro FCPXML files.
     /// Normalizes the fraction first if necessary.
     ///
@@ -354,21 +356,21 @@ func reduce(n: Int, d: Int) -> (n: Int, d: Int) {
     let (absD, signD) = d < 0 ? (-d, -1) : (d, 1)
     var v = n
     var u = d
-    
+
     // Euclid's solution to finding the Greatest Common Denominator
-    while (v != 0) {
+    while v != 0 {
         (v, u) = (u % v, v)
     }
-    
+
     var outN = absN / u * signN
     var outD = absD / u * signD
-    
+
     // final check to normalize if necessary
     if outN >= 0, outD < 0 {
         outN = -outN
         outD = -outD
     }
-    
+
     return (outN, outD)
 }
 
@@ -378,25 +380,23 @@ func greatestCommonDivisor(_ n1: Int, _ n2: Int) -> Int {
     var x = 0
     var y = max(n1, n2)
     var z = min(n1, n2)
-    
+
     while z != 0 {
         x = y
         y = z
         z = x % y
     }
-    
+
     return y
 }
 
 /// Internal:
 /// Returns least common multiple of two numbers and their respective multipliers.
-func leastCommonMultiple(
-    lhs: Int, rhs: Int
-) -> (denominator: Int, lhsMultiplier: Int, rhsMultiplier: Int) {
+func leastCommonMultiple(lhs: Int, rhs: Int) -> (denominator: Int, lhsMultiplier: Int, rhsMultiplier: Int) {
     let denominator = lhs * rhs / greatestCommonDivisor(lhs, rhs)
     let lhsMultiplier = denominator / lhs
     let rhsMultiplier = denominator / rhs
-    
+
     return (
         denominator: denominator,
         lhsMultiplier: lhsMultiplier,

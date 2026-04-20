@@ -1,7 +1,7 @@
 //
 //  TimecodeFrameRate Formats.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 extension TimecodeFrameRate {
@@ -38,7 +38,7 @@ extension TimecodeFrameRate {
             framesPerSecond: "\(maxFrames)"
         )
     }
-    
+
     /// Final Cut Pro XML file metadata for the given frame rate.
     ///
     /// FCP XML encodes _video frame rate_ as a rational fraction of the duration of one frame.

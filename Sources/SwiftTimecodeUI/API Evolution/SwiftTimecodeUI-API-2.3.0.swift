@@ -1,13 +1,13 @@
 //
 //  SwiftTimecodeUI-API-2.3.0.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(SwiftUI)
 
-import SwiftUI
 import SwiftTimecodeCore
+import SwiftUI
 
 #if canImport(AppKit)
 import AppKit
@@ -71,7 +71,7 @@ extension Timecode.TextFormatter {
         get { invalidAttributes }
         set { invalidAttributes = newValue }
     }
-    
+
     @available(*, deprecated, renamed: "init(using:stringFormat:showsValidation:invalidAttributes:)")
     public convenience init(
         using properties: Timecode.Properties? = nil,

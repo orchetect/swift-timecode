@@ -1,7 +1,7 @@
 //
 //  Timecode AVAsset.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // AVAssetReader is unavailable on watchOS so we can't support any AVAsset operations
@@ -24,7 +24,7 @@ extension AVAssetTimecodeSource: _AsyncTimecodeSource {
         let rate: TimecodeFrameRate = timecode.frameRate
         let base: Timecode.SubFramesBase = timecode.subFramesBase
         let limit: Timecode.UpperLimit = timecode.upperLimit
-        
+
         switch attribute {
         case .start:
             guard let tc = try await asset.startTimecode(
@@ -35,7 +35,7 @@ extension AVAssetTimecodeSource: _AsyncTimecodeSource {
                 throw Timecode.MediaParseError.unknownTimecode
             }
             timecode = tc
-            
+
         case .end:
             guard let tc = try await asset.endTimecode(
                 at: rate,
@@ -45,7 +45,7 @@ extension AVAssetTimecodeSource: _AsyncTimecodeSource {
                 throw Timecode.MediaParseError.unknownTimecode
             }
             timecode = tc
-            
+
         case .duration:
             timecode = try await asset.durationTimecode(
                 at: rate,
@@ -54,16 +54,16 @@ extension AVAssetTimecodeSource: _AsyncTimecodeSource {
             )
         }
     }
-    
+
     func set(timecode: inout Timecode, by validation: Timecode.ValidationRule) async {
         let rate: TimecodeFrameRate = timecode.frameRate
         let base: Timecode.SubFramesBase = timecode.subFramesBase
         let limit: Timecode.UpperLimit = timecode.upperLimit
-        
+
         func zeroTimecode() -> Timecode {
             Timecode(.zero, using: timecode.properties)
         }
-        
+
         switch attribute {
         case .start:
             timecode = await (try? asset.startTimecode(
@@ -71,14 +71,14 @@ extension AVAssetTimecodeSource: _AsyncTimecodeSource {
                 base: base,
                 limit: limit
             )) ?? zeroTimecode()
-            
+
         case .end:
             timecode = await (try? asset.endTimecode(
                 at: rate,
                 base: base,
                 limit: limit
             )) ?? zeroTimecode()
-            
+
         case .duration:
             timecode = await (try? asset.durationTimecode(
                 at: rate,
@@ -122,7 +122,7 @@ extension AVAssetRichTimecodeSource: _AsyncRichTimecodeSource {
     ) async throws -> Timecode.Properties {
         let base: Timecode.SubFramesBase = timecode.subFramesBase
         let limit: Timecode.UpperLimit = timecode.upperLimit
-        
+
         switch attribute {
         case .start:
             guard let tc = try await asset.startTimecode(
@@ -133,7 +133,7 @@ extension AVAssetRichTimecodeSource: _AsyncRichTimecodeSource {
                 throw Timecode.MediaParseError.unknownTimecode
             }
             timecode = tc
-            
+
         case .end:
             guard let tc = try await asset.endTimecode(
                 at: nil, // auto-detect from asset
@@ -143,7 +143,7 @@ extension AVAssetRichTimecodeSource: _AsyncRichTimecodeSource {
                 throw Timecode.MediaParseError.unknownTimecode
             }
             timecode = tc
-            
+
         case .duration:
             timecode = try await asset.durationTimecode(
                 at: nil, // auto-detect from asset
@@ -151,7 +151,7 @@ extension AVAssetRichTimecodeSource: _AsyncRichTimecodeSource {
                 limit: limit
             )
         }
-        
+
         return timecode.properties
     }
 }

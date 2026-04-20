@@ -1,7 +1,7 @@
 //
 //  FrameRateProtocol Properties.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 // MARK: Sorted
@@ -30,18 +30,18 @@ extension Collection where Element: FrameRateProtocol {
     ) -> [Element] {
         filter {
             let lhsFrac = $0.rate
-            
+
             let isLiteralMatch = lhsFrac.numerator == rate.numerator
                 && lhsFrac.denominator == rate.denominator
-            
+
             let lhsFPS = Double(lhsFrac.numerator) / Double(lhsFrac.denominator)
             let rhsFPS = Double(rate.numerator) / Double(rate.denominator)
             let isFPSMatch = lhsFPS == rhsFPS
-            
+
             return isLiteralMatch || isFPSMatch
         }
     }
-    
+
     /// Internal:
     /// Filters collection to rates that match the given rational frame duration fraction.
     func filter(
@@ -52,23 +52,23 @@ extension Collection where Element: FrameRateProtocol {
                 let isLiteralMatch = lhsFrac.numerator == frameDuration.numerator
                     && lhsFrac.denominator == frameDuration.denominator
                 if isLiteralMatch { result = true; return }
-                
+
                 let lhsFPS = Double(lhsFrac.numerator) / Double(lhsFrac.denominator)
                 let rhsFPS = Double(frameDuration.numerator) / Double(frameDuration.denominator)
                 let isFPSMatch = lhsFPS == rhsFPS
                 if isFPSMatch { result = true; return }
             }
-            
+
             var result = false
-            
+
             // first check primary frame duration
             compare(lhsFrac: $0.frameDuration, result: &result)
-            
+
             // then check alternate frame duration
             if let lhsFrac = $0.alternateFrameDuration {
                 compare(lhsFrac: lhsFrac, result: &result)
             }
-            
+
             return result
         }
     }
@@ -82,7 +82,7 @@ import CoreMedia
 @available(macOS 10.7, iOS 4.0, tvOS 9.0, watchOS 6.0, *)
 extension FrameRateProtocol {
     // NOTE: Initializers that take CMTime rate/frameDuration are implemented on each concrete type that conforms to `FrameRateProtocol`.
-    
+
     /// Returns the frame rate (fps) as a rational number (fraction)
     /// as a Core Media `CMTime` instance.
     ///
@@ -99,7 +99,7 @@ extension FrameRateProtocol {
             timescale: CMTimeScale(rate.denominator)
         )
     }
-    
+
     /// Returns the duration of 1 frame as a rational number (fraction)
     /// as a Core Media `CMTime` instance.
     ///

@@ -1,7 +1,7 @@
 //
 //  TextField.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if os(macOS)
@@ -20,20 +20,20 @@ extension Timecode {
     public class TextField: NSTextField {
         public required init?(coder: NSCoder) {
             super.init(coder: coder)
-            
+
             formatter = TextFormatter()
-            
+
             allowsEditingTextAttributes = false
             cell?.allowsEditingTextAttributes = false
         }
-        
+
         // responder chain: triggered when user presses Esc key
         override public func cancelOperation(_ sender: Any?) {
             // super.cancelOperation(sender)
-            
+
             // cancel changes to text
             abortEditing()
-            
+
             // give focus back to self
             window?.makeFirstResponder(self)
         }
@@ -46,9 +46,9 @@ extension Timecode {
     public class TextFieldCell: NSTextFieldCell {
         public required init(coder: NSCoder) {
             super.init(coder: coder)
-            
+
             formatter = TextFormatter()
-            
+
             allowsEditingTextAttributes = false
         }
     }

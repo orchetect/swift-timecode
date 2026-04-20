@@ -1,7 +1,7 @@
 //
 //  TimecodeInterval Rational CMTime.swift
 //  swift-timecode • https://github.com/orchetect/swift-timecode
-//  © 2020-2025 Steffan Andrews • Licensed under MIT License
+//  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
 #if canImport(CoreMedia)
@@ -24,12 +24,12 @@ extension TimecodeInterval {
         let fraction = Fraction(cmTime)
         try self.init(fraction, at: frameRate, base: base, limit: limit)
     }
-    
+
     /// Returns the rational fraction for the timecode interval as `CMTime`.
     public var cmTimeValue: CMTime {
         CMTime(rationalValue)
     }
-    
+
     /// Initialize from a time duration represented as a rational fraction.
     /// A negative fraction will produce a negative time interval.
     ///
@@ -57,7 +57,7 @@ extension CMTime {
     ) throws -> TimecodeInterval {
         try TimecodeInterval(self, at: frameRate, base: base, limit: limit)
     }
-    
+
     /// Convenience function to initialize a `TimecodeInterval` instance from a time duration
     /// represented as a rational fraction.
     /// A negative fraction will produce a negative time interval.

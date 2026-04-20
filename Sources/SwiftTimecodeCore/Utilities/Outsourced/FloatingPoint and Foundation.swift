@@ -21,7 +21,7 @@ extension Double {
     package var integralDigitPlaces: Int {
         Decimal(self).integralDigitPlaces
     }
-    
+
     /// **OTCore:**
     /// Returns the number of digit places of the ``fraction`` portion (right of the decimal).
     package var fractionDigitPlaces: Int {
