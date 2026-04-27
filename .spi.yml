@@ -1,3 +1,5 @@
 version: 1
-external_links:
-  documentation: "https://orchetect.github.io/swift-timecode"
+builder:
+  configs:
+    - documentation_targets: [SwiftTimecode, SwiftTimecodeCore, SwiftTimecodeAV, SwiftTimecodeUI]
+      scheme: swift-timecode
