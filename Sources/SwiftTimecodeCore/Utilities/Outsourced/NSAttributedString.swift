@@ -1,9 +1,9 @@
 /// ----------------------------------------------
 /// ----------------------------------------------
-/// OTCore/Extensions/Foundation/NSAttributedString.swift
+/// Extensions/Foundation/NSAttributedString.swift
 ///
-/// Borrowed from OTCore 1.4.2 under MIT license.
-/// https://github.com/orchetect/OTCore
+/// Borrowed from swift-extensions 2.1.7 under MIT license.
+/// https://github.com/orchetect/swift-extensions
 /// Methods herein are unit tested at their source
 /// so no unit tests are necessary.
 /// ----------------------------------------------

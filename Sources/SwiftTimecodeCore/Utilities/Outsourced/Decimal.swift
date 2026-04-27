@@ -1,9 +1,9 @@
 /// ----------------------------------------------
 /// ----------------------------------------------
-/// OTCore/Extensions/Foundation/Decimal.swift
+/// Extensions/Foundation/Decimal.swift
 ///
-/// Borrowed from OTCore 1.4.2 under MIT license.
-/// https://github.com/orchetect/OTCore
+/// Borrowed from swift-extensions 2.1.7 under MIT license.
+/// https://github.com/orchetect/swift-extensions
 /// Methods herein are unit tested at their source
 /// so no unit tests are necessary.
 /// ----------------------------------------------
@@ -37,10 +37,10 @@ extension Decimal {
     ) -> Self {
         var initialDecimal = self
         var roundedDecimal = Decimal()
-        let decimalPlaces = max(0, decimalPlaces)
-
+        let decimalPlaces = decimalPlaces.clamped(to: 0...)
+        
         NSDecimalRound(&roundedDecimal, &initialDecimal, decimalPlaces, rule)
-
+        
         return roundedDecimal
     }
 
@@ -64,14 +64,14 @@ extension Decimal {
     package func truncated(decimalPlaces: Int) -> Self {
         var initialDecimal = self
         var roundedDecimal = Decimal()
-        let decimalPlaces = max(0, decimalPlaces)
-
+        let decimalPlaces = decimalPlaces.clamped(to: 0...)
+        
         if self > 0 {
             NSDecimalRound(&roundedDecimal, &initialDecimal, decimalPlaces, .down)
         } else {
             NSDecimalRound(&roundedDecimal, &initialDecimal, decimalPlaces, .up)
         }
-
+        
         return roundedDecimal
     }
 }
@@ -122,7 +122,7 @@ extension Decimal {
 }
 
 extension Decimal {
-    /// **OTCore:**
+    /// **swift-extensions:**
     /// Returns the number of digit places of the ``integral`` portion (left of the decimal).
     package var integralDigitPlaces: Int {
         // this works but may be brittle.
@@ -134,7 +134,7 @@ extension Decimal {
         return "\(abs(significand))".count + exponent
     }
 
-    /// **OTCore:**
+    /// **swift-extensions:**
     /// Returns the number of digit places of the ``fraction`` portion (right of the decimal).
     package var fractionDigitPlaces: Int {
         max(-exponent, 0)
