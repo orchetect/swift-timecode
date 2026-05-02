@@ -2,7 +2,7 @@
 
 Value types and related logic for representing and working with SMPTE/EBU timecode.
 
-![swift-timecode](swifttimecode-banner.png)
+![SwiftTimecode](swift-timecode-banner.png)
 
 - A variety of initializers and methods are available for string and numeric representation, validation, and conversion
 - Mathematical operators are available between two instances: `+`, `-`, `*`, `\`

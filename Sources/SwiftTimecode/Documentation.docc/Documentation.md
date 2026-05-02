@@ -1,8 +1,8 @@
 # ``SwiftTimecode``
 
-Umbrella module that imports the entire swift-timecode library. Contains a Getting Started guide.
+Umbrella module that imports the entire SwiftTimecode library. Contains a Getting Started guide.
 
-![swift-timecode](swifttimecode-banner.png)
+![SwiftTimecode](swift-timecode-banner.png)
 
 For core types, math, and conversions see <doc://SwiftTimecode/SwiftTimecodeCore> documentation.
 

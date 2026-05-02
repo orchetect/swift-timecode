@@ -2,8 +2,7 @@
 
 AVFoundation methods for reading and writing timecode tracks to movie files.
 
-![swift-timecode](swifttimecode-banner.png)
-
+![SwiftTimecode](swift-timecode-banner.png)
 
 ## Topics
 

@@ -2,7 +2,7 @@
 
 UI controls and tools for formatting and displaying timecode, including user-editable timecode fields.
 
-![swift-timecode](swifttimecode-banner.png)
+![SwiftTimecode](swift-timecode-banner.png)
 
 ## Topics
 
