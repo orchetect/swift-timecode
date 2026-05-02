@@ -1,6 +1,6 @@
-![swift-timecode](Images/swifttimecode-banner.png)
+![SwiftTimecode](Images/swift-timecode-banner.png)
 
-# swift-timecode
+# SwiftTimecode
 
 [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Forchetect%2Fswift-timecode%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/orchetect/swift-timecode) [![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Forchetect%2Fswift-timecode%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/orchetect/swift-timecode) [![License: MIT](http://img.shields.io/badge/License-MIT-lightgrey.svg?style=flat)](https://github.com/orchetect/swift-timecode/blob/main/LICENSE)
 
@@ -106,7 +106,7 @@ import SwiftTimecodeUI // UI components
 
 See the [online documentation](https://orchetect.github.io/swift-timecode) for library usage and getting started info.
 
-Also check out the [Examples](Examples) folder for sample code to see swift-timecode in action.
+Also check out the [Examples](Examples) folder for sample code to see SwiftTimecode in action.
 
 ## References
 
@@ -122,7 +122,7 @@ Licensed under the MIT license. See [LICENSE](https://github.com/orchetect/swift
 
 ## Sponsoring
 
-If you enjoy using swift-timecode and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
+If you enjoy using SwiftTimecode and want to contribute to open-source financially, GitHub sponsorship is much appreciated. Feedback and code contributions are also welcome.
 
 ## Community & Support
 
