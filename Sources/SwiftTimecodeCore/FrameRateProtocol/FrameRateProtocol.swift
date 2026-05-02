@@ -6,7 +6,7 @@
 
 import Foundation
 
-/// Protocol used in swift-timecode to provide shared properties and methods for frame rate types.
+/// Protocol used in SwiftTimecode to provide shared properties and methods for frame rate types.
 @_documentation(visibility: internal)
 public protocol FrameRateProtocol where
     Self: CaseIterable,

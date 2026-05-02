@@ -2,11 +2,11 @@
 
 Manipulating timecode track(s) for movie assets in AVFoundation.
 
-swift-timecode provides a full suite of methods to read and write timecode track(s) in a QuickTime movie file when working with AVFoundation.
+SwiftTimecode provides a full suite of methods to read and write timecode track(s) in a QuickTime movie file when working with AVFoundation.
 
 ## Read Timecode from QuickTime Movie
 
-Simple methods to read start timecode and duration from `AVAsset` and its subclasses (`AVMovie`) as well as `AVAssetTrack` are provided by swift-timecode.
+Simple methods to read start timecode and duration from `AVAsset` and its subclasses (`AVMovie`) as well as `AVAssetTrack` are provided by SwiftTimecode.
 The methods are throwing since timecode information is not guaranteed to be present inside movie files.
 
 ```swift

@@ -9,7 +9,7 @@ extension Timecode: Codable {
         case frameRate
         case upperLimit
         case subFramesBase
-        case stringFormat // deprecated in swift-timecode 2.0
+        case stringFormat // deprecated in SwiftTimecode 2.0
 
         case days
         case hours
@@ -33,7 +33,7 @@ extension Timecode: Codable {
         try container.encode(components.frames, forKey: .frames)
         try container.encode(components.subFrames, forKey: .subFrames)
 
-        // skip stringFormat; deprecated in swift-timecode 2.0
+        // skip stringFormat; deprecated in SwiftTimecode 2.0
     }
 
     public init(from decoder: Decoder) throws {
@@ -54,6 +54,6 @@ extension Timecode: Codable {
             sf: values.decode(Int.self, forKey: .subFrames)
         )
 
-        // skip stringFormat; deprecated in swift-timecode 2.0
+        // skip stringFormat; deprecated in SwiftTimecode 2.0
     }
 }

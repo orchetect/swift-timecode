@@ -4,4 +4,4 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
-// Welcome to swift-timecode :)
+// Welcome to SwiftTimecode :)

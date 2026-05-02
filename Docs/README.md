@@ -1,4 +1,4 @@
-# swift-timecode DocC Generation
+# SwiftTimecode DocC Generation
 
 ## Build and Publish
 

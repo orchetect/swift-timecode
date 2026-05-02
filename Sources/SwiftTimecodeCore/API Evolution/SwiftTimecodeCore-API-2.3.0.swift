@@ -6,7 +6,7 @@
 
 import Foundation
 
-// MARK: API Changes in swift-timecode 2.3.0
+// MARK: API Changes in SwiftTimecode 2.3.0
 
 #if canImport(UniformTypeIdentifiers) && canImport(CoreTransferable)
 @_documentation(visibility: internal)

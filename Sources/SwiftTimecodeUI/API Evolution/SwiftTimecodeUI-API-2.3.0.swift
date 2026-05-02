@@ -17,7 +17,7 @@ import AppKit
 import UIKit
 #endif
 
-// MARK: API Changes in swift-timecode 2.3.0 UI
+// MARK: API Changes in SwiftTimecode 2.3.0 UI
 
 @_documentation(visibility: internal)
 @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)

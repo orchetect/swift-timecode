@@ -6,7 +6,7 @@ LTC is an encoding of SMPTE timecode data in an audio signal, as defined in SMPT
 
 This library does not implement LTC encoding or decoding directly.
 
-Support may be added in future versions of swift-timecode, or possibly in an audio library such as AudioKit.
+Support may be added in future versions of SwiftTimecode, or possibly in an audio library such as AudioKit.
 
 ## References
 

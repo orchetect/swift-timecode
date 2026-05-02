@@ -46,7 +46,7 @@ struct TimecodeTextDemoView: View {
                     GridRow {
                         Image(systemName: "lightbulb.fill")
                         Text(
-                            "Note that to allow drag & drop or copy & paste, your app must export Timecode's UT Type by adding it to the Info.plist. See swift-timecode documentation for more details."
+                            "Note that to allow drag & drop or copy & paste, your app must export Timecode's UT Type by adding it to the Info.plist. See the SwiftTimecode documentation for more details."
                         )
                     }
                 }

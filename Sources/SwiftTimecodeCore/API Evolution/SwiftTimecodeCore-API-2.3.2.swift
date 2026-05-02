@@ -6,7 +6,7 @@
 
 import Foundation
 
-// MARK: API Changes in swift-timecode 2.3.2
+// MARK: API Changes in SwiftTimecode 2.3.2
 
 @_documentation(visibility: internal)
 extension Timecode.Components {

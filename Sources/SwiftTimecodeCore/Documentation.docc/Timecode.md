@@ -1,6 +1,6 @@
 # ``SwiftTimecodeCore/Timecode``
 
-swift-timecode is designed to work intuitively with Xcode's autocomplete. Beginning a ``Timecode`` initializer with a period should produce a list of all available source time value types.
+SwiftTimecode is designed to work intuitively with Xcode's autocomplete. Beginning a ``Timecode`` initializer with a period should produce a list of all available source time value types.
 
 ![Timecode init](timecode-init.png)
 

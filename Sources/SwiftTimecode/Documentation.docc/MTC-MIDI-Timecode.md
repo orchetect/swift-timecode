@@ -7,7 +7,7 @@ MIDI Timecode is a device synchronization protocol that encodes SPMTE timecode u
 This library does not implement MTC encoding or decoding directly.
 
 Instead, [SwiftMIDI](https://github.com/orchetect/swift-midi) (an open-source Swift MIDI I/O package for all Apple platforms) implements MTC encoding/decoding.
-It imports swift-timecode as a dependency and uses <doc://SwiftTimecode/SwiftTimecodeCore/Timecode-swift.struct> and <doc://SwiftTimecode/SwiftTimecodeCore/TimecodeFrameRate-swift.enum> as data structures.
+It imports SwiftTimecode as a dependency and uses <doc://SwiftTimecode/SwiftTimecodeCore/Timecode-swift.struct> and <doc://SwiftTimecode/SwiftTimecodeCore/TimecodeFrameRate-swift.enum> as data structures.
 
 ## References
 

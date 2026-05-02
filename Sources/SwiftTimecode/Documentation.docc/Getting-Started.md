@@ -1,6 +1,6 @@
 # Getting Started
 
-Documentation and guides to get the most out of swift-timecode.
+Documentation and guides to get the most out of SwiftTimecode.
 
 ## Import
 
@@ -20,7 +20,7 @@ import SwiftTimecodeAV
 import SwiftTimecodeUI
 ```
 
-## Using swift-timecode
+## Using SwiftTimecode
 
 The documentation page for <doc://SwiftTimecode/SwiftTimecodeCore/Timecode-swift.struct> provides a quick overview of how to form timecode and convert to/from various other time values.
 

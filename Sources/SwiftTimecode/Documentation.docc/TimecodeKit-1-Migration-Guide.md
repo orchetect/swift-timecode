@@ -1,6 +1,6 @@
-# TimecodeKit 1 to swift-timecode 3 Migration Guide
+# TimecodeKit 1 to SwiftTimecode 3 Migration Guide
 
-API changes from **TimecodeKit** 1.x to **swift-timecode** 3.
+API changes from **TimecodeKit** 1.x to **SwiftTimecode** 3.
 
 This guide is designed to assist in migrating projects currently using TimecodeKit 1.x. While not exhaustive, this guide covers the major API and workflow changes. 
 
