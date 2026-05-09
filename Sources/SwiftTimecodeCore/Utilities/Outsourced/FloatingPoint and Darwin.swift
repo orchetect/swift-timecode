@@ -15,6 +15,8 @@ import Darwin
 import Glibc
 #elseif canImport(Musl)
 import Musl
+#elseif canImport(Android)
+import Android
 #endif
 
 // MARK: - ceiling / floor
@@ -30,6 +32,8 @@ extension FloatingPoint {
         Glibc.ceil(self)
         #elseif canImport(Musl)
         Musl.ceil(self)
+        #elseif canImport(Android)
+        Android.ceil(self)
         #endif
     }
 
@@ -43,6 +47,8 @@ extension FloatingPoint {
         Glibc.floor(self)
         #elseif canImport(Musl)
         Musl.floor(self)
+        #elseif canImport(Android)
+        Android.floor(self)
         #endif
     }
 }

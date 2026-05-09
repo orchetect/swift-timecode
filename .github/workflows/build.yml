@@ -116,3 +116,26 @@ jobs:
       run: swift build
     - name: Unit Tests
       run: swift test
+
+  android:
+    name: Build (Android)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Cross-compiles SwiftTimecodeCore for Android (aarch64) using the Swift.org Android SDK
+    # bundle. Requires the open-source Swift 6.3 toolchain (NOT Xcode's bundled Swift) and the
+    # Android Swift SDK artifact bundle, which provides the cross-compiled stdlib + Foundation
+    # for android28+. Tests are not executed (would require a device/emulator); the build alone
+    # is enough to catch missing canImport(Android) arms or unconditional Apple-only imports.
+    steps:
+    - uses: actions/checkout@main
+    - name: Install Swift 6.3 toolchain (open-source)
+      uses: vapor/swiftly-action@v0.2
+      with:
+        toolchain: "6.3"
+    - name: Install Android Swift SDK
+      run: |
+        swift sdk install \
+          https://download.swift.org/swift-6.3-release/android-sdk/swift-6.3-RELEASE/swift-6.3-RELEASE_android.artifactbundle.tar.gz \
+          --checksum 2f2942c4bcea7965a08665206212c66991dabe23725aeec7c4365fc91acad088
+    - name: Build for Android (aarch64)
+      run: swift build --target SwiftTimecodeCore --swift-sdk aarch64-unknown-linux-android28
