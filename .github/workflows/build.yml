@@ -138,10 +138,33 @@ jobs:
       uses: vapor/swiftly-action@v0.2
       with:
         toolchain: "6.3.0"
+    - name: Install Android NDK r27d
+      # `swift sdk install` only fetches the Swift-side stdlib + Foundation for Android.
+      # The NDK supplies the C sysroot (libc, libm, semaphore.h, …) that the SwiftOverlayShims
+      # C module needs to compile. Without these the cross-compile errors with
+      #     'semaphore.h' file not found … could not build C module 'SwiftOverlayShims'
+      # mid-build. r27d matches the swift-6.3-RELEASE Android SDK bundle's expected NDK
+      # version — bump in lockstep with the SDK URL above.
+      run: |
+        wget -q "https://dl.google.com/android/repository/android-ndk-r27d-linux.zip" -O /tmp/ndk.zip
+        unzip -q /tmp/ndk.zip -d /opt
+        echo "ANDROID_NDK_HOME=/opt/android-ndk-r27d" >> "$GITHUB_ENV"
     - name: Install Android Swift SDK
       run: |
         swift sdk install \
           https://download.swift.org/swift-6.3-release/android-sdk/swift-6.3-RELEASE/swift-6.3-RELEASE_android.artifactbundle.tar.gz \
           --checksum 2f2942c4bcea7965a08665206212c66991dabe23725aeec7c4365fc91acad088
+        # The bundle ships a setup script that wires NDK_HOME paths into the SDK's
+        # destination JSON. Without running it, the compiler can find the Swift
+        # stdlib but not the NDK's C headers — yielding the SwiftOverlayShims error.
+        # On ubuntu-latest runners the bundle lands under ~/.config/swiftpm/swift-sdks/
+        # (vs. ~/.swiftpm/swift-sdks/ in containerised runs).
+        SETUP_SCRIPT=$(find "$HOME/.config/swiftpm/swift-sdks" "$HOME/.swiftpm/swift-sdks" -name "setup-android-sdk.sh" 2>/dev/null | head -1)
+        if [ -z "$SETUP_SCRIPT" ]; then
+          echo "setup-android-sdk.sh not found. Searched paths:"
+          find "$HOME/.config/swiftpm" "$HOME/.swiftpm" 2>/dev/null | head -20
+          exit 1
+        fi
+        bash "$SETUP_SCRIPT"
     - name: Build for Android (aarch64)
       run: swift build --target SwiftTimecodeCore --swift-sdk aarch64-unknown-linux-android28
