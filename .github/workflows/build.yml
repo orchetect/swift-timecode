@@ -129,9 +129,15 @@ jobs:
     steps:
     - uses: actions/checkout@main
     - name: Install Swift 6.3 toolchain (open-source)
+      # Pinned to "6.3.0" rather than the floating "6.3" — the Android SDK artifactbundle
+      # (also pinned to 6.3-RELEASE) ships pre-built `.swiftmodule` files which can ONLY
+      # be loaded by the exact same compiler version. With "6.3" floating, swiftly picks
+      # up 6.3.1 once it's released, and CI breaks with:
+      #     "module compiled with Swift 6.3 cannot be imported by the Swift 6.3.1 compiler"
+      # Bump this in lockstep when a 6.3.1 (or 6.4) Android SDK bundle is published.
       uses: vapor/swiftly-action@v0.2
       with:
-        toolchain: "6.3"
+        toolchain: "6.3.0"
     - name: Install Android Swift SDK
       run: |
         swift sdk install \
