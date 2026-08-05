@@ -141,6 +141,8 @@ jobs:
     - uses: actions/checkout@main
     - uses: orchetect/setup-swift-wasm-sdk@main
       id: sdk-setup
+      with:
+        target-triple: ${{ env.TARGET_TRIPLE }}
     - name: Build
       run: swift build --swift-sdk "$SDK_ID" --triple "$TARGET_TRIPLE"
       env:
