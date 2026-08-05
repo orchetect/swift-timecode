@@ -135,11 +135,13 @@ jobs:
     name: Build (WASM)
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      TARGET_TRIPLE: wasm32-unknown-wasip1
     steps:
     - uses: actions/checkout@main
     - uses: orchetect/setup-swift-wasm-sdk@main
       id: sdk-setup
     - name: Build
-      run: swift build --swift-sdk "$SDK_ID"
+      run: swift build --swift-sdk "$SDK_ID" --triple "$TARGET_TRIPLE"
       env:
         SDK_ID: ${{ steps.sdk-setup.outputs.id }}
