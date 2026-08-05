@@ -138,7 +138,7 @@ jobs:
     env:
       TARGET_TRIPLE: wasm32-unknown-wasip1
     steps:
-    - uses: actions/checkout@main
+    - uses: actions/checkout@v1
     - uses: orchetect/setup-swift-wasm-sdk@main
       id: sdk-setup
       with:
