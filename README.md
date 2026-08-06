@@ -62,45 +62,53 @@ The following video frame rates are supported:
 - `AVAsset` video file utilities to easily read/write timecode tracks and locate `AVPlayer` to timecode locations
 - Exhaustive unit tests ensuring accuracy
 
-## Installation
+## Compatibility
 
-### Swift Package Manager (SPM)
+The Core package target is supported on the following platforms:
 
-To add this package to an Xcode app project, use:
+| macOS | iOS  | tvOS | visionOS | watchOS | Linux | Android |  WASM  | Windows  |
+| :---: | :--: | :--: | :------: | :-----: | :---: | :-----: | :----: | :------: |
+|   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   🟢   |    🟢    | 🟢 | 🚧[^1] |
 
- `https://github.com/orchetect/swift-timecode` as the URL.
+A/V and UI package targets are supported on the following platforms:
 
-To add this package to a Swift package, add the dependency to your package and target in Package.swift:
+| macOS | iOS  | tvOS | visionOS | watchOS | Linux | Android |  WASM  | Windows  |
+| :---: | :--: | :--: | :------: | :-----: | :---: | :-----: | :----: | :------: |
+|   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   -   |    -    | - | - |
 
-```swift
-let package = Package(
-    dependencies: [
-        .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.0")
-    ],
-    targets: [
-        .target(
-            dependencies: [
-                .product(name: "SwiftTimecode", package: "swift-timecode")
-            ]
-        )
-    ]
-)
-```
+[^1]: Support for indicated platforms is either planned or WIP.
 
-Import the entire library to use all features (core, AV, UI):
-```swift
-// on Apple platforms, imports Core/AV/UI.
-// on Linux, imports Core.
-import SwiftTimecode
-```
+## Getting Started
 
-Or import individual targets as-needed:
+This extension is available as a Swift Package Manager (SPM) package.
 
-```swift
-import SwiftTimecodeCore // core value types
-import SwiftTimecodeAV // AVFoundation extensions
-import SwiftTimecodeUI // UI components
-```
+1. Add the **swift-timecode** repo as a dependency.
+
+   ```swift
+   .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.3")
+   ```
+
+2. Add **SwiftTimecode** to your target.
+
+   ```swift
+   .product(name: "SwiftTimecode", package: "swift-timecode")
+   ```
+
+3. Import the entire library:
+
+   ```swift
+   // on Apple platforms, imports Core/AV/UI.
+   // on Linux, Android and WASM, imports Core.
+   import SwiftTimecode
+   ```
+
+   Or import individual targets as-needed:
+
+   ```swift
+   import SwiftTimecodeCore // core value types
+   import SwiftTimecodeAV // AVFoundation extensions (Apple platforms only)
+   import SwiftTimecodeUI // UI components (Apple platforms only)
+   ```
 
 ## Documentation
 
@@ -118,7 +126,7 @@ Coded by a bunch of 🐹 hamsters in a trenchcoat that calls itself [@orchetect]
 
 ## License
 
-Licensed under the MIT license. See [LICENSE](https://github.com/orchetect/swift-timecode/blob/master/LICENSE) for details.
+Licensed under the MIT license. See [LICENSE](https://github.com/orchetect/swift-timecode/blob/main/LICENSE) for details.
 
 ## Sponsoring
 
