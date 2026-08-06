@@ -139,7 +139,8 @@ jobs:
 #      TARGET_TRIPLE: wasm32-unknown-wasip1
 #    steps:
 #    - uses: actions/checkout@v1
-#    - uses: orchetect/setup-swift-wasm-sdk@main
+#    - name: Prepare SDK
+#      uses: orchetect/setup-swift-wasm-sdk@main
 #      id: sdk-setup
 #      with:
 #        target-triple: ${{ env.TARGET_TRIPLE }}
@@ -156,11 +157,23 @@ jobs:
       TARGET_TRIPLE: wasm32-unknown-wasip1
     steps:
     - uses: actions/checkout@v1
-    - uses: orchetect/setup-swift-wasm-sdk@main
+    # Note: The Swift toolchain that ships with Xcode (and is default Swift toolchain on macOS GitHub runners)
+    # has a bug that causes the build to crash. The workaround is to use a standalone Swift toolchain.
+    - name: Install swiftly and latest Swift toolchain
+      run: |
+        curl -O https://download.swift.org/swiftly/darwin/swiftly.pkg
+        installer -pkg swiftly.pkg -target CurrentUserHomeDirectory
+        ~/.swiftly/bin/swiftly init --quiet-shell-followup --assume-yes
+        . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh"
+        hash -r
+    - name: Switch to latest Swift toolchain
+      run: swiftly use --global-default latest
+    - name: Prepare SDK
+      uses: orchetect/setup-swift-wasm-sdk@main
       id: sdk-setup
       with:
         target-triple: ${{ env.TARGET_TRIPLE }}
     - name: Build
-      run: swift build --swift-sdk "$SDK_ID" --triple "$TARGET_TRIPLE" --verbose
+      run: swift build --swift-sdk "$SDK_ID" --triple "$TARGET_TRIPLE"
       env:
         SDK_ID: ${{ steps.sdk-setup.outputs.id }}
