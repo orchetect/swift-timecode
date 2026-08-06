@@ -133,7 +133,11 @@ jobs:
 
   wasm:
     name: Build (WASM)
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 30
     env:
       TARGET_TRIPLE: wasm32-unknown-wasip1
