@@ -4,6 +4,8 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(Darwin)
+
 #if os(macOS)
 import AppKit
 #elseif os(iOS) || os(tvOS) || os(watchOS) || os(visionOS)
@@ -337,3 +339,5 @@ extension Timecode.TextFormatter {
         )
     }
 }
+
+#endif

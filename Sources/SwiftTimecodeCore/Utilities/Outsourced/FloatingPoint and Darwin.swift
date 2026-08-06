@@ -17,6 +17,8 @@ import Glibc
 import Musl
 #elseif canImport(Android)
 import Android
+#elseif canImport(WASILibc)
+import WASILibc
 #endif
 
 // MARK: - ceiling / floor
@@ -34,6 +36,8 @@ extension FloatingPoint {
         Musl.ceil(self)
         #elseif canImport(Android)
         Android.ceil(self)
+        #elseif canImport(WASILibc)
+        WASILibc.ceil(self)
         #endif
     }
 
@@ -49,6 +53,8 @@ extension FloatingPoint {
         Musl.floor(self)
         #elseif canImport(Android)
         Android.floor(self)
+        #elseif canImport(WASILibc)
+        WASILibc.floor(self)
         #endif
     }
 }
@@ -75,7 +81,8 @@ extension Float: FloatingPointPowerComputable {
     }
 }
 
-#if !(arch(arm64) || arch(arm) || os(watchOS)) // Float80 is now removed for ARM
+// Float80 is now removed for ARM, and does not exist on WebAssembly.
+#if !(arch(arm64) || arch(arm) || arch(wasm32) || os(watchOS))
 extension Float80: FloatingPointPowerComputable {
     /// Same as `powl()`
     /// (Functional convenience method)

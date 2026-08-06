@@ -130,3 +130,24 @@ jobs:
         target-triple: ${{ env.TARGET_TRIPLE }}
     - name: Build
       run: swift build --swift-sdk "$TARGET_TRIPLE" --static-swift-stdlib
+
+  wasm:
+    name: Build (WASM)
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    env:
+      TARGET_TRIPLE: wasm32-unknown-wasip1
+    steps:
+    - uses: actions/checkout@v1
+    - uses: orchetect/setup-swift-wasm-sdk@main
+      id: sdk-setup
+      with:
+        target-triple: ${{ env.TARGET_TRIPLE }}
+    - name: Build
+      run: swift build --swift-sdk "$SDK_ID" --triple "$TARGET_TRIPLE"
+      env:
+        SDK_ID: ${{ steps.sdk-setup.outputs.id }}
