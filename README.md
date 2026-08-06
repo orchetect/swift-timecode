@@ -68,7 +68,7 @@ The Core package target is supported on the following platforms:
 
 | macOS | iOS  | tvOS | visionOS | watchOS | Linux | Android |  WASM  | Windows  |
 | :---: | :--: | :--: | :------: | :-----: | :---: | :-----: | :----: | :------: |
-|   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   🟢   |    🟢    | 🟢 | 🚧[^1] |
+|   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   🟢   |    🟢    | 🟢[^1] | 🚧[^2] |
 
 A/V and UI package targets are supported on the following platforms:
 
@@ -76,7 +76,9 @@ A/V and UI package targets are supported on the following platforms:
 | :---: | :--: | :--: | :------: | :-----: | :---: | :-----: | :----: | :------: |
 |   🟢   |  🟢   |  🟢   |    🟢     |    🟢    |   -   |    -    | - | - |
 
-[^1]: Support for indicated platforms is either planned or WIP.
+[^1]: Cross-compiling using the WASM SDK on macOS requires using a standard [Swift toolchain](https://swift.org/install) due to a compiler bug in the Swift toolchain that comes bundled in Xcode 26.
+
+[^2]: Support for indicated platforms is either planned or WIP.
 
 ## Getting Started
 
