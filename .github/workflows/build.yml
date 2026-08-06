@@ -166,8 +166,10 @@ jobs:
         ~/.swiftly/bin/swiftly init --quiet-shell-followup --assume-yes
         . "${SWIFTLY_HOME_DIR:-$HOME/.swiftly}/env.sh"
         hash -r
+    # Note: `swiftly init` automatically sets the toolchain it downloads as the default global toolchain,
+    # but we will imperatively ask for it just in case.
     - name: Switch to latest Swift toolchain
-      run: swiftly use --global-default latest
+      run: ~/.swiftly/bin/swiftly use --global-default latest
     - name: Prepare SDK
       uses: orchetect/setup-swift-wasm-sdk@main
       id: sdk-setup
