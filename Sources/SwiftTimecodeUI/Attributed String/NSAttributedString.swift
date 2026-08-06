@@ -4,6 +4,8 @@
 //  © 2026 Steffan Andrews • Licensed under MIT License
 //
 
+#if canImport(AppKit) || canImport(UIKit)
+
 #if canImport(AppKit)
 import AppKit
 #elseif canImport(UIKit)
@@ -222,3 +224,5 @@ extension Timecode {
         return output
     }
 }
+
+#endif
