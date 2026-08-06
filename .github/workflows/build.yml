@@ -157,6 +157,10 @@ jobs:
       TARGET_TRIPLE: wasm32-unknown-wasip1
     steps:
     - uses: actions/checkout@main
+    # Note: The Swift toolchain that ships with Xcode (which is the default Swift toolchain on macOS GitHub runners)
+    # has a bug that causes the build to crash. The workaround is to use a standalone Swift toolchain.
+    - name: Install swiftly and latest Swift toolchain
+      uses: swift-actions/setup-swift@v3
     - name: Prepare SDK
       uses: orchetect/setup-swift-wasm-sdk@v1
       id: sdk-setup
