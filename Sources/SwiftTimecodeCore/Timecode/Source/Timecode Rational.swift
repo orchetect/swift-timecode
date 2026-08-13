@@ -50,7 +50,11 @@ extension Timecode {
     /// fractions.)
     public var rationalValue: Fraction {
         let frFrac = frameRate.frameDuration
-        let n = frFrac.numerator * frameCount.subFrameCount
+        // `Fraction` is Int-based. On a 32-bit platform a timecode beyond
+        // ~Int32.max subframes therefore has no representable rational value —
+        // a limit of `Fraction`, not of the count. Widening `Fraction` belongs
+        // with the broader consistency work rather than with this fix.
+        let n = frFrac.numerator * Int(clamping: frameCount.subFrameCount)
         let d = frFrac.denominator * subFramesBase.rawValue
 
         return Fraction(n, d).reduced()

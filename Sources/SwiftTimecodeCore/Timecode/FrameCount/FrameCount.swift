@@ -105,7 +105,7 @@ extension Timecode {
 
 extension Timecode.FrameCount {
     init(
-        subFrameCount: Int,
+        subFrameCount: TimecodeTotalCount,
         base: Timecode.SubFramesBase
     ) {
         let converted = Timecode.subFramesToFrames(
@@ -225,7 +225,7 @@ extension Timecode.FrameCount {
     public func multiplying(by factor: Double) -> Self {
         let lhsTotalSubFrames = subFrameCount
 
-        let resultSubFrameCount = Int(Double(lhsTotalSubFrames) * factor)
+        let resultSubFrameCount = TimecodeTotalCount(Double(lhsTotalSubFrames) * factor)
 
         let newFrames = Timecode.subFramesToFrames(
             resultSubFrameCount,
@@ -241,7 +241,7 @@ extension Timecode.FrameCount {
     public func dividing(by divisor: Double) -> Self {
         let lhsTotalSubFrames = subFrameCount
 
-        let resultSubFrameCount = Int(Double(lhsTotalSubFrames) / divisor)
+        let resultSubFrameCount = TimecodeTotalCount(Double(lhsTotalSubFrames) / divisor)
 
         let newFrames = Timecode.subFramesToFrames(
             resultSubFrameCount,
@@ -268,7 +268,7 @@ extension Timecode.FrameCount {
 }
 
 extension Timecode.FrameCount {
-    var subFrameCount: Int {
+    var subFrameCount: TimecodeTotalCount {
         Timecode.framesToSubFrames(
             frames: wholeFrames,
             subFrames: subFrames,
@@ -285,15 +285,15 @@ extension Timecode {
         frames: Int,
         subFrames: Int,
         base: SubFramesBase
-    ) -> Int {
-        (frames * base.rawValue) + subFrames
+    ) -> TimecodeTotalCount {
+        (TimecodeTotalCount(frames) * TimecodeTotalCount(base.rawValue)) + TimecodeTotalCount(subFrames)
     }
 
     /// Internal utility
-    static func subFramesToFrames(_ subFrames: Int, base: SubFramesBase) -> (frames: Int, subFrames: Int) {
-        let outSubFrames = subFrames % base.rawValue
-        let outFrames = (subFrames - outSubFrames) / base.rawValue
+    static func subFramesToFrames(_ subFrames: TimecodeTotalCount, base: SubFramesBase) -> (frames: Int, subFrames: Int) {
+        let outSubFrames = subFrames % TimecodeTotalCount(base.rawValue)
+        let outFrames = (subFrames - outSubFrames) / TimecodeTotalCount(base.rawValue)
 
-        return (frames: outFrames, subFrames: outSubFrames)
+        return (frames: Int(outFrames), subFrames: Int(outSubFrames))
     }
 }
