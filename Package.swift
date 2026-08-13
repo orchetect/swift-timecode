@@ -18,7 +18,6 @@ let package = Package(
         .library(name: "SwiftTimecodeCore", type: .static, targets: ["SwiftTimecodeCore"])
     ],
     dependencies: [
-        // used only for Dev tests, not part of regular unit tests
         .package(url: "https://github.com/apple/swift-numerics", from: "1.1.1"),
         .package(url: "https://github.com/orchetect/swift-testing-extensions", from: "0.3.1")
     ],
