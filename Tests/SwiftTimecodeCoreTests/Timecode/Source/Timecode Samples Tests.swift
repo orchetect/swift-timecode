@@ -25,7 +25,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_Clamping() {
         let tc = Timecode(
             .samples(
-                4_147_200_000 as PlatformInt + 172_800_000, // 25 hours @ 24fps
+                4_147_200_000 + 172_800_000, // 25 hours @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -42,7 +42,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_Wrapping() {
         let tc = Timecode(
             .samples(
-                4_147_200_000 as PlatformInt + 172_800_000, // 25 hours @ 24fps
+                4_147_200_000 + 172_800_000, // 25 hours @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -56,7 +56,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_RawValues() {
         let tc = Timecode(
             .samples(
-                (4_147_200_000 as PlatformInt * 2) + 172_800_000, // 2 days + 1 hour @ 24fps
+                (4_147_200_000 * 2) + 172_800_000, // 2 days + 1 hour @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -70,7 +70,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_RawValues_Negative() {
         let tc = Timecode(
             .samples(
-                -((4_147_200_000 as PlatformInt * 2) + 172_800_000), // 2 days + 1 hour @ 24fps
+                -((4_147_200_000 * 2) + 172_800_000), // 2 days + 1 hour @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,

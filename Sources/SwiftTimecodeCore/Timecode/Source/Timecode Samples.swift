@@ -40,27 +40,15 @@ extension TimecodeSourceValue {
 
     /// Audio samples at a given sample rate.
     ///
-    /// `Int` companion to the `PlatformInt` overload. Required, not redundant:
-    /// on a 32-bit platform `PlatformInt` is `Int64`, and with only `Int64` and
-    /// `Double` overloads present an ordinary literal expression such as
-    /// `.samples(48000 * 2, sampleRate: 48000)` becomes AMBIGUOUS, because `Int`
-    /// is Swift's default integer-literal type and matches neither exactly.
-    /// Without this, the alias would silently make ordinary call sites stop
-    /// compiling on exactly the platforms it exists to support.
-    ///
-    /// Not deprecated, for the same reason — a deprecated overload would warn on
-    /// ordinary literal use.
-    ///
-    /// FENCED, and it has to be: on a 64-bit platform `PlatformInt` *is* `Int`,
-    /// so an unconditional companion here is an `invalid redeclaration`. Any
-    /// overload added alongside an aliased one must carry the same fence.
-    #if _pointerBitWidth(_32)
-    public static func samples(_ samples: Int, sampleRate: Int) -> Self {
-        .init(value: SamplesPayload(samples: Double(samples), sampleRate: sampleRate))
-    }
-    #endif
 
     /// Audio samples at a given sample rate.
+    ///
+    /// `@_disfavoredOverload` so an integer literal resolves to the
+    /// `PlatformInt` overload rather than becoming ambiguous between the two.
+    /// This is what lets `.samples(48000 * 2, sampleRate: 48000)` and a full
+    /// 64-bit literal both compile unannotated on a 32-bit platform, without an
+    /// `Int` companion that would silently narrow and hide the requirement.
+    @_disfavoredOverload
     public static func samples(_ samples: Double, sampleRate: Int) -> Self {
         .init(value: SamplesPayload(samples: samples, sampleRate: sampleRate))
     }
