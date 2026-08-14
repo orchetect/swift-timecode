@@ -42,3 +42,7 @@ Value types and related logic for representing and working with SMPTE/EBU timeco
 ### Additional Value Types
 
 - ``FeetAndFrames``
+
+### Cross-Platform Types
+
+- ``PlatformInt``
