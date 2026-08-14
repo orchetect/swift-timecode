@@ -151,7 +151,7 @@ extension VideoFrameRate {
         interlaced: Bool = false
     ) {
         self.init(
-            rate: Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale)),
+            rate: Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale)),
             interlaced: interlaced
         )
     }
@@ -170,7 +170,7 @@ extension VideoFrameRate {
         interlaced: Bool = false
     ) {
         self.init(
-            frameDuration: Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale)),
+            frameDuration: Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale)),
             interlaced: interlaced
         )
     }

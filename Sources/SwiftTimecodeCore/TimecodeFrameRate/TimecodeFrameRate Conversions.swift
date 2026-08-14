@@ -122,7 +122,7 @@ extension TimecodeFrameRate {
         drop: Bool = false
     ) {
         self.init(
-            rate: Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale)),
+            rate: Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale)),
             drop: drop
         )
     }
@@ -141,7 +141,7 @@ extension TimecodeFrameRate {
         drop: Bool = false
     ) {
         self.init(
-            frameDuration: Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale)),
+            frameDuration: Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale)),
             drop: drop
         )
     }

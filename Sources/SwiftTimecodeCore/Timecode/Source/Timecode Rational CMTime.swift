@@ -81,7 +81,7 @@ extension Timecode {
     ///
     /// - Throws: ``ValidationError``
     mutating func _setTimecode(exactly: CMTime) throws {
-        let fraction = Fraction(PlatformInt(exactly.value), Int(exactly.timescale))
+        let fraction = Fraction(PlatformInt(exactly.value), PlatformInt(exactly.timescale))
         try _setTimecode(exactly: fraction)
     }
 
@@ -92,7 +92,7 @@ extension Timecode {
     /// - Note: Many AVFoundation and Core Media objects utilize `CMTime` as a way to represent
     /// times and durations.
     mutating func _setTimecode(clamping cmTime: CMTime) {
-        let fraction = Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale))
+        let fraction = Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale))
         _setTimecode(clamping: fraction)
     }
 
@@ -103,7 +103,7 @@ extension Timecode {
     /// - Note: Many AVFoundation and Core Media objects utilize `CMTime` as a way to represent
     /// times and durations.
     mutating func _setTimecode(wrapping cmTime: CMTime) {
-        let fraction = Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale))
+        let fraction = Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale))
         _setTimecode(wrapping: fraction)
     }
 
@@ -114,7 +114,7 @@ extension Timecode {
     /// - Note: Many AVFoundation and Core Media objects utilize `CMTime` as a way to represent
     /// times and durations.
     mutating func _setTimecode(rawValues cmTime: CMTime) {
-        let fraction = Fraction(PlatformInt(cmTime.value), Int(cmTime.timescale))
+        let fraction = Fraction(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale))
         _setTimecode(rawValues: fraction)
     }
 }
