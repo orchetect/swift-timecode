@@ -25,7 +25,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_Clamping() {
         let tc = Timecode(
             .samples(
-                4_147_200_000 + 172_800_000, // 25 hours @ 24fps
+                4_147_200_000 as PlatformInt + 172_800_000, // 25 hours @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -42,7 +42,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_Wrapping() {
         let tc = Timecode(
             .samples(
-                4_147_200_000 + 172_800_000, // 25 hours @ 24fps
+                4_147_200_000 as PlatformInt + 172_800_000, // 25 hours @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -56,7 +56,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_RawValues() {
         let tc = Timecode(
             .samples(
-                (4_147_200_000 * 2) + 172_800_000, // 2 days + 1 hour @ 24fps
+                (4_147_200_000 as PlatformInt * 2) + 172_800_000, // 2 days + 1 hour @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -70,7 +70,7 @@ struct Timecode_Source_Samples_Tests {
     func timecode_init_Samples_RawValues_Negative() {
         let tc = Timecode(
             .samples(
-                -((4_147_200_000 * 2) + 172_800_000), // 2 days + 1 hour @ 24fps
+                -((4_147_200_000 as PlatformInt * 2) + 172_800_000), // 2 days + 1 hour @ 24fps
                 sampleRate: 48000
             ),
             at: .fps24,
@@ -122,7 +122,7 @@ struct Timecode_Source_Samples_Tests {
         // MARK: samples as Int
 
         func validate(
-            using samplesIn1DayTC: Int,
+            using samplesIn1DayTC: PlatformInt,
             sRate: Int,
             fRate: TimecodeFrameRate
         ) throws {
@@ -142,7 +142,7 @@ struct Timecode_Source_Samples_Tests {
         let sRate = 48000
 
         var samplesIn1DayTCDouble = 0.0
-        var samplesIn1DayTCInt = 0
+        var samplesIn1DayTCInt: PlatformInt = 0
         var roundedForDropFrame = false
 
         switch frameRate {
@@ -154,7 +154,7 @@ struct Timecode_Source_Samples_Tests {
              .fps95_904,
              .fps119_88:
             samplesIn1DayTCDouble = samplesIn1DayTC_ShrunkFrameRates
-            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            samplesIn1DayTCInt = PlatformInt(samplesIn1DayTCDouble)
             roundedForDropFrame = false
 
         case .fps24,
@@ -168,7 +168,7 @@ struct Timecode_Source_Samples_Tests {
              .fps100,
              .fps120:
             samplesIn1DayTCDouble = samplesIn1DayTC_BaseFrameRates
-            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            samplesIn1DayTCInt = PlatformInt(samplesIn1DayTCDouble)
             roundedForDropFrame = false
 
         case .fps29_97d,
@@ -182,14 +182,14 @@ struct Timecode_Source_Samples_Tests {
             // - double this would technically be 4147195854 but Cubase shows 1 frame less
 
             samplesIn1DayTCDouble = samplesIn1DayTC_DropFrameRates
-            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            samplesIn1DayTCInt = PlatformInt(samplesIn1DayTCDouble)
             roundedForDropFrame = true // DAWs seem to using standard rounding for DF (?)
 
         case .fps30d,
              .fps60d,
              .fps120d:
             samplesIn1DayTCDouble = samplesIn1DayTC_30DF
-            samplesIn1DayTCInt = Int(samplesIn1DayTCDouble)
+            samplesIn1DayTCInt = PlatformInt(samplesIn1DayTCDouble)
             roundedForDropFrame = false
         }
 

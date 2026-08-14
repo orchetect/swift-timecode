@@ -53,14 +53,21 @@ struct TimecodeFrameRate_Properties_Tests {
                 == 2_592_000 * 80
         )
 
-        // these integers result in overflow on armv7/i386 (32-bit arch)
-        #if !(arch(arm) || arch(i386))
+        // Previously fenced off from armv7/i386 because these literals overflow a
+        // 32-bit `Int`. They no longer need to be: `PlatformInt` is `Int64` on
+        // 32-bit platforms, so typing the expected value to it lets the assertion
+        // run everywhere. On 64-bit the arithmetic is unchanged — `PlatformInt`
+        // IS `Int` there.
+        //
+        // Worth un-fencing rather than leaving: this is the assertion for the
+        // exact bound that used to trap on 32-bit, so fencing it hid the bug from
+        // the only platform that had it.
         #expect(
             frameRate.maxTotalSubFrames(
                 in: .max100Days,
                 base: .max80SubFrames
             )
-                == 2_592_000 * 100 * 80
+                == PlatformInt(2_592_000) * 100 * 80
         )
 
         #expect(
@@ -68,9 +75,8 @@ struct TimecodeFrameRate_Properties_Tests {
                 in: .max100Days,
                 base: .max80SubFrames
             )
-                == (2_592_000 * 100 * 80) - 1
+                == (PlatformInt(2_592_000) * 100 * 80) - 1
         )
-        #endif
 
         #expect(
             frameRate.maxSubFrameCountExpressible(
