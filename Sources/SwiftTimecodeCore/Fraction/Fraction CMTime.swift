@@ -20,7 +20,7 @@ extension Fraction {
             return
         }
 
-        self.init(Int(cmTime.value), Int(cmTime.timescale))
+        self.init(PlatformInt(cmTime.value), PlatformInt(cmTime.timescale))
     }
 
     /// Returns the fraction as a new `CMTime` instance.
