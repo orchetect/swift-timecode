@@ -105,7 +105,7 @@ extension Timecode {
 
 extension Timecode.FrameCount {
     init(
-        subFrameCount: TimecodeTotalCount,
+        subFrameCount: PlatformInt,
         base: Timecode.SubFramesBase
     ) {
         let converted = Timecode.subFramesToFrames(
@@ -225,7 +225,7 @@ extension Timecode.FrameCount {
     public func multiplying(by factor: Double) -> Self {
         let lhsTotalSubFrames = subFrameCount
 
-        let resultSubFrameCount = TimecodeTotalCount(Double(lhsTotalSubFrames) * factor)
+        let resultSubFrameCount = PlatformInt(Double(lhsTotalSubFrames) * factor)
 
         let newFrames = Timecode.subFramesToFrames(
             resultSubFrameCount,
@@ -241,7 +241,7 @@ extension Timecode.FrameCount {
     public func dividing(by divisor: Double) -> Self {
         let lhsTotalSubFrames = subFrameCount
 
-        let resultSubFrameCount = TimecodeTotalCount(Double(lhsTotalSubFrames) / divisor)
+        let resultSubFrameCount = PlatformInt(Double(lhsTotalSubFrames) / divisor)
 
         let newFrames = Timecode.subFramesToFrames(
             resultSubFrameCount,
@@ -268,7 +268,7 @@ extension Timecode.FrameCount {
 }
 
 extension Timecode.FrameCount {
-    var subFrameCount: TimecodeTotalCount {
+    var subFrameCount: PlatformInt {
         Timecode.framesToSubFrames(
             frames: wholeFrames,
             subFrames: subFrames,
@@ -285,14 +285,14 @@ extension Timecode {
         frames: Int,
         subFrames: Int,
         base: SubFramesBase
-    ) -> TimecodeTotalCount {
-        (TimecodeTotalCount(frames) * TimecodeTotalCount(base.rawValue)) + TimecodeTotalCount(subFrames)
+    ) -> PlatformInt {
+        (PlatformInt(frames) * PlatformInt(base.rawValue)) + PlatformInt(subFrames)
     }
 
     /// Internal utility
-    static func subFramesToFrames(_ subFrames: TimecodeTotalCount, base: SubFramesBase) -> (frames: Int, subFrames: Int) {
-        let outSubFrames = subFrames % TimecodeTotalCount(base.rawValue)
-        let outFrames = (subFrames - outSubFrames) / TimecodeTotalCount(base.rawValue)
+    static func subFramesToFrames(_ subFrames: PlatformInt, base: SubFramesBase) -> (frames: Int, subFrames: Int) {
+        let outSubFrames = subFrames % PlatformInt(base.rawValue)
+        let outFrames = (subFrames - outSubFrames) / PlatformInt(base.rawValue)
 
         return (frames: Int(outFrames), subFrames: Int(outSubFrames))
     }

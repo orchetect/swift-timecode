@@ -303,8 +303,8 @@ extension TimecodeFrameRate {
     public func maxTotalSubFrames(
         in extent: Timecode.UpperLimit,
         base: Timecode.SubFramesBase
-    ) -> TimecodeTotalCount {
-        TimecodeTotalCount(maxTotalFrames(in: extent)) * TimecodeTotalCount(base.rawValue)
+    ) -> PlatformInt {
+        PlatformInt(maxTotalFrames(in: extent)) * PlatformInt(base.rawValue)
     }
 
     /// Returns max elapsed subframes possible before rolling over to 0.
@@ -312,7 +312,7 @@ extension TimecodeFrameRate {
     public func maxSubFrameCountExpressible(
         in extent: Timecode.UpperLimit,
         base: Timecode.SubFramesBase
-    ) -> TimecodeTotalCount {
+    ) -> PlatformInt {
         maxTotalSubFrames(in: extent, base: base) - 1
     }
 }

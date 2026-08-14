@@ -10,8 +10,8 @@ import Foundation
 ///
 /// Used to convert to/from ``Timecode``, Core Media `CMTime`, or metadata encoding such as Final Cut Pro XML or AAF.
 public struct Fraction {
-    public let numerator: Int
-    public let denominator: Int
+    public let numerator: PlatformInt
+    public let denominator: PlatformInt
 
     private let _isReduced: Bool?
 
@@ -40,14 +40,14 @@ public struct Fraction {
     // MARK: - Init
 
     /// Initialize with literal values.
-    public init(_ numerator: Int, _ denominator: Int) {
+    public init(_ numerator: PlatformInt, _ denominator: PlatformInt) {
         self.numerator = numerator
         self.denominator = denominator
         _isReduced = nil
     }
 
     /// Initialize by reducing and normalizing the fraction.
-    public init(reducing numerator: Int, _ denominator: Int) {
+    public init(reducing numerator: PlatformInt, _ denominator: PlatformInt) {
         let reduced = reduce(n: numerator, d: denominator)
         self.numerator = reduced.n
         self.denominator = reduced.d
@@ -66,7 +66,7 @@ public struct Fraction {
     }
 
     /// Internal: Initialize with literal values and force the reduced flag.
-    init(_ numerator: Int, _ denominator: Int, isReduced: Bool?) {
+    init(_ numerator: PlatformInt, _ denominator: PlatformInt, isReduced: Bool?) {
         self.numerator = numerator
         self.denominator = denominator
         _isReduced = isReduced
@@ -253,10 +253,10 @@ extension Double {
         // clamp exponent to avoid overflow crashes
         // Int.max = 9.22... x 10^18
         let maxExponent = precision.clamped(to: 0 ... max(19 - integralDigitPlaces, 0))
-        let pad = Int(truncating: pow(10, maxExponent) as NSNumber)
+        let pad = PlatformInt(truncating: pow(10, maxExponent) as NSNumber)
         let nFloat = absSelf * Double(pad)
 
-        let n = Int(truncating: nFloat as NSNumber)
+        let n = PlatformInt(truncating: nFloat as NSNumber)
         let d = pad
 
         return Fraction(reducing: isNegative ? -n : n, d)
@@ -285,7 +285,7 @@ extension Fraction {
         if wholeSecsMatches.count == 3 {
             let negativeSign = wholeSecsMatches[1] ?? ""
             if let secondsString = wholeSecsMatches[2],
-               let seconds = Int(negativeSign + secondsString)
+               let seconds = PlatformInt(negativeSign + secondsString)
             {
                 self.init(seconds, 1, isReduced: true)
                 return
@@ -298,9 +298,9 @@ extension Fraction {
         if fracMatches.count == 4 {
             let negativeSign = fracMatches[1] ?? ""
             if let numeratorString = fracMatches[2],
-               let numerator = Int(negativeSign + numeratorString),
+               let numerator = PlatformInt(negativeSign + numeratorString),
                let denominatorString = fracMatches[3],
-               let denominator = Int(denominatorString)
+               let denominator = PlatformInt(denominatorString)
             {
                 self.init(numerator, denominator)
                 return
@@ -337,7 +337,7 @@ extension Fraction {
 /// Normalize a fraction.
 /// Fractions with two negative signs are normalized to two positive signs.
 /// Fractions with negative denominator are normalized to negative numerator and positive denominator.
-func normalize(n: Int, d: Int) -> (n: Int, d: Int) {
+func normalize(n: PlatformInt, d: PlatformInt) -> (n: PlatformInt, d: PlatformInt) {
     var n = n
     var d = d
     if n >= 0 && d >= 0 { return (n: n, d: d) }
@@ -351,9 +351,9 @@ func normalize(n: Int, d: Int) -> (n: Int, d: Int) {
 /// Internal:
 /// Reduce a fraction to its simplest form.
 /// This also normalizes signs.
-func reduce(n: Int, d: Int) -> (n: Int, d: Int) {
-    let (absN, signN) = n < 0 ? (-n, -1) : (n, 1)
-    let (absD, signD) = d < 0 ? (-d, -1) : (d, 1)
+func reduce(n: PlatformInt, d: PlatformInt) -> (n: PlatformInt, d: PlatformInt) {
+    let (absN, signN): (PlatformInt, PlatformInt) = n < 0 ? (-n, -1) : (n, 1)
+    let (absD, signD): (PlatformInt, PlatformInt) = d < 0 ? (-d, -1) : (d, 1)
     var v = n
     var u = d
 
@@ -376,8 +376,8 @@ func reduce(n: Int, d: Int) -> (n: Int, d: Int) {
 
 /// Internal:
 /// Returns greatest common divisor of two numbers.
-func greatestCommonDivisor(_ n1: Int, _ n2: Int) -> Int {
-    var x = 0
+func greatestCommonDivisor(_ n1: PlatformInt, _ n2: PlatformInt) -> PlatformInt {
+    var x: PlatformInt = 0
     var y = max(n1, n2)
     var z = min(n1, n2)
 
@@ -392,7 +392,7 @@ func greatestCommonDivisor(_ n1: Int, _ n2: Int) -> Int {
 
 /// Internal:
 /// Returns least common multiple of two numbers and their respective multipliers.
-func leastCommonMultiple(lhs: Int, rhs: Int) -> (denominator: Int, lhsMultiplier: Int, rhsMultiplier: Int) {
+func leastCommonMultiple(lhs: PlatformInt, rhs: PlatformInt) -> (denominator: PlatformInt, lhsMultiplier: PlatformInt, rhsMultiplier: PlatformInt) {
     let denominator = lhs * rhs / greatestCommonDivisor(lhs, rhs)
     let lhsMultiplier = denominator / lhs
     let rhsMultiplier = denominator / rhs

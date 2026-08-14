@@ -34,7 +34,7 @@ extension TimecodeSourceValue {
     }
 
     /// Numerical fraction containing a numerator and a denominator.
-    public static func rational(_ numerator: Int, _ denominator: Int) -> Self {
+    public static func rational(_ numerator: PlatformInt, _ denominator: PlatformInt) -> Self {
         .init(value: Fraction(numerator, denominator))
     }
 }
@@ -50,12 +50,8 @@ extension Timecode {
     /// fractions.)
     public var rationalValue: Fraction {
         let frFrac = frameRate.frameDuration
-        // `Fraction` is Int-based. On a 32-bit platform a timecode beyond
-        // ~Int32.max subframes therefore has no representable rational value —
-        // a limit of `Fraction`, not of the count. Widening `Fraction` belongs
-        // with the broader consistency work rather than with this fix.
-        let n = frFrac.numerator * Int(clamping: frameCount.subFrameCount)
-        let d = frFrac.denominator * subFramesBase.rawValue
+        let n = frFrac.numerator * frameCount.subFrameCount
+        let d = frFrac.denominator * PlatformInt(subFramesBase.rawValue)
 
         return Fraction(n, d).reduced()
     }
@@ -89,7 +85,7 @@ extension Timecode {
     /// fractions.)
     mutating func _setTimecode(clamping rational: Fraction) {
         let frameCount = frameCount(of: rational)
-        _setTimecode(clamping: .frames(frameCount))
+        _setTimecode(clamping: .frames(Int(clamping: frameCount)))
     }
 
     /// Sets the timecode from elapsed time expressed as a rational fraction.
@@ -102,7 +98,7 @@ extension Timecode {
     /// fractions.)
     mutating func _setTimecode(wrapping rational: Fraction) {
         let frameCount = frameCount(of: rational)
-        _setTimecode(wrapping: .frames(frameCount))
+        _setTimecode(wrapping: .frames(Int(clamping: frameCount)))
     }
 
     /// Sets the timecode from elapsed time expressed as a rational fraction.
@@ -115,7 +111,7 @@ extension Timecode {
     /// fractions.)
     mutating func _setTimecode(rawValues rational: Fraction) {
         let frameCount = frameCount(of: rational)
-        _setTimecode(rawValues: .frames(frameCount))
+        _setTimecode(rawValues: .frames(Int(clamping: frameCount)))
     }
 
     // MARK: Helper Methods
@@ -123,7 +119,7 @@ extension Timecode {
     /// Internal:
     /// Returns frame count of the rational fraction at current frame rate.
     /// Truncates subframes if present.
-    func frameCount(of rational: Fraction) -> Int {
+    func frameCount(of rational: Fraction) -> PlatformInt {
         let frFrac = frameRate.frameDuration
         let frameCount = (rational.numerator * frFrac.denominator) /
             (rational.denominator * frFrac.numerator)
