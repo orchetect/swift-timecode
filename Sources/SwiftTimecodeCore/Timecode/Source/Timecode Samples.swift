@@ -38,16 +38,8 @@ extension TimecodeSourceValue {
         .init(value: SamplesPayload(samples: Double(samples), sampleRate: sampleRate))
     }
 
+    // Disfavored overload avoids type ambiguity at call-site for integer literals on 32-bit platforms.
     /// Audio samples at a given sample rate.
-    ///
-
-    /// Audio samples at a given sample rate.
-    ///
-    /// `@_disfavoredOverload` so an integer literal resolves to the
-    /// `PlatformInt` overload rather than becoming ambiguous between the two.
-    /// This is what lets `.samples(48000 * 2, sampleRate: 48000)` and a full
-    /// 64-bit literal both compile unannotated on a 32-bit platform, without an
-    /// `Int` companion that would silently narrow and hide the requirement.
     @_disfavoredOverload
     public static func samples(_ samples: Double, sampleRate: Int) -> Self {
         .init(value: SamplesPayload(samples: samples, sampleRate: sampleRate))
