@@ -41,9 +41,8 @@
 /// >
 /// >   ```swift
 /// >   let samples: Int = 12345678
-/// >   let sampleRate: Int = 48000
 /// >   // compiles for both 64- and 32-bit
-/// >   Timecode(.samples(PlatformInt(samples), sampleRate: PlatformInt(sampleRate)), at: .fps24)
+/// >   Timecode(.samples(PlatformInt(samples), sampleRate: 48000), at: .fps24)
 /// >   ```
 /// >
 /// >   Library methods/properties that return `PlatformInt` may have their return value safely
@@ -106,9 +105,8 @@ public typealias PlatformInt = Int
 /// >
 /// >   ```swift
 /// >   let samples: Int = 12345678
-/// >   let sampleRate: Int = 48000
 /// >   // compiles for both 64- and 32-bit
-/// >   Timecode(.samples(PlatformInt(samples), sampleRate: PlatformInt(sampleRate)), at: .fps24)
+/// >   Timecode(.samples(PlatformInt(samples), sampleRate: 48000), at: .fps24)
 /// >   ```
 /// >
 /// >   Library methods/properties that return `PlatformInt` may have their return value safely
