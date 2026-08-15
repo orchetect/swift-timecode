@@ -53,14 +53,12 @@ struct TimecodeFrameRate_Properties_Tests {
                 == 2_592_000 * 80
         )
 
-        // these integers result in overflow on armv7/i386 (32-bit arch)
-        #if !(arch(arm) || arch(i386))
         #expect(
             frameRate.maxTotalSubFrames(
                 in: .max100Days,
                 base: .max80SubFrames
             )
-                == 2_592_000 * 100 * 80
+                == PlatformInt(2_592_000) * 100 * 80
         )
 
         #expect(
@@ -68,9 +66,8 @@ struct TimecodeFrameRate_Properties_Tests {
                 in: .max100Days,
                 base: .max80SubFrames
             )
-                == (2_592_000 * 100 * 80) - 1
+                == (PlatformInt(2_592_000) * 100 * 80) - 1
         )
-        #endif
 
         #expect(
             frameRate.maxSubFrameCountExpressible(

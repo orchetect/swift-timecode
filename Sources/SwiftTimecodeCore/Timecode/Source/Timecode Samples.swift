@@ -34,11 +34,13 @@ extension SamplesPayload: _TimecodeSource {
 
 extension TimecodeSourceValue {
     /// Audio samples at a given sample rate.
-    public static func samples(_ samples: Int, sampleRate: Int) -> Self {
+    public static func samples(_ samples: PlatformInt, sampleRate: Int) -> Self {
         .init(value: SamplesPayload(samples: Double(samples), sampleRate: sampleRate))
     }
 
+    // Disfavored overload avoids type ambiguity at call-site for integer literals on 32-bit platforms.
     /// Audio samples at a given sample rate.
+    @_disfavoredOverload
     public static func samples(_ samples: Double, sampleRate: Int) -> Self {
         .init(value: SamplesPayload(samples: samples, sampleRate: sampleRate))
     }
@@ -51,14 +53,14 @@ extension Timecode {
     /// Returns the current timecode converted to a duration in audio samples
     /// at the given sample rate, rounded to the nearest sample.
     /// Sample rate is expressed in Hz. (ie: 48KHz would be passed as 48000)
-    public func samplesValue(sampleRate: Int) -> Int {
+    public func samplesValue(sampleRate: Int) -> PlatformInt {
         let val = samplesDoubleValue(sampleRate: sampleRate).rounded()
         // avoid crash if Double is too big
-        guard val <= Double(Int.max) else {
+        guard val <= Double(PlatformInt.max) else {
             // assertionFailure("Timecode is too large to convert to audio samples. This will fail silently in a release build.")
             return 0
         }
-        return Int(val)
+        return PlatformInt(val)
     }
 
     /// (Lossy)

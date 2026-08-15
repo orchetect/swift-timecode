@@ -197,7 +197,7 @@ extension Timecode {
     }
 
     /// Returns the `upperLimit` minus 1 subframe expressed as total subframes.
-    public var maxSubFrameCountExpressible: Int {
+    public var maxSubFrameCountExpressible: PlatformInt {
         frameRate.maxSubFrameCountExpressible(
             in: upperLimit,
             base: subFramesBase
