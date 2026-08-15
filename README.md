@@ -87,7 +87,7 @@ This extension is available as a Swift Package Manager (SPM) package.
 1. Add the **swift-timecode** repo as a dependency.
 
    ```swift
-   .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.3")
+   .package(url: "https://github.com/orchetect/swift-timecode", from: "3.1.4")
    ```
 
 2. Add **SwiftTimecode** to your target.
