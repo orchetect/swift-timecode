@@ -86,3 +86,11 @@ package.targets += [
     )
 ]
 #endif
+
+/// Conditionally opt-in to Swift DocC Plugin when an environment flag is present.
+/// This shim can be removed in future once the docs have been fully migrated to SwiftPackageIndex hosting.
+if ProcessInfo.processInfo.environment["ENABLE_DOCC_PLUGIN"] != nil {
+    package.dependencies += [
+        .package(url: "https://github.com/swiftlang/swift-docc-plugin.git", from: "1.5.0")
+    ]
+}
