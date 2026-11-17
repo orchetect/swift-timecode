@@ -1,4 +1,4 @@
-// swift-tools-version: 5.9
+// swift-tools-version: 6.4
 
 import Foundation
 import PackageDescription
@@ -7,10 +7,10 @@ let package = Package(
     name: "swift-timecode",
     defaultLocalization: "en",
     platforms: [
-        .macOS(.v10_13),
-        .iOS(.v12),
-        .tvOS(.v12),
-        .watchOS(.v4),
+        .macOS(.v12),
+        .iOS(.v15),
+        .tvOS(.v15),
+        .watchOS(.v9),
         .visionOS(.v1)
     ],
     products: [
