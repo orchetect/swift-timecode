@@ -12,32 +12,42 @@
 import SwiftTimecodeCore
 import SwiftUI
 
+// MARK: - TimecodeFormat
+
 @_documentation(visibility: internal)
 @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
 extension EnvironmentValues {
-    // MARK: - TimecodeFormat
-
     /// Sets the timecode string format for ``TimecodeField`` and ``TimecodeText`` views.
     @Entry public var timecodeFormat: Timecode.StringFormat = .default()
+}
 
-    // MARK: - TimecodeSeparatorStyle
+// MARK: - TimecodeSeparatorStyle
 
+@_documentation(visibility: internal)
+@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension EnvironmentValues {
     /// Sets the text separator style for ``TimecodeField`` and ``TimecodeText`` views.
     /// If `color` is nil, the foreground style is used.
     ///
     /// - Note: To set the default color of the component values, use `foregroundColor` or `foregroundStyle` view modifiers.
-    @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     @Entry public var timecodeSeparatorStyle: AnyShapeStyle? = nil
+}
 
-    // MARK: - TimecodeSubFramesStyle
+// MARK: - TimecodeSubFramesStyle
 
+@_documentation(visibility: internal)
+@available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
+extension EnvironmentValues {
     /// Sets the subframes timecode component foreground style and text scale for ``TimecodeField`` and ``TimecodeText`` views.
     /// If `color` is nil, the foreground style is used.
-    @available(macOS 14.0, iOS 17.0, tvOS 17.0, watchOS 10.0, *)
     @Entry public var timecodeSubFramesStyle: (style: AnyShapeStyle?, scale: Text.Scale) = (nil, .default)
+}
 
-    // MARK: - TimecodeValidationStyle
+// MARK: - TimecodeValidationStyle
 
+@_documentation(visibility: internal)
+@available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
+extension EnvironmentValues {
     /// Sets timecode component validation rendering style for ``TimecodeField`` and ``TimecodeText`` views.
     ///
     /// This foreground color will be used only for any timecode component values that are invalid based on the given
@@ -47,7 +57,6 @@ extension EnvironmentValues {
     ///
     /// This modifier only affects visual representation of invalid timecode, and does not have any effect on logical
     /// validation that may (or may not) be applied separately.
-    @available(macOS 12.0, iOS 15.0, tvOS 15.0, watchOS 8.0, *)
     @Entry var timecodeValidationStyle: AnyShapeStyle? = AnyShapeStyle(.red)
 }
 
